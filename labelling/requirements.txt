@@ -1,0 +1,5 @@
+pandas
+google-generativeai
+openai
+dotenv
+sklearn

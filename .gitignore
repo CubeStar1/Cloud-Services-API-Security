@@ -1,0 +1,6 @@
+CONTEXT.md
+.env
+data-collection/agent/logs/*
+data-collection/manual/logs/*
+data-collection/manual/processed_files/*
+
