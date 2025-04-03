@@ -9,6 +9,46 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics.pairwise import cosine_similarity
 from collections import defaultdict
 
+# Base path configuration
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+# Paths configuration
+PATHS = {
+    'train_data': os.path.join(BASE_PATH, "data", "labelled", "train_set.xlsx"),
+    'test_data': os.path.join(BASE_PATH, "data", "labelled", "test_set.xlsx"),
+    'predictions_folder': os.path.join(BASE_PATH, "data", "output", "codebert", "predictions"),  # Output predictions
+    'model_file': os.path.join(BASE_PATH, "data", "output", "codebert", "models", "best_codebert_model.pth"),  # Model path
+}
+
+ACTIVITY_LABELS = [
+    "Login", "Upload", "Download", "Access", "Editing", "Deleting",
+    "Sharing", "Creating", "Updating", "Syncing", "Navigation",
+    "Authentication", "Attempt", "Request", "Timeout", "Export",
+    "Import", "Comment", "Review", "Approve", "Reject", "Query",
+    "Visualization", "Configuration", "Integration", "Deployment",
+    "Rollback", "Scan", "Audit", "Permission Change", "Password Reset",
+    "Account Creation", "API Call",
+    "Logout",
+    "Build",
+    "Email Sending",
+    "Email Receiving",
+    "Attachment Upload",
+    "Attachment Download",
+    "Message",
+    "Call",
+    "Meeting",
+    "Guide Viewing",
+    "Guide Completion",
+    "Data Sync",
+    "Configuration Update",
+    "Health Check",
+    "Unknown Activity"
+]
+
+# Create necessary directories
+os.makedirs(os.path.join(BASE_PATH, "data", "output", "codebert", "models"), exist_ok=True)
+os.makedirs(PATHS['predictions_folder'], exist_ok=True)
+
 class ZeroShotActivityPredictor:
     def __init__(self, activity_labels, model_name="microsoft/codebert-base"):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -72,30 +112,7 @@ class CodeBertPredictor:
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print(f"Using device: {self.device}")
 
-        self.predefined_activities = [
-    "Login", "Upload", "Download", "Access", "Editing", "Deleting",
-    "Sharing", "Creating", "Updating", "Syncing", "Navigation",
-    "Authentication", "Attempt", "Request", "Timeout", "Export",
-    "Import", "Comment", "Review", "Approve", "Reject", "Query",
-    "Visualization", "Configuration", "Integration", "Deployment",
-    "Rollback", "Scan", "Audit", "Permission Change", "Password Reset",
-    "Account Creation", "API Call",
-    "Logout",
-    "Build",
-    "Email Sending",
-    "Email Receiving",
-    "Attachment Upload",
-    "Attachment Download",
-    "Message",
-    "Call",
-    "Meeting",
-    "Guide Viewing",
-    "Guide Completion",
-    "Data Sync",
-    "Configuration Update",
-    "Health Check",
-    "Unknown Activity"
-]
+        self.predefined_activities = ACTIVITY_LABELS
 
         self.training_df = pd.read_excel(training_data_path, engine='openpyxl')
         self._prepare_data(model_name)
@@ -240,41 +257,13 @@ class CodeBertPredictorWithZSL(CodeBertPredictor):
         self.zsl_model = zsl_model
 
 def main():
-    training_data_path = 'train_set_cleaned.xlsx'
-    test_data_path = 'test_set_cleaned_nu.xlsx'
-    model_path = 'best_codebert_model.pth'
-
     try:
-        predefined_activities  = [
-    # Original activities
-    "Login", "Upload", "Download", "Access", "Editing", "Deleting",
-    "Sharing", "Creating", "Updating", "Syncing", "Navigation",
-    "Authentication", "Attempt", "Request", "Timeout", "Export",
-    "Import", "Comment", "Review", "Approve", "Reject", "Query",
-    "Visualization", "Configuration", "Integration", "Deployment",
-    "Rollback", "Scan", "Audit", "Permission Change", "Password Reset",
-    "Account Creation", "API Call",
-    "Logout",
-    "Build",
-    "Email Sending",
-    "Email Receiving",
-    "Attachment Upload",
-    "Attachment Download",
-    "Message",
-    "Call",
-    "Meeting",
-    "Guide Viewing",
-    "Guide Completion",
-    "Data Sync",
-    "Configuration Update",
-    "Health Check",
-    "Unknown Activity"
-]
+        predefined_activities = ACTIVITY_LABELS
         zsl_model = ZeroShotActivityPredictor(predefined_activities)
-        test_df = pd.read_excel(test_data_path, engine='openpyxl')
+        test_df = pd.read_excel(PATHS['test_data'], engine='openpyxl')
         predictor = CodeBertPredictorWithZSL(
-            model_path=model_path,
-            training_data_path=training_data_path,
+            model_path=PATHS['model_file'],
+            training_data_path=PATHS['train_data'],
             zsl_model=zsl_model
         )
         predictions_df = predictor.predict(test_df)

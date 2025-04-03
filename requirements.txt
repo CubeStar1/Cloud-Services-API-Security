@@ -2,7 +2,7 @@ pandas
 torch
 transformers
 numpy
-sklearn
+scikit-learn
 matplotlib
 seaborn
 google-generativeai

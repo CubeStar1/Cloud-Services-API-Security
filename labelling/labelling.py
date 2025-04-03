@@ -1,18 +1,25 @@
 import pandas as pd
 import os
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List, Dict
 from google import generativeai
 from openai import OpenAI
 from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split
 import glob
+import json
+from datetime import datetime
+
+# Base path configuration
+BASE_PATH = os.path.dirname(os.path.dirname(__file__))
 
 # File paths and directories
 PATHS = {
-    'data_folder': "data",
-    'output_folder': "output",
-    'train_file': "train_set.csv",
-    'test_file': "test_set.csv",
+    'data_folder': os.path.join(BASE_PATH, "data"),
+    'logs_folder': os.path.join(BASE_PATH, "data", "logs", "csv"),  # Source CSV files
+    'labelled_folder': os.path.join(BASE_PATH, "data", "labelled"),  # Output directory
+    'metadata_file': os.path.join(BASE_PATH, "data", "labelled", "metadata.json"),
+    'train_file': "train_set.xlsx",  # Changed to xlsx as per screenshot
+    'test_file': "test_set.xlsx",    # Changed to xlsx as per screenshot
     'rows_per_file': 300
 }
 
@@ -31,7 +38,8 @@ CONFIG = {
     'test_rows': 20,
     'use_openai': True,  # Set to True to use OpenAI instead of Gemini
     'rows_per_file': 300,  # Number of rows to sample from each file
-    'test_split': 0.2     # Fraction of data to use for testing
+    'test_split': 0.2,    # Fraction of data to use for testing
+    'recursive_search': True  # Whether to search subdirectories for data files
 }
 
 # Define possible services and activities
@@ -59,6 +67,27 @@ ACTIVITIES = [
     "Configuration Update", "Health Check", "Unknown Activity"
 ]
 
+def save_metadata(metadata: Dict) -> None:
+    """Save metadata about the processed files."""
+    with open(PATHS['metadata_file'], 'w') as f:
+        json.dump(metadata, f, indent=4)
+
+def load_metadata() -> Dict:
+    """Load metadata about previously processed files."""
+    if os.path.exists(PATHS['metadata_file']):
+        with open(PATHS['metadata_file'], 'r') as f:
+            return json.load(f)
+    return {'processed_files': {}}
+
+def find_csv_files(data_folder: str, recursive: bool = True) -> List[str]:
+    """
+    Find all CSV files in the logs folder.
+    
+    Args:
+        data_folder: Root folder to search
+        recursive: Whether to search subdirectories
+    """
+    return glob.glob(os.path.join(PATHS['logs_folder'], "*.csv"))
 
 def create_prompt(row: pd.Series) -> str:
     """Create a prompt for the LLM based on the row data."""
@@ -167,17 +196,18 @@ def label_dataset(csv_path: str, use_openai: bool = True) -> pd.DataFrame:
 
 def combine_datasets(data_folder: str, rows_per_file: int = 300) -> pd.DataFrame:
     """
-    Combines data from all CSV files in the data folder, taking a specified number
-    of random rows from each file.
+    Combines data from all CSV files in the logs folder.
     
     Args:
         data_folder: Path to folder containing CSV files
         rows_per_file: Number of rows to sample from each file
     """
     all_data = []
+    metadata = load_metadata()
+    current_time = datetime.now().isoformat()
     
-    # Get all CSV files in the data folder
-    csv_files = glob.glob(os.path.join(data_folder, "*.csv"))
+    # Get all CSV files from logs directory
+    csv_files = find_csv_files(PATHS['logs_folder'])
     
     for file_path in csv_files:
         try:
@@ -189,13 +219,28 @@ def combine_datasets(data_folder: str, rows_per_file: int = 300) -> pd.DataFrame
                 df = df.sample(n=rows_per_file, random_state=42)
             
             # Add source file information
-            df['source_file'] = os.path.basename(file_path)
+            source_file = os.path.basename(file_path)
+            df['source_file'] = source_file
             
             all_data.append(df)
-            print(f"Processed {file_path}: {len(df)} rows")
+            
+            # Update metadata
+            metadata['processed_files'][source_file] = {
+                'last_processed': current_time,
+                'rows_sampled': len(df),
+                'total_rows': len(pd.read_csv(file_path))
+            }
+            
+            print(f"Processed {source_file}: {len(df)} rows sampled from {metadata['processed_files'][source_file]['total_rows']} total rows")
             
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
+    
+    # Save updated metadata
+    save_metadata(metadata)
+    
+    if not all_data:
+        raise ValueError(f"No CSV files found in {PATHS['logs_folder']}")
     
     # Combine all dataframes
     combined_df = pd.concat(all_data, ignore_index=True)
@@ -206,14 +251,12 @@ def combine_datasets(data_folder: str, rows_per_file: int = 300) -> pd.DataFrame
     return combined_df
 
 if __name__ == "__main__":
-    # Paths
-    data_folder = PATHS['data_folder']
-    output_folder = PATHS['output_folder']
-    os.makedirs(output_folder, exist_ok=True)
+    # Create necessary directories
+    os.makedirs(PATHS['labelled_folder'], exist_ok=True)
     
-    # Combine datasets
-    print("Combining datasets...")
-    combined_df = combine_datasets(data_folder, rows_per_file=CONFIG['rows_per_file'])
+    # Combine datasets from logs folder
+    print(f"Combining datasets from {PATHS['logs_folder']}...")
+    combined_df = combine_datasets(PATHS['logs_folder'], rows_per_file=CONFIG['rows_per_file'])
     
     # Create train-test split
     train_df, test_df = train_test_split(
@@ -222,19 +265,19 @@ if __name__ == "__main__":
         random_state=42
     )
     
-    # Save train and test sets  
-    train_path = os.path.join(output_folder, "train_set.csv")
-    test_path = os.path.join(output_folder, "test_set.csv")
+    # Save train and test sets as Excel files
+    train_path = os.path.join(PATHS['labelled_folder'], PATHS['train_file'])
+    test_path = os.path.join(PATHS['labelled_folder'], PATHS['test_file'])
     
-    train_df.to_csv(train_path, index=False)
-    test_df.to_csv(test_path, index=False)
+    train_df.to_excel(train_path, index=False)
+    test_df.to_excel(test_path, index=False)
     
     print(f"\nDataset split complete:")
     print(f"Total samples: {len(combined_df)}")
     print(f"Training set: {len(train_df)} samples saved to {train_path}")
     print(f"Test set: {len(test_df)} samples saved to {test_path}")
     
-    # Process training set with LLM
+    # Process with LLM
     print(f"\nStarting classification using {'OpenAI' if CONFIG['use_openai'] else 'Gemini'} API...")
     
     # Process training set

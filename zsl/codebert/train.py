@@ -13,6 +13,19 @@ import logging
 # Reduce logging verbosity
 logging.basicConfig(level=logging.WARNING)
 
+# Base path configuration
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+
+# Paths configuration
+PATHS = {
+    'train_data': os.path.join(BASE_PATH, "data", "labelled", "train_set.xlsx"),
+    'output_folder': os.path.join(BASE_PATH, "data", "output", "codebert"),  # Output directory
+    'model_file': os.path.join(BASE_PATH, "data", "output", "codebert", "models", "best_codebert_model.pth"),  # Model path
+}
+
+# Create necessary directories
+os.makedirs(os.path.join(BASE_PATH, "data", "output", "codebert", "models"), exist_ok=True)
+
 class CodeBertTransformer(nn.Module):
     def __init__(
         self,
@@ -306,17 +319,15 @@ class CodeBertClassifier:
             current_accuracy = service_accuracy + activity_accuracy
             if current_accuracy > best_val_accuracy:
                 best_val_accuracy = current_accuracy
-                torch.save(model.state_dict(), 'best_codebert_model.pth')
+                torch.save(model.state_dict(), PATHS['model_file'])
                 print("Saved best model")
 
         return model
 
 def main():
-    training_data_path = 'train_set_cleaned.xlsx'
-
     try:
         # Initialize and train classifier
-        classifier = CodeBertClassifier(training_data_path)
+        classifier = CodeBertClassifier(PATHS['train_data'])
         model = classifier.train()
 
         print("Training completed successfully!")

@@ -4,6 +4,16 @@ import urllib.parse  #Parsing URL-encoded data
 import os
 import glob  # Importing glob to find all JSON files
 
+# Base path configuration
+BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # Get root project directory
+
+# File paths and directories configuration
+PATHS = {
+    'data_folder': os.path.join(BASE_PATH, "data"),
+    'raw_json_folder': os.path.join(BASE_PATH, "data", "logs", "raw-json"),
+    'csv_folder': os.path.join(BASE_PATH, "data", "logs", "csv-new"),
+}
+
 def read_logs(log_file):
     with open(log_file, 'r', encoding='utf-8') as f:
         logs = f.readlines()
@@ -13,16 +23,14 @@ def process_logs_with_keys(logs):
     processed_logs = []
     for log in logs:
         processed_log = {
-            'headers_Host': log.get('headers_Host', ''),
-            'url': log.get('url', ''),
-            'method': log.get('method', 'UNKNOWN'),
-            'requestHeaders_Origin': log.get('requestHeaders_Origin', ''),
-            'requestHeaders_Content_Type': log.get('requestHeaders_Content_Type', ''),
-            'responseHeaders_Content_Type': log.get('responseHeaders_Content_Type', ''),
-            'requestHeaders_Referer': log.get('requestHeaders_Referer', ''),
-            'requestHeaders_Accept': log.get('requestHeaders_Accept', ''),
-            'request_keys': extract_keys(log.get('body', ''), log.get('type', 'request') == 'request'),
-            'response_keys': extract_keys(log.get('body', ''), log.get('type', 'response') == 'response'),
+            'headers_Host': log.get('headers_Host') if log.get('headers_Host') not in [None, '', 'null'] else 'none',
+            'url': log.get('url') if log.get('url') not in [None, '', 'null'] else 'none',
+            'method': log.get('method') if log.get('method') not in [None, '', 'null'] else 'UNKNOWN',
+            'requestHeaders_Origin': log.get('requestHeaders_Origin') if log.get('requestHeaders_Origin') not in [None, '', 'null'] else 'none',
+            'requestHeaders_Content_Type': log.get('requestHeaders_Content_Type') if log.get('requestHeaders_Content_Type') not in [None, '', 'null'] else 'none',
+            'responseHeaders_Content_Type': log.get('responseHeaders_Content_Type') if log.get('responseHeaders_Content_Type') not in [None, '', 'null'] else 'none',
+            'requestHeaders_Referer': log.get('requestHeaders_Referer') if log.get('requestHeaders_Referer') not in [None, '', 'null'] else 'none',
+            'requestHeaders_Accept': log.get('requestHeaders_Accept') if log.get('requestHeaders_Accept') not in [None, '', 'null'] else 'none',
         }
         processed_logs.append(processed_log)
     return processed_logs
@@ -52,7 +60,6 @@ def write_to_csv(processed_logs, output_file):
         'headers_Host', 'url', 'method', 'requestHeaders_Origin',
         'requestHeaders_Content_Type', 'responseHeaders_Content_Type',
         'requestHeaders_Referer', 'requestHeaders_Accept',
-        'request_keys', 'response_keys'
     ]
 
     # Remove existing file if it exists to avoid appending to the old data
@@ -67,21 +74,32 @@ def write_to_csv(processed_logs, output_file):
             row = {key: log.get(key, '') for key in headers}
             writer.writerow(row)
 
-# Create processed_files directory if it doesn't exist
-output_dir = "data-collection/processed_files"
-os.makedirs(output_dir, exist_ok=True)
+def main():
+    # Create necessary directories
+    for path in PATHS.values():
+        os.makedirs(path, exist_ok=True)
 
-# Paths to input files
-log_files = glob.glob("data-collection/logs/*.json")  # Get all JSON files in the logs folder
+    # Get all JSON files in the raw-json folder
+    json_files = glob.glob(os.path.join(PATHS['raw_json_folder'], "*.json"))
 
-# Processing steps for each log file
-for log_file in log_files:
-    # Extract the base name without extension for output file naming
-    base_name = os.path.basename(log_file).replace('.json', '')
-    output_csv = os.path.join(output_dir, f"{base_name}.csv")  # Create output file path
+    if not json_files:
+        print(f"No JSON files found in {PATHS['raw_json_folder']}")
+        return
 
-    logs = read_logs(log_file)
-    processed_logs = process_logs_with_keys(logs)
-    write_to_csv(processed_logs, output_csv)
+    # Processing steps for each log file
+    for json_file in json_files:
+        try:
+            # Extract the base name without extension for output file naming
+            base_name = os.path.basename(json_file).replace('.json', '')
+            output_csv = os.path.join(PATHS['csv_folder'], f"{base_name}.csv")
 
-    print(f"Processed dataset created: {output_csv}")
+            logs = read_logs(json_file)
+            processed_logs = process_logs_with_keys(logs)
+            write_to_csv(processed_logs, output_csv)
+
+            print(f"Processed {base_name}.json -> {base_name}.csv")
+        except Exception as e:
+            print(f"Error processing {json_file}: {e}")
+
+if __name__ == "__main__":
+    main()
