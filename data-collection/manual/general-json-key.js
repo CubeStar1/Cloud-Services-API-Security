@@ -3,7 +3,7 @@ const path = require('path');
 
 // Base path and file configuration
 const BASE_PATH = path.resolve(__dirname, '../../');  
-const LOG_FILE_NAME = 'traffic-logs.json';
+const LOG_FILE_NAME = 'box-traffic-logs.json';
 const LOG_DIR = path.join(BASE_PATH, 'data', 'logs', 'raw-json');
 const LOG_FILE = path.join(LOG_DIR, LOG_FILE_NAME);
 

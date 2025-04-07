@@ -11,13 +11,14 @@ BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 # Paths configuration
 PATHS = {
     'data_folder': os.path.join(BASE_PATH, "data"),
-    'input_data': os.path.join(BASE_PATH, "data", "logs", "csv"),  # Input CSV files
+    'input_data': os.path.join(BASE_PATH, "data", "logs", "csv-new"),  # Input CSV files
     'predictions_folder': os.path.join(BASE_PATH, "data", "output", "deberta", "predictions"),  # Output predictions
     'metrics_file': os.path.join(BASE_PATH, "data", "output", "deberta", "accuracy_scores.csv")  # Metrics output
 }
 
-# Check if GPU is available
-device = 0 if torch.cuda.is_available() else -1
+# CUDA configuration
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+n_gpu = torch.cuda.device_count() if torch.cuda.is_available() else 0
 
 def clean_url(url):
     """Extract the base URL without query parameters."""
@@ -71,8 +72,13 @@ def perform_zero_shot_classification(text, candidate_labels, model_name):
             "zero-shot-classification",
             model=model_name,
             device=device,
-            tokenizer_kwargs={"clean_up_tokenization_spaces": True, "max_length": 512}  # Fix warnings
+            tokenizer_kwargs={"clean_up_tokenization_spaces": True, "max_length": 512}
         )
+        
+        # Process in batches if using GPU to optimize memory
+        if torch.cuda.is_available():
+            with torch.cuda.amp.autocast():  # Enable automatic mixed precision
+                return classifier(text, candidate_labels)
         return classifier(text, candidate_labels)
     except Exception as e:
         print(f"Classification error: {e}")
@@ -165,8 +171,15 @@ def process_service_file(file_path, service_model_name, activity_model_name, sas
     return results, metrics
 
 def main():
+    # Print CUDA information
+    print(f"\nUsing device: {device}")
+    if torch.cuda.is_available():
+        print(f"Number of GPUs available: {n_gpu}")
+        print(f"GPU Model: {torch.cuda.get_device_name(0)}")
+        print(f"CUDA Version: {torch.version.cuda}\n")
+
     # SAAS Services and Activities
-    sase_services = [
+    sass_services = [
         "Asana", "Google Cloud", "Google Drive", "Github", "Vercel", "Netlify", "Slack",
         "Microsoft 365", "Dropbox", "Jira", "Salesforce", "AWS", "Azure", "Zoom",
          "Trello", "Notion", "Figma", "Airtable", "Zendesk", "Unknown"
@@ -208,7 +221,7 @@ def main():
                 file_path, 
                 service_model_name, 
                 activity_model_name,
-                sase_services,
+                sass_services,
                 activity_types
             )
             

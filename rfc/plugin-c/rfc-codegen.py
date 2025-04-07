@@ -7,10 +7,8 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import os
 
-# Base path configuration
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
-# Paths configuration
 PATHS = {
     'input_data': os.path.join(BASE_PATH, "data", "output", "codebert", "predictions"),  # CodeBERT predictions
     'output_folder': os.path.join(BASE_PATH, "data", "output", "rfc"),  # RFC output directory
@@ -18,10 +16,8 @@ PATHS = {
     'label_mappings': os.path.join(BASE_PATH, "data", "output", "rfc", "codegen", "label_mappings.txt")  # Label mappings
 }
 
-# Create necessary directories with proper permissions
 def create_directories():
     try:
-        # Create only the parent directories, not the file paths
         os.makedirs(PATHS['output_folder'], exist_ok=True)
         os.makedirs(PATHS['codegen_folder'], exist_ok=True)
         print(f"Successfully created directories")
@@ -29,7 +25,6 @@ def create_directories():
         print(f"Error creating directories: {e}")
         raise
 
-# Create directories at startup
 create_directories()
 
 def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, file=None):

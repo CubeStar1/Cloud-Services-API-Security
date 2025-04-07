@@ -3,6 +3,7 @@ import os
 from typing import Tuple, Optional, List, Dict
 from google import generativeai
 from openai import OpenAI
+from groq import Groq
 from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split
 import glob
@@ -15,12 +16,12 @@ BASE_PATH = os.path.dirname(os.path.dirname(__file__))
 # File paths and directories
 PATHS = {
     'data_folder': os.path.join(BASE_PATH, "data"),
-    'logs_folder': os.path.join(BASE_PATH, "data", "logs", "csv"),  # Source CSV files
+    'logs_folder': os.path.join(BASE_PATH, "data", "logs", "csv-new"),  # Source CSV files
     'labelled_folder': os.path.join(BASE_PATH, "data", "labelled"),  # Output directory
     'metadata_file': os.path.join(BASE_PATH, "data", "labelled", "metadata.json"),
     'train_file': "train_set.xlsx",  # Changed to xlsx as per screenshot
     'test_file': "test_set.xlsx",    # Changed to xlsx as per screenshot
-    'rows_per_file': 300
+    'rows_per_file': 400
 }
 
 # Load environment variables
@@ -28,43 +29,39 @@ load_dotenv()
 
 # Configure APIs
 client = OpenAI()
+groq_client = Groq()
 generativeai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 # Configuration settings
 CONFIG = {
     'openai_model': 'gpt-4o-mini',
     'gemini_model': 'gemini-2.0-flash-thinking-exp',
+    'groq_model': 'llama-3.3-70b-versatile',
     'batch_size': 10,
     'test_rows': 20,
-    'use_openai': True,  # Set to True to use OpenAI instead of Gemini
+    'use_openai': False,  # Set to True to use OpenAI
+    'use_groq': True,    # Set to True to use Groq
     'rows_per_file': 300,  # Number of rows to sample from each file
     'test_split': 0.2,    # Fraction of data to use for testing
     'recursive_search': True  # Whether to search subdirectories for data files
 }
 
 # Define possible services and activities
+# SERVICES = [
+#     "Adobe", "ChatGPT", "Circle", "Canva", "ClickUp", "Firebase",
+#     "Netlify", "Quip", "UserGuilding", "Dropbox", "Evernote",
+#     "Google Docs", "GitHub", "GitLab", "Gmail", "Google Sheets",
+#     "GoTo", "Google Slides", "Heroku", "OneDrive", "Outlook",
+#     "SheetDB", "Slack", "Microsoft Teams", "Travis", "Vercel",
+#     "Webex", "Zendesk", "Zoom", "Unknown Service"
+# ]
 SERVICES = [
-    "Adobe", "ChatGPT", "Circle", "Canva", "ClickUp", "Firebase",
-    "Netlify", "Quip", "UserGuilding", "Dropbox", "Evernote",
-    "Google Docs", "GitHub", "GitLab", "Gmail", "Google Sheets",
-    "GoTo", "Google Slides", "Heroku", "OneDrive", "Outlook",
-    "SheetDB", "Slack", "Microsoft Teams", "Travis", "Vercel",
-    "Webex", "Zendesk", "Zoom", "Unknown Service"
+    "Box", "Unknown Service"
 ]
 
 ACTIVITIES = [
     # Original activities
-    "Login", "Upload", "Download", "Access", "Editing", "Deleting",
-    "Sharing", "Creating", "Updating", "Syncing", "Navigation",
-    "Authentication", "Attempt", "Request", "Timeout", "Export",
-    "Import", "Comment", "Review", "Approve", "Reject", "Query",
-    "Visualization", "Configuration", "Integration", "Deployment",
-    "Rollback", "Scan", "Audit", "Permission Change", "Password Reset",
-    "Account Creation", "API Call", "Logout", "Build",
-    "Email Sending", "Email Receiving", "Attachment Upload",
-    "Attachment Download", "Message", "Call", "Meeting",
-    "Guide Viewing", "Guide Completion", "Data Sync",
-    "Configuration Update", "Health Check", "Unknown Activity"
+    "Login", "Upload", "Download", "Logout", "Unknown Activity"
 ]
 
 def save_metadata(metadata: Dict) -> None:
@@ -154,16 +151,39 @@ def get_gemini_classification(prompt: str) -> Tuple[str, str]:
         print(f"Gemini API error: {e}")
         return "Unknown Service", "Unknown Activity"
 
-def label_dataset(csv_path: str, use_openai: bool = True) -> pd.DataFrame:
+def get_groq_classification(prompt: str) -> Tuple[str, str]:
+    """Get classification using Groq API."""
+    try:
+        completion = groq_client.chat.completions.create(
+            model=CONFIG['groq_model'],
+            messages=[
+                {"role": "system", "content": "You are a classifier that categorizes HTTP requests into services and activities."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3
+        )
+        result = completion.choices[0].message.content
+        
+        # Parse the response
+        service = result.split("Service:")[1].split("Activity:")[0].strip()
+        activity = result.split("Activity:")[1].strip()
+        
+        return service, activity
+    except Exception as e:
+        print(f"Groq API error: {e}")
+        return "Unknown Service", "Unknown Activity"
+
+def label_dataset(csv_path: str, use_openai: bool = True, use_groq: bool = False) -> pd.DataFrame:
     """
     Label the dataset using the specified LLM API.
     
     Args:
         csv_path: Path to the input CSV file
-        use_openai: If True, use OpenAI API; if False, use Gemini API
+        use_openai: If True, use OpenAI API
+        use_groq: If True, use Groq API; if both False, use Gemini API
     """
     # Read the dataset
-    df = pd.read_csv(csv_path)
+    df = pd.read_excel(csv_path, engine='openpyxl')
     
     # Initialize new columns if they don't exist
     if 'predicted_service' not in df.columns:
@@ -172,7 +192,17 @@ def label_dataset(csv_path: str, use_openai: bool = True) -> pd.DataFrame:
         df['predicted_activity'] = None
     
     # Get classification function based on selected API
-    classify_func = get_openai_classification if use_openai else get_gemini_classification
+    if use_openai:
+        classify_func = get_openai_classification
+        api_name = "OpenAI"
+    elif use_groq:
+        classify_func = get_groq_classification
+        api_name = "Groq"
+    else:
+        classify_func = get_gemini_classification
+        api_name = "Gemini"
+    
+    print(f"Using {api_name} API for classification...")
     
     # Process rows that haven't been labeled yet
     for idx, row in df.iterrows():
@@ -278,15 +308,16 @@ if __name__ == "__main__":
     print(f"Test set: {len(test_df)} samples saved to {test_path}")
     
     # Process with LLM
-    print(f"\nStarting classification using {'OpenAI' if CONFIG['use_openai'] else 'Gemini'} API...")
+    api_name = "OpenAI" if CONFIG['use_openai'] else "Groq" if CONFIG['use_groq'] else "Gemini"
+    print(f"\nStarting classification using {api_name} API...")
     
     # Process training set
     print("\nProcessing training set...")
-    train_df = label_dataset(train_path, use_openai=CONFIG['use_openai'])
+    train_df = label_dataset(train_path, use_openai=CONFIG['use_openai'], use_groq=CONFIG['use_groq'])
     
     # Process test set
     print("\nProcessing test set...")
-    test_df = label_dataset(test_path, use_openai=CONFIG['use_openai'])
+    test_df = label_dataset(test_path, use_openai=CONFIG['use_openai'], use_groq=CONFIG['use_groq'])
     
     # Print results summary
     print("\nResults Summary:")
