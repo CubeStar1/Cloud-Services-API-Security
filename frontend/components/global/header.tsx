@@ -12,9 +12,10 @@ import { motion, useAnimationControls, LayoutGroup } from "framer-motion"
 const navigationLinks = [
   { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/tests", label: "Tests" },
-  { href: "/performance", label: "Performance" },
-  { href: "/extension", label: "Extension" },
+  { href: "/anyproxy", label: "Data Collection" },
+  { href: "/zsl/deberta", label: "DeBERTa" },
+  { href: "/codebert", label: "CodeBERT" },
+  { href: "/rfc", label: "RFC Generation" },
 ]
 
 function BlobBackground() {
@@ -84,15 +85,32 @@ export function Header() {
                 : "h-16"
             )}>
               <Link href="/" className="group relative flex items-center gap-3">
-                <Image src="/logos/proctorai-logo.png" alt="ProctorAI logo" width={50} height={50} className="rounded-xl" />
-                <span className="font-medium">ProctorAI</span>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <svg 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="text-primary"
+                  >
+                    <path 
+                      d="M12 2L6 8M12 2L18 8M12 2V18M6 8C4.343 8 3 9.343 3 11V20C3 21.105 3.895 22 5 22H10M6 8H12M18 8C19.657 8 21 9.343 21 11V20C21 21.105 20.105 22 19 22H14M18 8H12" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <span className="font-medium tracking-tight">Cloud Services API Security</span>
               </Link>
 
               <nav className="relative hidden md:block">
                 <LayoutGroup>
                   <motion.ul className="flex items-center gap-1">
                     {navigationLinks.map((item) => {
-                      const isActive = pathname === item.href
+                      const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
                       return (
                         <motion.li key={item.href} className="relative flex items-center justify-center">
                           <Link

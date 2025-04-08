@@ -18,7 +18,8 @@ import {
   BrainCircuit,
   Code2,
   Binary,
-  GitBranch
+  GitBranch,
+  FileIcon
 } from "lucide-react"
 import {
   Sidebar,
@@ -79,9 +80,15 @@ const navigationItems = [
   },
   {
     title: "Random Forest",
-    href: "/random-forest",
+    href: "/rfc",
     icon: TreesIcon,
     description: "Random Forest model",
+  },
+  {
+    title: "File Browser",
+    href: "/files",
+    icon: FileIcon,
+    description: "File browser",
   },
 
 ]
@@ -111,12 +118,6 @@ export function AppSidebar() {
               <h1 className="text-xl font-semibold tracking-tight text-foreground">
                 Cloud API Security
               </h1>
-              <div className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50" />
-                <p className="text-[11px] font-medium text-muted-foreground">
-                  API Security Monitor • v1.0.0
-                </p>
-              </div>
             </div>
           </Link>
         </div>
@@ -135,12 +136,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarRail className="" />
       <SidebarFooter className="border-t border-border/20 bg-gradient-to-t from-background/90 to-background/40 px-6 py-3 backdrop-blur-xl dark:from-background/80 dark:to-background/20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50" />
-            <span className="text-xs font-medium text-muted-foreground">Proxy Active</span>
-          </div>
-        </div>
+        
         {/* <NavProfile user={user} /> */}
       </SidebarFooter>
     </Sidebar>

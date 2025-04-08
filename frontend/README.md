@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cloud Services API Security - Frontend
+
+This is a frontend application for the Cloud Services API Security project. It is built with Next.js 15 and Tailwind CSS.
+## File Structure
+
+```
+frontend/
+├── app/                     # Next.js App Router structure
+│   ├── (default)/           # Main application routes
+│   │   ├── dashboard/       # Dashboard page
+│   │   ├── anyproxy/        # Data Collection page
+│   │   ├── zsl/             # Zero-shot learning pages
+│   │   │   └── deberta/     # DeBERTa model interface
+│   │   ├── codebert/        # CodeBERT model interface
+│   │   ├── rfc/             # Random Forest & Code generation
+│   │   └── files/           # File browser interface
+│   ├── api/                 # Backend API routes
+│   └── layout.tsx           # Root layout
+├── components/              # Reusable components
+│   ├── ui/                  # Base UI components
+│   ├── global/              # Global components (header, etc.)
+│   ├── dashboard/           # Dashboard-specific components
+│   ├── anyproxy/            # AnyProxy components
+│   ├── deberta/             # DeBERTa components
+│   ├── codebert/            # CodeBERT components
+│   ├── rfc/                 # RFC components
+│   ├── files/               # File browser components
+│   └── landing/             # Landing page components
+├── lib/                     # Utility functions and hooks
+├── public/                  # Static assets
+└── styles/                  # Global styles
+```
 
 ## Getting Started
 
 First, run the development server:
 
 ```bash
+# Install dependencies
+npm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

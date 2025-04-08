@@ -52,6 +52,7 @@
     "reactflow": "^11.11.4",
     "recharts": "^2.15.1",
     "resend": "^4.1.2",
+    "shiki": "^3.2.1",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",

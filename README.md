@@ -1,5 +1,8 @@
 # Cloud Services API Security Analysis
 
+![Frontend Dashboard](./frontend/public/cas-dashboard.png)
+![RFC Generation](./frontend/public/cas-rfc.png)
+
 ## Project Structure
 ```
 Cloud-Services-API-Security/
@@ -7,6 +10,11 @@ Cloud-Services-API-Security/
 │   ├── agent/                # Automated data collection
 │   └── manual/              # Manual traffic capture
 ├── data/                    # Dataset storage
+├── frontend/                # Next.js web application
+│   ├── app/                 # Next.js App Router structure
+│   ├── components/          # Reusable UI components
+│   ├── public/              # Static assets
+│   └── lib/                 # Utility functions and hooks
 ├── labelling/              # Initial labeling using GPT-4/Gemini
 │   ├── labelling.py       # Main labeling script
 ├── zsl/                    # Zero-shot learning models
@@ -27,6 +35,10 @@ Cloud-Services-API-Security/
 3. **Zero-Shot Learning**
 4. **Training**: 
    - Random Forest Classifier on labeled data
+5. **Frontend Application**:
+   - Interactive dashboard
+   - Data visualization
+   - Model interaction
 
 ## Components
 
@@ -100,6 +112,35 @@ pip install -r requirements.txt
 python train.py 
 ```
 
+### 5. Frontend Application (`/frontend`)
+Modern Next.js application with interactive UI for the entire pipeline.
+
+#### Features
+- Interactive dashboard with model visualizations
+- File browser and viewer (excluding CSV files)
+- Workflow animations and pipeline visualization
+- Dark/light theme support
+
+#### Installation
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the application.
+
+#### Key Pages
+- **Dashboard**: Main metrics and visualization
+- **Data Collection**: Interface for AnyProxy
+- **DeBERTa/CodeBERT**: Model visualization interfaces
+- **RFC Generation**: Random Forest results
+- **Files**: File browser and management
+
 ## Installation
 
 1. Clone the repository:
@@ -116,6 +157,9 @@ pip install -r requirements.txt
 3. Set up Node.js components:
 ```bash
 cd data-collection/agent
+npm install
+
+cd ../../frontend
 npm install
 ```
 
@@ -179,9 +223,33 @@ features = [
     'requestHeaders_Content_Type',
     # ... other features
 ]
-
 ```
 
 Purpose: Train the final classifier using the combined predictions from CodeBERT and DeBERTa for service and activity classification.
+
+### 5. Frontend Application
+Start the interactive frontend application:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Purpose: Provide a centralized interface for monitoring the entire pipeline, visualizing results, and managing files.
+
+## Complete Workflow
+
+1. Collect API traffic data using AnyProxy
+2. Process and label initial data with GPT-4/Gemini
+3. Apply zero-shot learning with DeBERTa and CodeBERT
+4. Train Random Forest classifier on labeled data
+5. View results and manage files through the frontend application
+
+## Technologies Used
+
+- **Backend**: Python, Node.js, AnyProxy
+- **Models**: DeBERTa, CodeBERT, Random Forest
+- **Frontend**: Next.js, React, Tailwind CSS, Framer Motion
+- **APIs**: OpenAI GPT-4, Google Gemini
 
 
