@@ -4,6 +4,7 @@ from transformers import pipeline
 import os
 from urllib.parse import unquote  # For URL decoding
 import glob
+from tqdm.auto import tqdm # Import tqdm
 
 # Base path configuration
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -129,10 +130,8 @@ def process_service_file(file_path, service_model_name, activity_model_name, sas
     df_train['activity_text'] = df_train.apply(prepare_activity_text, axis=1)
     
     predictions = []
-    for idx, row in df_train.iterrows():
-        if idx % 100 == 0:
-            print(f"Processing row {idx}/{len(df_train)}")
-            
+    # Wrap row iteration with tqdm
+    for idx, row in tqdm(df_train.iterrows(), total=df_train.shape[0], desc=f"Processing {os.path.basename(file_path)}", leave=False):
         service_result = perform_zero_shot_classification(
             row['service_text'], sase_services, service_model_name
         )
@@ -209,9 +208,10 @@ def main():
         return
 
     print(f"Found {len(all_files)} files to process")
-    print(f"Running on {'GPU' if device == 0 else 'CPU'}")
+    print(f"Running on {'GPU' if device == torch.device('cuda') else 'CPU'}") # Corrected device check
 
-    for file_path in all_files:
+    # Wrap file loop with tqdm
+    for file_path in tqdm(all_files, desc="Processing Files"):
         try:
             # Get service name from filename
             service_name = os.path.splitext(os.path.basename(file_path))[0]

@@ -1,0 +1,690 @@
+===== Syslog Server Started at 2025-04-16 17:17:48.975272 =====
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 11 files from Dropbox
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 11 files from Dropbox
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAABg", "file_name": "Lorem_ipsum.pdf", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Lorem_ipsum.pdf", "path": "/Lorem_ipsum.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'Lorem_ipsum.pdf':
+Path: /Lorem_ipsum.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAABg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAABg", "file_name": "Lorem_ipsum.pdf", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Lorem_ipsum.pdf", "path": "/Lorem_ipsum.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'Lorem_ipsum.pdf':
+Path: /Lorem_ipsum.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAABg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAABw", "file_name": "lorem-ipsum.pdf", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "lorem-ipsum.pdf", "path": "/lorem-ipsum.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'lorem-ipsum.pdf':
+Path: /lorem-ipsum.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAABw
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAABw", "file_name": "lorem-ipsum.pdf", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "lorem-ipsum.pdf", "path": "/lorem-ipsum.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'lorem-ipsum.pdf':
+Path: /lorem-ipsum.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAABw
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAACA", "file_name": "SpecialIssueFlyer.pdf", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "SpecialIssueFlyer.pdf", "path": "/SpecialIssueFlyer.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'SpecialIssueFlyer.pdf':
+Path: /SpecialIssueFlyer.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAACA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAACA", "file_name": "SpecialIssueFlyer.pdf", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "SpecialIssueFlyer.pdf", "path": "/SpecialIssueFlyer.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'SpecialIssueFlyer.pdf':
+Path: /SpecialIssueFlyer.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAACA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAACw", "file_name": "Juniper_List.docx", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Juniper_List.docx", "path": "/Juniper_List.docx", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "writer", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'Juniper_List.docx':
+Path: /Juniper_List.docx
+File ID: id:MQHvcmrLTdcAAAAAAAAACw
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): writer (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAACw", "file_name": "Juniper_List.docx", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Juniper_List.docx", "path": "/Juniper_List.docx", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "writer", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAFQ", "file_name": "USArrests.csv", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "USArrests.csv", "path": "/USArrests.csv", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'Juniper_List.docx':
+Path: /Juniper_List.docx
+File ID: id:MQHvcmrLTdcAAAAAAAAACw
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): writer (pending)
+Alert content:
+Changes detected in Dropbox file 'USArrests.csv':
+Path: /USArrests.csv
+File ID: id:MQHvcmrLTdcAAAAAAAAAFQ
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAFQ", "file_name": "USArrests.csv", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "USArrests.csv", "path": "/USArrests.csv", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'USArrests.csv':
+Path: /USArrests.csv
+File ID: id:MQHvcmrLTdcAAAAAAAAAFQ
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAATg", "file_name": "ch11-data-link-control.ppt", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "ch11-data-link-control.ppt", "path": "/ch11-data-link-control.ppt", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "writer", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'ch11-data-link-control.ppt':
+Path: /ch11-data-link-control.ppt
+File ID: id:MQHvcmrLTdcAAAAAAAAATg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): writer (pending)
+Error getting sharing metadata: ApiError('c4c317768a4b4f049bacc704d4a82395', GetFileMetadataError('access_error', SharingFileAccessError('invalid_file', None)))
+Error getting file metadata: ApiError('741ec56d5f5f4c47979ce3b9e6a871dc', GetMetadataError('path', LookupError('not_found', None)))
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAUw", "file_name": "GMO_Adoption_Analysis.docx", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Unknown Owner", "email": "Unknown", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "GMO_Adoption_Analysis.docx", "path": "/GMO_Adoption_Analysis.docx", "permissions": [], "owner": {"name": "Unknown Owner", "email": "Unknown", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'GMO_Adoption_Analysis.docx':
+Path: /GMO_Adoption_Analysis.docx
+File ID: id:MQHvcmrLTdcAAAAAAAAAUw
+Owner: Unknown Owner (Unknown)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAATg", "file_name": "ch11-data-link-control.ppt", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "ch11-data-link-control.ppt", "path": "/ch11-data-link-control.ppt", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "writer", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'ch11-data-link-control.ppt':
+Path: /ch11-data-link-control.ppt
+File ID: id:MQHvcmrLTdcAAAAAAAAATg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): writer (pending)
+Error getting sharing metadata: ApiError('bc90cb70bb3848a79f0ede7e3b3528ef', GetFileMetadataError('access_error', SharingFileAccessError('invalid_file', None)))
+Error getting file metadata: ApiError('48f8508cc52e480fa795463f087bba4a', GetMetadataError('path', LookupError('not_found', None)))
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAUw", "file_name": "GMO_Adoption_Analysis.docx", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Unknown Owner", "email": "Unknown", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "GMO_Adoption_Analysis.docx", "path": "/GMO_Adoption_Analysis.docx", "permissions": [], "owner": {"name": "Unknown Owner", "email": "Unknown", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'GMO_Adoption_Analysis.docx':
+Path: /GMO_Adoption_Analysis.docx
+File ID: id:MQHvcmrLTdcAAAAAAAAAUw
+Owner: Unknown Owner (Unknown)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAXg", "file_name": "ch12-multiple-access.ppt", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "ch12-multiple-access.ppt", "path": "/ch12-multiple-access.ppt", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "writer", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'ch12-multiple-access.ppt':
+Path: /ch12-multiple-access.ppt
+File ID: id:MQHvcmrLTdcAAAAAAAAAXg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): writer (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAXg", "file_name": "ch12-multiple-access.ppt", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "ch12-multiple-access.ppt", "path": "/ch12-multiple-access.ppt", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "writer", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'ch12-multiple-access.ppt':
+Path: /ch12-multiple-access.ppt
+File ID: id:MQHvcmrLTdcAAAAAAAAAXg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): writer (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAaA", "file_name": "Week 3- Statistics.pdf", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Week 3- Statistics.pdf", "path": "/Week 3- Statistics.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'Week 3- Statistics.pdf':
+Path: /Week 3- Statistics.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAaA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAaA", "file_name": "Week 3- Statistics.pdf", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Week 3- Statistics.pdf", "path": "/Week 3- Statistics.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'Week 3- Statistics.pdf':
+Path: /Week 3- Statistics.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAaA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAaw", "file_name": "Week 4,5 Optimization.pdf", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Week 4,5 Optimization.pdf", "path": "/Week 4,5 Optimization.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'Week 4,5 Optimization.pdf':
+Path: /Week 4,5 Optimization.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAaw
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAaw", "file_name": "Week 4,5 Optimization.pdf", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Week 4,5 Optimization.pdf", "path": "/Week 4,5 Optimization.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'Week 4,5 Optimization.pdf':
+Path: /Week 4,5 Optimization.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAaw
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAbA", "file_name": "Week_6.pdf", "timestamp": "2025-04-16 17:21:17", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Week_6.pdf", "path": "/Week_6.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:17"}, "timestamp": "2025-04-16 17:21:17"}}
+Alert content:
+Changes detected in Dropbox file 'Week_6.pdf':
+Path: /Week_6.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAbA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:17
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+Dropbox monitoring completed.
+All monitoring completed.
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAbA", "file_name": "Week_6.pdf", "timestamp": "2025-04-16 17:21:20", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "details": {"type": "new_file", "source": "dropbox", "file_name": "Week_6.pdf", "path": "/Week_6.pdf", "permissions": [{"displayName": "Alice W", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "d74598583@gmail.com", "role": "reader", "status": "pending", "modified_by": null}, {"displayName": "Pending User", "emailAddress": "sahana23cse@gmail.com", "role": "reader", "status": "pending", "modified_by": null}], "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:21:20"}, "timestamp": "2025-04-16 17:21:20"}}
+Alert content:
+Changes detected in Dropbox file 'Week_6.pdf':
+Path: /Week_6.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAbA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:21:20
+
+Changes:
+- New file created
+Initial permissions:
+- Alice W (alicesecurefile@gmail.com): owner
+- Pending User (d74598583@gmail.com): reader (pending)
+- Pending User (sahana23cse@gmail.com): reader (pending)
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAUw", "file_name": "GMO_Adoption_Analysis.docx", "timestamp": "2025-04-16 17:22:33", "owner": {"name": "", "email": "", "timestamp": "2025-04-16 17:22:33"}, "details": {"type": "file_deleted", "source": "dropbox", "file_name": "GMO_Adoption_Analysis.docx", "path": "/GMO_Adoption_Analysis.docx", "owner": {"name": "", "email": "", "timestamp": "2025-04-16 17:22:33"}, "timestamp": "2025-04-16 17:22:33"}}
+Alert content:
+Changes detected in Dropbox file 'GMO_Adoption_Analysis.docx':
+Path: /GMO_Adoption_Analysis.docx
+File ID: id:MQHvcmrLTdcAAAAAAAAAUw
+Owner:  ()
+Timestamp: 2025-04-16 17:22:33
+
+Changes:
+- File deleted
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAAaA", "file_name": "Week 3- Statistics.pdf", "timestamp": "2025-04-16 17:26:56", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:26:56"}, "details": {"type": "changes", "source": "dropbox", "file_name": "Week 3- Statistics.pdf", "path": "/Week 3- Statistics.pdf", "changes": [{"type": "permission_added", "user": "sahana23cse@gmail.com", "user_name": "Pending User", "role": "reader", "status": "pending", "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "is_owner": true, "timestamp": "2025-04-16 17:26:56"}, "timestamp": "2025-04-16 17:26:56"}], "timestamp": "2025-04-16 17:26:56"}}
+Alert content:
+Changes detected in Dropbox file 'Week 3- Statistics.pdf':
+Path: /Week 3- Statistics.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAAaA
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:26:56
+
+Changes:
+- Added reader permission for Pending User (sahana23cse@gmail.com) (pending) by Alice W (alicesecurefile@gmail.com)
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+<14>Apr 04 07:04:55 SaaS_Monitoring: 2025-04-04 07:04:55 - SaaS_Monitor - Real-time Google Drive Metadata Monitoring Started...
+===== Syslog Server Started at 2025-04-04 07:14:12.441605 =====
+<14>Apr 04 07:15:25 SaaS_Monitoring: 2025-04-04 07:15:25 - SaaS_Monitor - Real-time Google Drive Metadata Monitoring Started...
+<14>Apr 04 07:15:28 SaaS_Monitoring: 2025-04-04 07:15:28 - SaaS_Monitor - Successfully fetched Drive metadata!
+<14>Apr 04 07:15:32 SaaS_Monitoring: 2025-04-04 07:15:32 - SaaS_Monitor - Slack alert sent for 14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das!
+<14>Apr 04 07:15:32 SaaS_Monitoring: 2025-04-04 07:15:32 - SaaS_Monitor - New change detected in 14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das, logged and Slack alert sent!
+<14>Apr 04 07:15:33 SaaS_Monitoring: 2025-04-04 07:15:33 - SaaS_Monitor - Slack alert sent for 1UEHXs0S2VPW7iElbV6ebRxwldBCA-xz5!
+<14>Apr 04 07:15:33 SaaS_Monitoring: 2025-04-04 07:15:33 - SaaS_Monitor - New change detected in 1UEHXs0S2VPW7iElbV6ebRxwldBCA-xz5, logged and Slack alert sent!
+<14>Apr 04 07:15:33 SaaS_Monitoring: 2025-04-04 07:15:33 - SaaS_Monitor - No new changes detected for 12PeMIVc7a6EwPrwabxkKKXbQuW8s73C_. Skipping Slack notification.
+<14>Apr 04 07:15:33 SaaS_Monitoring: 2025-04-04 07:15:33 - SaaS_Monitor - No new changes detected for 1roQnDl4XN_wng0LcLeRLeRcvQSp5guC9. Skipping Slack notification.
+<14>Apr 04 07:15:34 SaaS_Monitoring: 2025-04-04 07:15:34 - SaaS_Monitor - No new changes detected for 1dVK9TIpZw9alYR3gqJ1JV14wr4kfchdp. Skipping Slack notification.
+<14>Apr 04 07:15:34 SaaS_Monitoring: 2025-04-04 07:15:34 - SaaS_Monitor - No new changes detected for 1aQdUs3pLkUwC-0UTzTrk_JhuTyWeV-4i. Skipping Slack notification.
+<14>Apr 04 07:15:34 SaaS_Monitoring: 2025-04-04 07:15:34 - SaaS_Monitor - No new changes detected for 19U5yxNsrDhn-et4FGuLobKpGmw5Oj3JTGMWhT4P1ua8. Skipping Slack notification.
+<14>Apr 04 07:15:34 SaaS_Monitoring: 2025-04-04 07:15:34 - SaaS_Monitor - No new changes detected for 1Zfkc9N38aoIpkVXjf7JSFMdxZ_bMAnga. Skipping Slack notification.
+<14>Apr 04 07:15:35 SaaS_Monitoring: 2025-04-04 07:15:35 - SaaS_Monitor - No new changes detected for 1lsl5M3ekvnIwRvG4uqednankcCtgmhb6. Skipping Slack notification.
+<14>Apr 04 07:15:35 SaaS_Monitoring: 2025-04-04 07:15:35 - SaaS_Monitor - No new changes detected for 1HqNYFlmAixOnKS_M5RJcmDf1TSQfbaAi. Skipping Slack notification.
+<14>Apr 04 07:15:35 SaaS_Monitoring: 2025-04-04 07:15:35 - SaaS_Monitor - No new changes detected for 18LFe-nJquT5VwVxzZ7eMpRJmtCRaANCt. Skipping Slack notification.
+<14>Apr 04 07:15:35 SaaS_Monitoring: 2025-04-04 07:15:35 - SaaS_Monitor - No new changes detected for 12bpl9V-DWNLkrWl-TVHSD85WBqYsxM9Z. Skipping Slack notification.
+<14>Apr 04 07:15:36 SaaS_Monitoring: 2025-04-04 07:15:36 - SaaS_Monitor - No new changes detected for 1O4f3RTVfZbQBdHdoBOclsYkj3TFKLkTt. Skipping Slack notification.
+<14>Apr 04 07:15:36 SaaS_Monitoring: 2025-04-04 07:15:36 - SaaS_Monitor - No new changes detected for 1DK0eDplmjVRYFDHvMviqv03KiO5l9eMC. Skipping Slack notification.
+<14>Apr 04 07:15:36 SaaS_Monitoring: 2025-04-04 07:15:36 - SaaS_Monitor - No new changes detected for 1BoRAg-vrFjK34dY-zBQXnDxrqB5cGLkBZ-EtxdRffAA. Skipping Slack notification.
+<14>Apr 04 07:15:36 SaaS_Monitoring: 2025-04-04 07:15:36 - SaaS_Monitor - No new changes detected for 11CYTegdAT6toLs8Kg5lhGJhqp21COoXS. Skipping Slack notification.
+<14>Apr 04 07:15:36 SaaS_Monitoring: 2025-04-04 07:15:36 - SaaS_Monitor - No new changes detected for 1DxiNTPmxRrUHG4v-NEkTuo7Jzc0rxPXg. Skipping Slack notification.
+<14>Apr 04 07:15:37 SaaS_Monitoring: 2025-04-04 07:15:37 - SaaS_Monitor - No new changes detected for 1LkDzgObqo2uQeDthS0ZLeu25F8f7-3s7. Skipping Slack notification.
+<14>Apr 04 07:15:37 SaaS_Monitoring: 2025-04-04 07:15:37 - SaaS_Monitor - No new changes detected for 1Ms0OrRy_W106Gzxe3N2esFPUu_Y-2UQw. Skipping Slack notification.
+<14>Apr 04 07:15:37 SaaS_Monitoring: 2025-04-04 07:15:37 - SaaS_Monitor - No new changes detected for 1OX2rDr-VFhQcwEc5JV0yUO3yDw93H6GR. Skipping Slack notification.
+<14>Apr 04 07:15:38 SaaS_Monitoring: 2025-04-04 07:15:38 - SaaS_Monitor - No new changes detected for 1-l3qD7nnYmYltqMFw5zFH9pq3OFsZDDh. Skipping Slack notification.
+<14>Apr 04 07:15:38 SaaS_Monitoring: 2025-04-04 07:15:38 - SaaS_Monitor - Monitoring complete.
+<14>Apr 04 07:16:16 SaaS_Monitoring: 2025-04-04 07:16:16 - SaaS_Monitor - Real-time Google Drive Metadata Monitoring Started...
+<14>Apr 04 07:16:18 SaaS_Monitoring: 2025-04-04 07:16:18 - SaaS_Monitor - Successfully fetched Drive metadata!
+<14>Apr 04 07:16:23 SaaS_Monitoring: 2025-04-04 07:16:23 - SaaS_Monitor - No new changes detected for 14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das. Skipping Slack notification.
+<14>Apr 04 07:16:23 SaaS_Monitoring: 2025-04-04 07:16:23 - SaaS_Monitor - No new changes detected for 1UEHXs0S2VPW7iElbV6ebRxwldBCA-xz5. Skipping Slack notification.
+<14>Apr 04 07:16:24 SaaS_Monitoring: 2025-04-04 07:16:24 - SaaS_Monitor - No new changes detected for 12PeMIVc7a6EwPrwabxkKKXbQuW8s73C_. Skipping Slack notification.
+<14>Apr 04 07:16:24 SaaS_Monitoring: 2025-04-04 07:16:24 - SaaS_Monitor - No new changes detected for 1roQnDl4XN_wng0LcLeRLeRcvQSp5guC9. Skipping Slack notification.
+<14>Apr 04 07:16:25 SaaS_Monitoring: 2025-04-04 07:16:25 - SaaS_Monitor - No new changes detected for 1dVK9TIpZw9alYR3gqJ1JV14wr4kfchdp. Skipping Slack notification.
+<14>Apr 04 07:16:25 SaaS_Monitoring: 2025-04-04 07:16:25 - SaaS_Monitor - No new changes detected for 1aQdUs3pLkUwC-0UTzTrk_JhuTyWeV-4i. Skipping Slack notification.
+<14>Apr 04 07:16:26 SaaS_Monitoring: 2025-04-04 07:16:26 - SaaS_Monitor - No new changes detected for 19U5yxNsrDhn-et4FGuLobKpGmw5Oj3JTGMWhT4P1ua8. Skipping Slack notification.
+<14>Apr 04 07:16:26 SaaS_Monitoring: 2025-04-04 07:16:26 - SaaS_Monitor - No new changes detected for 1Zfkc9N38aoIpkVXjf7JSFMdxZ_bMAnga. Skipping Slack notification.
+<14>Apr 04 07:16:26 SaaS_Monitoring: 2025-04-04 07:16:26 - SaaS_Monitor - No new changes detected for 1lsl5M3ekvnIwRvG4uqednankcCtgmhb6. Skipping Slack notification.
+<14>Apr 04 07:16:27 SaaS_Monitoring: 2025-04-04 07:16:27 - SaaS_Monitor - No new changes detected for 1HqNYFlmAixOnKS_M5RJcmDf1TSQfbaAi. Skipping Slack notification.
+<14>Apr 04 07:16:27 SaaS_Monitoring: 2025-04-04 07:16:27 - SaaS_Monitor - No new changes detected for 18LFe-nJquT5VwVxzZ7eMpRJmtCRaANCt. Skipping Slack notification.
+<14>Apr 04 07:16:27 SaaS_Monitoring: 2025-04-04 07:16:27 - SaaS_Monitor - No new changes detected for 12bpl9V-DWNLkrWl-TVHSD85WBqYsxM9Z. Skipping Slack notification.
+<14>Apr 04 07:16:28 SaaS_Monitoring: 2025-04-04 07:16:28 - SaaS_Monitor - No new changes detected for 1O4f3RTVfZbQBdHdoBOclsYkj3TFKLkTt. Skipping Slack notification.
+<14>Apr 04 07:16:28 SaaS_Monitoring: 2025-04-04 07:16:28 - SaaS_Monitor - No new changes detected for 1DK0eDplmjVRYFDHvMviqv03KiO5l9eMC. Skipping Slack notification.
+<14>Apr 04 07:16:28 SaaS_Monitoring: 2025-04-04 07:16:28 - SaaS_Monitor - No new changes detected for 1BoRAg-vrFjK34dY-zBQXnDxrqB5cGLkBZ-EtxdRffAA. Skipping Slack notification.
+<14>Apr 04 07:16:29 SaaS_Monitoring: 2025-04-04 07:16:29 - SaaS_Monitor - No new changes detected for 11CYTegdAT6toLs8Kg5lhGJhqp21COoXS. Skipping Slack notification.
+<14>Apr 04 07:16:29 SaaS_Monitoring: 2025-04-04 07:16:29 - SaaS_Monitor - No new changes detected for 1DxiNTPmxRrUHG4v-NEkTuo7Jzc0rxPXg. Skipping SlackError in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1028)')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Dropbox monitoring completed.
+All monitoring completed.
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Error in Google Drive monitoring: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by ProxyError('Unable to connect to proxy', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000024B43E29450>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')))
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+{"file_id": "1QJbsgwkoe6tfCJGBoajo9yESLeiBDc94", "file_name": "ijcatr11041008.pdf", "owner": "dave636736@gmail.com", "details": {"type": "file_deleted", "file_name": "ijcatr11041008.pdf", "owner": "dave636736@gmail.com", "source": "google_drive", "timestamp": "2025-04-16 17:32:04"}, "timestamp": "2025-04-16 17:32:04"}
+Would send email:
+Subject: Google Drive file deleted: ijcatr11041008.pdf
+Body:
+Google Drive file 'ijcatr11041008.pdf' was deleted
+Previous owner: dave636736@gmail.com
+File ID: 1QJbsgwkoe6tfCJGBoajo9yESLeiBDc94
+
+Timestamp: 2025-04-16 17:32:04
+File ID: 1QJbsgwkoe6tfCJGBoajo9yESLeiBDc94
+Removed deleted file 1QJbsgwkoe6tfCJGBoajo9yESLeiBDc94 from Pinecone
+{"file_id": "1hM4sFv_u2H3J8jlnCqIcLDQ1e_qUJdvq", "file_name": "1804286_a_performance_comparison_of_post_quantum_algorithms_1.pdf", "owner": "dave636736@gmail.com", "details": {"type": "file_deleted", "file_name": "1804286_a_performance_comparison_of_post_quantum_algorithms_1.pdf", "owner": "dave636736@gmail.com", "source": "google_drive", "timestamp": "2025-04-16 17:32:06"}, "timestamp": "2025-04-16 17:32:06"}
+Would send email:
+Subject: Google Drive file deleted: 1804286_a_performance_comparison_of_post_quantum_algorithms_1.pdf
+Body:
+Google Drive file '1804286_a_performance_comparison_of_post_quantum_algorithms_1.pdf' was deleted
+Previous owner: dave636736@gmail.com
+File ID: 1hM4sFv_u2H3J8jlnCqIcLDQ1e_qUJdvq
+
+Timestamp: 2025-04-16 17:32:06
+File ID: 1hM4sFv_u2H3J8jlnCqIcLDQ1e_qUJdvq
+Removed deleted file 1hM4sFv_u2H3J8jlnCqIcLDQ1e_qUJdvq from Pinecone
+{"file_id": "18JtEhsyof5dJYkcr4U8axDHCQkuOlaiJ", "file_name": "sample_predictions (3).csv", "owner": "bobsecurefile@gmail.com", "details": {"type": "file_deleted", "file_name": "sample_predictions (3).csv", "owner": "bobsecurefile@gmail.com", "source": "google_drive", "timestamp": "2025-04-16 17:32:07"}, "timestamp": "2025-04-16 17:32:07"}
+Would send email:
+Subject: Google Drive file deleted: sample_predictions (3).csv
+Body:
+Google Drive file 'sample_predictions (3).csv' was deleted
+Previous owner: bobsecurefile@gmail.com
+File ID: 18JtEhsyof5dJYkcr4U8axDHCQkuOlaiJ
+
+Timestamp: 2025-04-16 17:32:07
+File ID: 18JtEhsyof5dJYkcr4U8axDHCQkuOlaiJ
+Removed deleted file 18JtEhsyof5dJYkcr4U8axDHCQkuOlaiJ from Pinecone
+{"file_id": "1xMZBi_7h4j9LH3qQRcWNIYSs0v79KoX-", "file_name": "sfss.docx", "owner": "dave636736@gmail.com", "details": {"type": "file_deleted", "file_name": "sfss.docx", "owner": "dave636736@gmail.com", "source": "google_drive", "timestamp": "2025-04-16 17:32:09"}, "timestamp": "2025-04-16 17:32:09"}
+Would send email:
+Subject: Google Drive file deleted: sfss.docx
+Body:
+Google Drive file 'sfss.docx' was deleted
+Previous owner: dave636736@gmail.com
+File ID: 1xMZBi_7h4j9LH3qQRcWNIYSs0v79KoX-
+
+Timestamp: 2025-04-16 17:32:09
+File ID: 1xMZBi_7h4j9LH3qQRcWNIYSs0v79KoX-
+Removed deleted file 1xMZBi_7h4j9LH3qQRcWNIYSs0v79KoX- from Pinecone
+{"file_id": "1HqNYFlmAixOnKS_M5RJcmDf1TSQfbaAi", "file_name": "Lorem_ipsum.pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Lorem_ipsum.pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "writer", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:32:11"}, "timestamp": "2025-04-16 17:32:12"}
+Would send email:
+Subject: New Google Drive file detected: Lorem_ipsum.pdf
+Body:
+New Google Drive file 'Lorem_ipsum.pdf' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): writer
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:32:11
+File ID: 1HqNYFlmAixOnKS_M5RJcmDf1TSQfbaAi
+{"file_id": "1HqNYFlmAixOnKS_M5RJcmDf1TSQfbaAi", "file_name": "Lorem_ipsum.pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Lorem_ipsum.pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "writer", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:32:11"}, "timestamp": "2025-04-16 17:32:12"}
+{"file_id": "1dVK9TIpZw9alYR3gqJ1JV14wr4kfchdp", "file_name": "lorem-ipsum.pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "lorem-ipsum.pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:32:15"}, "timestamp": "2025-04-16 17:32:15"}
+Would send email:
+Subject: New Google Drive file detected: lorem-ipsum.pdf
+Body:
+New Google Drive file 'lorem-ipsum.pdf' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): commenter
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:32:15
+File ID: 1dVK9TIpZw9alYR3gqJ1JV14wr4kfchdp
+{"file_id": "1dVK9TIpZw9alYR3gqJ1JV14wr4kfchdp", "file_name": "lorem-ipsum.pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "lorem-ipsum.pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:32:15"}, "timestamp": "2025-04-16 17:32:16"}
+{"file_id": "1Zfkc9N38aoIpkVXjf7JSFMdxZ_bMAnga", "file_name": "File2.pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "File2.pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:32:18"}, "timestamp": "2025-04-16 17:32:18"}
+Would send email:
+Subject: New Google Drive file detected: File2.pdf
+Body:
+New Google Drive file 'File2.pdf' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): commenter
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:32:18
+File ID: 1Zfkc9N38aoIpkVXjf7JSFMdxZ_bMAnga
+{"file_id": "1Zfkc9N38aoIpkVXjf7JSFMdxZ_bMAnga", "file_name": "File2.pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "File2.pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:32:18"}, "timestamp": "2025-04-16 17:32:19"}
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+===== Syslog Server Started at 2025-04-16 17:32:46.607948 =====
+Real-time Google Drive Metadata Monitoring Started...
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Dropbox monitoring completed.
+All monitoring completed.
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+{"file_id": "14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:35:26"}, "timestamp": "2025-04-16 17:35:27"}
+Would send email:
+Subject: New Google Drive file detected: Project 2
+Body:
+New Google Drive file 'Project 2' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): commenter
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:35:26
+File ID: 14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das
+{"file_id": "14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:35:26"}, "timestamp": "2025-04-16 17:35:30"}
+Real-time Google Drive Metadata Monitoring Started...
+{"file_id": "1aQdUs3pLkUwC-0UTzTrk_JhuTyWeV-4i", "file_name": "Week7Nptel.docx", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Week7Nptel.docx", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "writer", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:35:31"}, "timestamp": "2025-04-16 17:35:31"}
+Would send email:
+Subject: New Google Drive file detected: Week7Nptel.docx
+Body:
+New Google Drive file 'Week7Nptel.docx' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): writer
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:35:31
+File ID: 1aQdUs3pLkUwC-0UTzTrk_JhuTyWeV-4i
+{"file_id": "1aQdUs3pLkUwC-0UTzTrk_JhuTyWeV-4i", "file_name": "Week7Nptel.docx", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Week7Nptel.docx", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "writer", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:35:31"}, "timestamp": "2025-04-16 17:35:32"}
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+{"file_id": "id:MQHvcmrLTdcAAAAAAAAABg", "file_name": "Lorem_ipsum.pdf", "timestamp": "2025-04-16 17:35:38", "owner": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "timestamp": "2025-04-16 17:35:38"}, "details": {"type": "changes", "source": "dropbox", "file_name": "Lorem_ipsum.pdf", "path": "/Lorem_ipsum.pdf", "changes": [{"type": "permission_removed", "user": "sahana23cse@gmail.com", "user_name": "Pending User", "role": "reader", "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com", "is_owner": true, "timestamp": "2025-04-16 17:35:38"}, "timestamp": "2025-04-16 17:35:38"}], "timestamp": "2025-04-16 17:35:38"}}
+Alert content:
+Changes detected in Dropbox file 'Lorem_ipsum.pdf':
+Path: /Lorem_ipsum.pdf
+File ID: id:MQHvcmrLTdcAAAAAAAAABg
+Owner: Alice W (alicesecurefile@gmail.com)
+Timestamp: 2025-04-16 17:35:38
+
+Changes:
+- Removed reader permission for Pending User (sahana23cse@gmail.com) by Alice W (alicesecurefile@gmail.com)
+Dropbox monitoring completed.
+All monitoring completed.
+Dropbox monitoring completed.
+All monitoring completed.
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Dropbox monitoring completed.
+All monitoring completed.
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Dropbox monitoring completed.
+All monitoring completed.
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+{"file_id": "14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "details": {"type": "changes", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "changes": [{"type": "permission_changed", "user": "d74598583@gmail.com", "user_name": "d74598583", "old_role": "commenter", "new_role": "writer", "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:38:27"}, "timestamp": "2025-04-16 17:38:28"}
+Would send email:
+Subject: Changes detected in Google Drive file: Project 2
+Body:
+The following changes were detected in Google Drive file 'Project 2':
+- Alice W (alicesecurefile@gmail.com) changed d74598583 (d74598583@gmail.com)'s role from commenter to writer
+
+Timestamp: 2025-04-16 17:38:27
+File ID: 14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das
+{"file_id": "14B0j6odIFmwUFf_pONg8Uh5vyPiY02qg20FUOL24Das", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "details": {"type": "changes", "file_name": "Project 2", "owner": "alicesecurefile@gmail.com", "changes": [{"type": "permission_changed", "user": "d74598583@gmail.com", "user_name": "d74598583", "old_role": "commenter", "new_role": "writer", "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:38:27"}, "timestamp": "2025-04-16 17:38:28"}
+{"file_id": "1lsl5M3ekvnIwRvG4uqednankcCtgmhb6", "file_name": "RTP_ArtificialIntelligenceinE-Government-IdentifyingandAddressingKeyChallenges (1).pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "RTP_ArtificialIntelligenceinE-Government-IdentifyingandAddressingKeyChallenges (1).pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "writer", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:38:30"}, "timestamp": "2025-04-16 17:38:30"}
+Would send email:
+Subject: New Google Drive file detected: RTP_ArtificialIntelligenceinE-Government-IdentifyingandAddressingKeyChallenges (1).pdf
+Body:
+New Google Drive file 'RTP_ArtificialIntelligenceinE-Government-IdentifyingandAddressingKeyChallenges (1).pdf' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): writer
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:38:30
+File ID: 1lsl5M3ekvnIwRvG4uqednankcCtgmhb6
+{"file_id": "1lsl5M3ekvnIwRvG4uqednankcCtgmhb6", "file_name": "RTP_ArtificialIntelligenceinE-Government-IdentifyingandAddressingKeyChallenges (1).pdf", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "RTP_ArtificialIntelligenceinE-Government-IdentifyingandAddressingKeyChallenges (1).pdf", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "writer", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:38:30"}, "timestamp": "2025-04-16 17:38:31"}
+{"file_id": "1roQnDl4XN_wng0LcLeRLeRcvQSp5guC9", "file_name": "Juniper_Services.docx", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Juniper_Services.docx", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:38:32"}, "timestamp": "2025-04-16 17:38:32"}
+Would send email:
+Subject: New Google Drive file detected: Juniper_Services.docx
+Body:
+New Google Drive file 'Juniper_Services.docx' was created by Alice W (alicesecurefile@gmail.com)
+Owner: alicesecurefile@gmail.com
+
+Initial permissions:
+- d74598583 (d74598583@gmail.com): commenter
+- Alice W (alicesecurefile@gmail.com): owner
+
+Timestamp: 2025-04-16 17:38:32
+File ID: 1roQnDl4XN_wng0LcLeRLeRcvQSp5guC9
+{"file_id": "1roQnDl4XN_wng0LcLeRLeRcvQSp5guC9", "file_name": "Juniper_Services.docx", "owner": "alicesecurefile@gmail.com", "details": {"type": "new_file", "file_name": "Juniper_Services.docx", "owner": "alicesecurefile@gmail.com", "permissions": [{"id": "14812377153748275348", "displayName": "d74598583", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjV6BkepogORwWtlhKDnZHcUcPbT4xkkWC7dqJ1gZTq61wYoCA=s64", "emailAddress": "d74598583@gmail.com", "role": "commenter", "deleted": false, "pendingOwner": false}, {"id": "11521651663111571462", "displayName": "Alice W", "type": "user", "kind": "drive#permission", "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocLVVY_nQ6Z0XzqERCPO-QwpJE2bHkiHSlcGKJu0kdnxh9Yplw=s64", "emailAddress": "alicesecurefile@gmail.com", "role": "owner", "deleted": false, "pendingOwner": false}], "modified_by": {"name": "Alice W", "email": "alicesecurefile@gmail.com"}, "source": "google_drive", "timestamp": "2025-04-16 17:38:32"}, "timestamp": "2025-04-16 17:38:32"}
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.
+Dropbox monitoring completed.
+All monitoring completed.
+Real-time Google Drive Metadata Monitoring Started...
+Successfully fetched Drive metadata!
+Google Drive monitoring complete.
+Real-time Dropbox Metadata Monitoring Started...
+Successfully fetched 10 files from Dropbox
+Dropbox monitoring completed.
+All monitoring completed.

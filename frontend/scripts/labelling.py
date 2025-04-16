@@ -30,7 +30,7 @@ PATHS = {
     'metadata_file': os.path.join(BASE_PATH, "data", "labelled", "metadata.json"),
     'train_file': "train_set.csv",
     'test_file': "test_set.csv",
-    'rows_per_file': 400
+    'rows_per_file': 1000
 }
 
 # Load environment variables
@@ -47,22 +47,23 @@ generativeai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 CONFIG = {
     'openai_model': 'gpt-4o-mini',
     'gemini_model': 'gemini-2.0-flash-thinking-exp',
-    'groq_model': 'llama-3.3-70b-versatile',
+    'groq_model': 'llama3-70b-8192',
     'batch_size': 10,
     'test_rows': 20,
     'use_openai': False,
     'use_groq': True,
-    'rows_per_file': 300,
+    'rows_per_file': 1000,
     'test_split': 0.2,
     'recursive_search': True
 }
 
 SERVICES = [
-    "Box", "Unknown Service"
+    "Bugzilla", "Unknown Service", "Webcompat"
 ]
 
 ACTIVITIES = [
-    "Login", "Upload", "Download", "Logout", "Unknown Activity"
+    "Login", "Upload", "Download", "Logout", "Unknown Activity",
+    "New Bug"
 ]
 
 def save_metadata(metadata: Dict) -> None:
@@ -158,7 +159,7 @@ def get_groq_classification(prompt: str) -> Tuple[str, str]:
 
 def label_dataset(csv_path: str, use_openai: bool = True, use_groq: bool = False) -> pd.DataFrame:
     print_status(f"[*] Processing file: {os.path.basename(csv_path)}")
-    df = pd.read_excel(csv_path, engine='openpyxl')
+    df = pd.read_csv(csv_path)
     
     if 'predicted_service' not in df.columns:
         df['predicted_service'] = None

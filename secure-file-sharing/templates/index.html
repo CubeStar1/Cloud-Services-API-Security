@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Cloud Security Monitor</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+      .card-title {
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #e0e0e0;
+        font-size: 1.3rem;
+      }
+      .card-body {
+        color: #e0e0e0;
+      }
+      .chart-card {
+        height: 350px;
+        display: flex;
+        flex-direction: column;
+      }
+      .chart-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+      }
+      .chart-card .chart-container {
+        flex: 1;
+        min-height: 200px;
+        position: relative;
+      }
+      .chart-card .badge-container {
+        margin-top: 5px;
+        text-align: center;
+        font-size: 0.8rem;
+      }
+      .chart-card .chart-title-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .chart-card h5.card-title {
+        font-size: 1rem;
+        margin-bottom: 10px;
+      }
+      .doughnut-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .doughnut-container canvas {
+        max-width: 100%;
+        max-height: 180px;
+      }
+      .stat-card {
+        text-align: center;
+        padding: 20px;
+        background: #2c2c2c;
+        color: #e0e0e0;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+        height: 100%;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .stats-row .col-md-3,
+      .stats-row .col-md-4 {
+        margin-bottom: 15px;
+      }
+      .stat-card:hover {
+        transform: scale(1.05);
+        background: #383838;
+      }
+      .stat-card h3 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #64b5f6;
+        text-shadow: 0px 0px 5px rgba(100, 181, 246, 0.3);
+      }
+      .stat-card p {
+        color: #bdbdbd;
+        margin-bottom: 0;
+        font-weight: 500;
+        font-size: 0.95rem;
+        text-align: center;
+      }
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+        padding: 10px;
+      }
+      .canvas-container {
+        width: 100%;
+        height: 300px;
+      }
+      .table-responsive {
+        margin-top: 15px;
+        border-radius: 10px;
+        overflow-x: auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        scrollbar-width: thin;
+        scrollbar-color: #424242 #1e1e1e;
+      }
+      .table-responsive::-webkit-scrollbar {
+        height: 8px;
+      }
+      .table-responsive::-webkit-scrollbar-track {
+        background: #1e1e1e;
+        border-radius: 4px;
+      }
+      .table-responsive::-webkit-scrollbar-thumb {
+        background-color: #424242;
+        border-radius: 4px;
+      }
+      .table {
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: #e0e0e0;
+        min-width: 1200px;
+      }
+      .table th {
+        background-color: #2c2c2c;
+        font-weight: 600;
+        border-top: none;
+        border-bottom: 2px solid #424242;
+        padding: 14px 15px;
+        color: #64b5f6;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+      }
+      .table td {
+        padding: 14px 15px;
+        vertical-align: middle;
+        border-bottom: 1px solid #333333;
+        transition: background-color 0.2s;
+        background-color: #1e1e1e;
+      }
+      .table tr:hover td {
+        background-color: #282828;
+      }
+      .table tr:last-child td {
+        border-bottom: none;
+      }
+      .table td:nth-child(1) {
+        min-width: 100px;
+      }
+      .table td:nth-child(2) {
+        min-width: 120px;
+      }
+      .table td:nth-child(3) {
+        min-width: 150px;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .table td:nth-child(4) {
+        min-width: 150px;
+        max-width: 180px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .table td:nth-child(5) {
+        min-width: 120px;
+      }
+      .table td:nth-child(6) {
+        min-width: 350px;
+        max-width: 400px;
+        white-space: normal;
+        word-wrap: break-word;
+      }
+      .table td:nth-child(7) {
+        min-width: 200px;
+      }
+      .badge {
+        padding: 6px 10px;
+        font-weight: 500;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        letter-spacing: 0.3px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .bg-success {
+        background-color: #388e3c !important;
+      }
+      .bg-danger {
+        background-color: #d32f2f !important;
+      }
+      .bg-info {
+        background-color: #0288d1 !important;
+      }
+      .bg-secondary {
+        background-color: #616161 !important;
+      }
+      .bg-primary {
+        background-color: #1976d2 !important;
+      }
+      .card-title-with-badge {
+        display: flex;
+        align-items: center;
+      }
+      .card-title-with-badge .badge {
+        margin-left: 10px;
+        font-size: 0.75rem;
+        padding: 6px 12px;
+      }
+      .source-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+      }
+      ul {
+        margin-bottom: 0;
+        padding-left: 1.5rem;
+      }
+      ul li {
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      ul li:last-child {
+        border-bottom: none;
+      }
+      .pagination {
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .pagination li {
+        border: none;
+      }
+      .pagination .page-link {
+        border-radius: 5px;
+        margin: 0 3px;
+        color: #64b5f6;
+        font-weight: 500;
+        border: 1px solid #424242;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        background-color: #2c2c2c;
+      }
+      .pagination .page-item.active .page-link {
+        background-color: #1976d2;
+        border-color: #1976d2;
+      }
+      .pagination .page-item.disabled .page-link {
+        background-color: #1e1e1e;
+        color: #757575;
+      }
+      .btn-group .btn {
+        border-radius: 5px;
+        margin: 0 1px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        font-size: 0.7rem;
+        padding: 3px 6px;
+      }
+      .btn-outline-primary {
+        color: #64b5f6;
+        border-color: #64b5f6;
+      }
+      .btn-outline-primary:hover,
+      .btn-outline-primary.active {
+        background-color: #1976d2;
+        border-color: #1976d2;
+      }
+      .alert {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        background-color: #2c2c2c;
+        color: #e0e0e0;
+      }
+      .alert-info {
+        background-color: rgba(3, 105, 161, 0.2);
+        color: #90caf9;
+      }
+      .form-select,
+      .form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #424242;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        background-color: #2c2c2c;
+        color: #e0e0e0;
+      }
+      .form-select:focus,
+      .form-control:focus {
+        background-color: #383838;
+        color: #e0e0e0;
+        border-color: #64b5f6;
+        box-shadow: 0 0 0 0.25rem rgba(100, 181, 246, 0.25);
+      }
+      .input-group-text {
+        border-radius: 8px 0 0 8px;
+        background-color: #383838;
+        border: 1px solid #424242;
+        color: #64b5f6;
+        font-weight: 500;
+      }
+      .input-group .btn {
+        border-radius: 0 8px 8px 0;
+        background-color: #1976d2;
+        color: white;
+        border-color: #1976d2;
+      }
+      h1 {
+        color: #64b5f6;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        padding-bottom: 10px;
+        position: relative;
+        text-align: center;
+      }
+      h1:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background-color: #64b5f6;
+        border-radius: 3px;
+      }
+      .btn-outline-secondary {
+        background-color: #424242;
+        color: #e0e0e0;
+        border-color: #616161;
+      }
+      .btn-outline-secondary:hover {
+        background-color: #616161;
+        color: #e0e0e0;
+      }
+      .modifier-name {
+        color: #64b5f6;
+        font-weight: 600;
+      }
+      .file-name {
+        color: #81c784;
+        font-weight: 600;
+      }
+      .role-writer {
+        color: #ffb74d;
+        font-weight: 600;
+      }
+      .role-reader {
+        color: #90caf9;
+        font-weight: 600;
+      }
+      .role-owner {
+        color: #e57373;
+        font-weight: 600;
+      }
+      .role-commenter {
+        color: #ce93d8;
+        font-weight: 600;
+      }
+      .action-text {
+        color: #b2dfdb;
+        font-style: italic;
+      }
+      .change-arrow {
+        color: #e0e0e0;
+        font-weight: bold;
+        margin: 0 5px;
+      }
+      .action-deleted {
+        color: #e57373;
+        font-style: italic;
+        font-weight: 600;
+      }
+      .form-select,
+      .input-group-text {
+        color: #e0e0e0;
+        background-color: #2c2c2c;
+        border-color: #424242;
+      }
+      .form-select:focus {
+        background-color: #383838;
+        border-color: #64b5f6;
+        color: #e0e0e0;
+      }
+      /* Badge styling for source distribution */
+      #gdrive-badge,
+      #dropbox-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin: 2px;
+        font-weight: 500;
+        font-size: 0.7rem;
+        display: inline-block;
+      }
+
+      #gdrive-badge {
+        background-color: #3f8cff;
+        color: #ffffff;
+      }
+
+      #dropbox-badge {
+        background-color: #04d9ff;
+        color: #212529;
+      }
+
+      .nav-pills .nav-link {
+        color: #e0e0e0;
+        border-radius: 8px;
+        padding: 10px 20px;
+        margin: 0 5px;
+        transition: all 0.3s;
+      }
+      .nav-pills .nav-link.active {
+        background-color: #1976d2;
+      }
+      .nav-pills .nav-link:hover:not(.active) {
+        background-color: #2c2c2c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <ul class="nav nav-pills mb-4">
+        <li class="nav-item">
+          <a class="nav-link active" href="/">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/file-based">File Based</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/user-based">User Based</a>
+        </li>
+      </ul>
+
+      <h1 class="my-4 text-center">Live Dashboard</h1>
+
+      <!-- Charts Row (All 4 charts in one row) -->
+      <div class="row mb-4">
+        <!-- Chart 1: Changes Over Time -->
+        <div class="col-md-3">
+          <div class="card chart-card">
+            <div class="card-body">
+              <h5 class="card-title">Changes Over Time</h5>
+              <div class="chart-container">
+                <canvas id="timeChart" width="100%" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 2: Changes by Type -->
+        <div class="col-md-3">
+          <div class="card chart-card">
+            <div class="card-body">
+              <div class="chart-title-container">
+                <h5 class="card-title">Changes by Type</h5>
+                <div class="btn-group" role="group">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary active"
+                    id="typeChartAll"
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="typeChartGDrive"
+                  >
+                    GDrive
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="typeChartDropbox"
+                  >
+                    Dropbox
+                  </button>
+                </div>
+              </div>
+              <div class="chart-container doughnut-container">
+                <canvas id="typeChart" width="100%" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 3: Source Distribution -->
+        <div class="col-md-3">
+          <div class="card chart-card">
+            <div class="card-body">
+              <h5 class="card-title">Source Distribution</h5>
+              <div class="chart-container doughnut-container">
+                <canvas id="sourceChart" width="100%" height="200"></canvas>
+              </div>
+              <div class="badge-container">
+                <span id="gdrive-badge">Google Drive: 0%</span>
+                <span id="dropbox-badge">Dropbox: 0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart 4: Top Modifiers -->
+        <div class="col-md-3">
+          <div class="card chart-card">
+            <div class="card-body">
+              <h5 class="card-title">Top Modifiers</h5>
+              <div class="chart-container">
+                <canvas id="modifiersChart" width="100%" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity Card -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Recent Activity Overview</h5>
+          <div class="row stats-row">
+            <div class="col-md-4">
+              <div class="card stat-card">
+                <h3 id="total-changes">0</h3>
+                <p>Total Changes</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card stat-card">
+                <h3 id="recent-changes">0</h3>
+                <p>Last 24h</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card stat-card">
+                <h3 id="last-updated">-</h3>
+                <p>Last Updated</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="row">
+        <!-- Google Drive Section -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title card-title-with-badge">
+                Google Drive Stats <span class="badge bg-primary">Drive</span>
+              </h5>
+              <div class="row stats-row">
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="gdrive-total-changes">0</h3>
+                    <p>Total Changes</p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="gdrive-new-files">0</h3>
+                    <p>New Files</p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="gdrive-deleted-files">0</h3>
+                    <p>Deleted Files</p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="gdrive-permission-changes">0</h3>
+                    <p>Permission<br />Changes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropbox Section -->
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title card-title-with-badge">
+                Dropbox Stats <span class="badge bg-info">Dropbox</span>
+              </h5>
+              <div class="row stats-row">
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="dropbox-total">0</h3>
+                    <p>Total Changes</p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="dropbox-new-files">0</h3>
+                    <p>New Files</p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="dropbox-deleted-files">0</h3>
+                    <p>Deleted Files</p>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <div class="card stat-card">
+                    <h3 id="dropbox-last-24h">0</h3>
+                    <p>Last 24h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Changes Table -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Recent Changes</h5>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <label class="input-group-text" for="sourceFilter"
+                    >Source</label
+                  >
+                  <select class="form-select" id="sourceFilter">
+                    <option value="all" selected>All Sources</option>
+                    <option value="google_drive">Google Drive</option>
+                    <option value="dropbox">Dropbox</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <label class="input-group-text" for="typeFilter">Type</label>
+                  <select class="form-select" id="typeFilter">
+                    <option value="all" selected>All Types</option>
+                    <option value="New File">New Files</option>
+                    <option value="File Deleted">Deleted Files</option>
+                    <option value="Modified">Modified Files</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search by filename..."
+                    id="searchFilter"
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    id="clearSearch"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Time</th>
+                  <th>File Name</th>
+                  <th>Owner</th>
+                  <th>Change Type</th>
+                  <th>Details</th>
+                  <th>Modified By</th>
+                </tr>
+              </thead>
+              <tbody id="changes-table"></tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <nav>
+            <ul class="pagination" id="pagination">
+              <!-- Pagination buttons will be added here -->
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Global variables
+      let allLogs = [];
+      let filteredLogs = [];
+      let currentPage = 1;
+      const logsPerPage = 10;
+      let chartData = {};
+
+      // Initialize chart variables
+      window.timeChart = null;
+      window.typeChart = null;
+      window.sourceChart = null;
+      window.modifiersChart = null;
+
+      // Current filters
+      let currentFilters = {
+        source: "all",
+        type: "all",
+        search: "",
+      };
+
+      // Chart type filter state
+      let typeChartFilter = "all";
+
+      // Function to format timestamps
+      function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) {
+          return timestamp; // return as is if invalid
+        }
+
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        if (diffMins < 1) {
+          return "just now";
+        } else if (diffMins < 60) {
+          return `${diffMins} minute${diffMins !== 1 ? "s" : ""} ago`;
+        } else if (diffHours < 24) {
+          return `${diffHours} hour${diffHours !== 1 ? "s" : ""} ago`;
+        } else if (diffDays < 7) {
+          return `${diffDays} day${diffDays !== 1 ? "s" : ""} ago`;
+        } else {
+          return (
+            date.toLocaleDateString() +
+            " " +
+            date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          );
+        }
+      }
+
+      // Function to get badge class based on change type
+      function getBadgeClass(changeType) {
+        switch (changeType) {
+          case "File Deleted":
+            return "bg-danger";
+          case "New File":
+            return "bg-success";
+          case "Modified":
+            return "bg-info";
+          default:
+            return "bg-secondary";
+        }
+      }
+
+      // Filter logs based on current filters
+      function filterLogs() {
+        filteredLogs = allLogs.filter((log) => {
+          const details = log.details || {};
+          const source = details.source || "google_drive";
+          const changeType = details.type
+            ? details.type === "file_deleted"
+              ? "File Deleted"
+              : details.type === "new_file"
+              ? "New File"
+              : details.type === "changes"
+              ? "Modified"
+              : "Other"
+            : "Other";
+
+          const fileName = log.file_name || details.name || "";
+
+          // Apply source filter
+          if (
+            currentFilters.source !== "all" &&
+            source !== currentFilters.source
+          ) {
+            return false;
+          }
+
+          // Apply type filter
+          if (
+            currentFilters.type !== "all" &&
+            changeType !== currentFilters.type
+          ) {
+            return false;
+          }
+
+          // Apply search filter
+          if (
+            currentFilters.search &&
+            !fileName
+              .toLowerCase()
+              .includes(currentFilters.search.toLowerCase())
+          ) {
+            return false;
+          }
+
+          return true;
+        });
+
+        // Reset to first page when filters change
+        currentPage = 1;
+        displayLogs(currentPage);
+      }
+
+      // Function to set up pagination
+      function setupPagination(totalLogs) {
+        const totalPages = Math.ceil(totalLogs.length / logsPerPage);
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+        // Previous button
+        const prevLi = document.createElement("li");
+        prevLi.className = `page-item ${currentPage === 1 ? "disabled" : ""}`;
+        prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous">
+                             <span aria-hidden="true">&laquo;</span>
+                           </a>`;
+        prevLi.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (currentPage > 1) {
+            currentPage--;
+            displayLogs(currentPage);
+          }
+        });
+        pagination.appendChild(prevLi);
+
+        // Page numbers
+        const maxPages = 5; // Maximum number of page buttons to show
+        let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+        let endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+        if (endPage - startPage < maxPages - 1) {
+          startPage = Math.max(1, endPage - maxPages + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          const pageLi = document.createElement("li");
+          pageLi.className = `page-item ${i === currentPage ? "active" : ""}`;
+          pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+          pageLi.addEventListener("click", function (e) {
+            e.preventDefault();
+            currentPage = i;
+            displayLogs(currentPage);
+          });
+          pagination.appendChild(pageLi);
+        }
+
+        // Next button
+        const nextLi = document.createElement("li");
+        nextLi.className = `page-item ${
+          currentPage === totalPages ? "disabled" : ""
+        }`;
+        nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next">
+                             <span aria-hidden="true">&raquo;</span>
+                           </a>`;
+        nextLi.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (currentPage < totalPages) {
+            currentPage++;
+            displayLogs(currentPage);
+          }
+        });
+        pagination.appendChild(nextLi);
+      }
+
+      // Function to display logs for the current page
+      function displayLogs(page) {
+        const startIndex = (page - 1) * logsPerPage;
+        const endIndex = startIndex + logsPerPage;
+        const logsToShow = filteredLogs.slice(startIndex, endIndex);
+
+        updateTable(logsToShow);
+        setupPagination(filteredLogs);
+      }
+
+      // Function to update the UI with log data
+      function updateTable(logs) {
+        try {
+          const tbody = document.getElementById("changes-table");
+          tbody.innerHTML = "";
+
+          if (!Array.isArray(logs) || logs.length === 0) {
+            const tr = document.createElement("tr");
+            tr.innerHTML =
+              '<td colspan="7" class="text-center">No changes detected yet</td>';
+            tbody.appendChild(tr);
+            return;
+          }
+
+          logs.forEach((log) => {
+            const tr = document.createElement("tr");
+            const details = log.details || {};
+
+            // Format the details based on the change type
+            let changeType = details.type || "unknown";
+            let detailsText = "";
+            let modifierText = "";
+
+            // Determine source (Google Drive or Dropbox)
+            const source = details.source || "google_drive";
+            const sourceDisplay =
+              source === "google_drive" ? "Google Drive" : "Dropbox";
+            const sourceClass =
+              source === "google_drive" ? "bg-primary" : "bg-info";
+
+            // Get modifier information
+            const modifier = details.modified_by || {};
+            if (modifier && (modifier.name || modifier.email)) {
+              modifierText = `${modifier.name || "Unknown"}${
+                modifier.email ? ` (${modifier.email})` : ""
+              }`;
+            } else {
+              modifierText = "Unknown";
+            }
+
+            // Helper function to wrap text with a CSS class
+            const wrapWithClass = (text, className) => {
+              return `<span class="${className}">${text}</span>`;
+            };
+
+            // Function to format file names
+            const formatFileName = (name) => {
+              return wrapWithClass(name, "file-name");
+            };
+
+            // Function to format modifier names
+            const formatModifierName = (name) => {
+              return wrapWithClass(name, "modifier-name");
+            };
+
+            // Function to format roles based on role type
+            const formatRole = (role) => {
+              return wrapWithClass(role, `role-${role.toLowerCase()}`);
+            };
+
+            // Function to format action text
+            const formatAction = (action) => {
+              // Check if this is a deletion action
+              if (action.includes("was deleted") || action === "File") {
+                return `<span class="action-deleted">${action}</span>`;
+              }
+              return wrapWithClass(action, "action-text");
+            };
+
+            // Arrow for changes
+            const changeArrow = wrapWithClass("→", "change-arrow");
+
+            // Handle Google Drive specific logs
+            if (source === "google_drive" || !source) {
+              if (changeType === "file_deleted") {
+                changeType = "File Deleted";
+                detailsText = `${formatAction("File")} ${formatFileName(
+                  details.file_name || log.file_name
+                )} ${formatAction("was deleted")}`;
+              } else if (changeType === "new_file") {
+                changeType = "New File";
+                const permissions = details.permissions || [];
+                detailsText = `${formatAction("New file created with")} ${
+                  permissions.length
+                } ${formatAction("permission(s)")}:<br>`;
+                detailsText += '<ul class="mb-0">';
+                permissions.forEach((perm) => {
+                  const displayName =
+                    perm.displayName || perm.emailAddress || "Unknown";
+                  const email = perm.emailAddress
+                    ? ` (${perm.emailAddress})`
+                    : "";
+                  const role = perm.role || "Unknown role";
+                  detailsText += `<li>${formatModifierName(
+                    displayName
+                  )}${email}: ${formatRole(role)}</li>`;
+                });
+                detailsText += "</ul>";
+              } else if (changeType === "changes") {
+                changeType = "Modified";
+                const changes = details.changes || [];
+                detailsText = changes
+                  .map((change) => {
+                    switch (change.type) {
+                      case "name_change":
+                        return `${formatAction(
+                          "Renamed from"
+                        )} ${formatFileName(change.old)} ${formatAction(
+                          "to"
+                        )} ${formatFileName(change.new)}`;
+                      case "permission_added":
+                        const displayName =
+                          change.user_name || change.user || "Unknown";
+                        return `${formatAction("Added")} ${formatRole(
+                          change.role
+                        )} ${formatAction(
+                          "permission for"
+                        )} ${formatModifierName(displayName)} (${change.user})`;
+                      case "permission_removed":
+                        return `${formatAction(
+                          "Removed permission for"
+                        )} ${formatModifierName(
+                          change.user_name || change.user
+                        )}`;
+                      case "permission_changed":
+                        return `${formatAction("Changed")} ${formatModifierName(
+                          change.user_name || change.user
+                        )}'s ${formatAction("role from")} ${formatRole(
+                          change.old_role
+                        )} ${changeArrow} ${formatRole(change.new_role)}`;
+                      default:
+                        return change.type;
+                    }
+                  })
+                  .join("<br>");
+              }
+            }
+            // Handle Dropbox specific logs
+            else if (source === "dropbox") {
+              if (changeType === "file_deleted") {
+                changeType = "File Deleted";
+                detailsText = `${formatAction("File")} ${formatFileName(
+                  details.file_name || log.file_name
+                )} ${formatAction("was deleted")}`;
+              } else if (changeType === "new_file") {
+                changeType = "New File";
+                const permissions = details.permissions || [];
+                detailsText = `${formatAction("New file created with")} ${
+                  permissions.length
+                } ${formatAction("permission(s)")}:<br>`;
+                detailsText += '<ul class="mb-0">';
+                permissions.forEach((perm) => {
+                  const displayName =
+                    perm.displayName || perm.emailAddress || "Unknown";
+                  const email = perm.emailAddress
+                    ? ` (${perm.emailAddress})`
+                    : "";
+                  const role = perm.role || "Unknown role";
+                  detailsText += `<li>${formatModifierName(
+                    displayName
+                  )}${email}: ${formatRole(role)}</li>`;
+                });
+                detailsText += "</ul>";
+              } else if (changeType === "changes") {
+                changeType = "Modified";
+                const changes = details.changes || [];
+                if (Array.isArray(changes)) {
+                  detailsText = changes
+                    .map((change) => {
+                      switch (change.type) {
+                        case "permission_added":
+                          return `${formatAction("Added")} ${formatRole(
+                            change.role
+                          )} ${formatAction(
+                            "permission for"
+                          )} ${formatModifierName(
+                            change.user_name || change.user
+                          )} (${change.user})`;
+                        case "permission_removed":
+                          return `${formatAction(
+                            "Removed permission for"
+                          )} ${formatModifierName(
+                            change.user_name || change.user
+                          )}`;
+                        case "permission_changed":
+                          return `${formatAction(
+                            "Changed"
+                          )} ${formatModifierName(
+                            change.user || change.user_name
+                          )}'s ${formatAction("role from")} ${formatRole(
+                            change.old_role
+                          )} ${changeArrow} ${formatRole(change.new_role)}`;
+                        default:
+                          return "";
+                      }
+                    })
+                    .filter((text) => text)
+                    .join("<br>");
+                }
+              }
+            }
+
+            tr.innerHTML = `
+              <td><span class="badge ${sourceClass}">${sourceDisplay}</span></td>
+              <td>${formatTimestamp(log.timestamp)}</td>
+              <td>${log.file_name || details.name || "Unknown"}</td>
+              <td>${formatOwner(log.owner)}</td>
+              <td><span class="badge ${getBadgeClass(
+                changeType
+              )}">${changeType}</span></td>
+              <td>${detailsText}</td>
+              <td>${modifierText}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        } catch (error) {
+          console.error("Error updating table:", error);
+        }
+      }
+
+      // Update charts with data based on filters
+      function updateCharts(data) {
+        try {
+          console.log("Updating charts with data:", data);
+          chartData = data; // Store data for filter operations
+
+          // Check if chart canvas elements exist
+          const timeChartCtx = document.getElementById("timeChart");
+          const typeChartCtx = document.getElementById("typeChart");
+          const sourceChartCtx = document.getElementById("sourceChart");
+          const modifiersChartCtx = document.getElementById("modifiersChart");
+
+          if (
+            !timeChartCtx ||
+            !typeChartCtx ||
+            !sourceChartCtx ||
+            !modifiersChartCtx
+          ) {
+            console.error("One or more chart canvas elements not found:", {
+              timeChart: !!timeChartCtx,
+              typeChart: !!typeChartCtx,
+              sourceChart: !!sourceChartCtx,
+              modifiersChart: !!modifiersChartCtx,
+            });
+            return;
+          }
+
+          // Validate data
+          if (!data || (!data.gdrive_logs && !data.dropbox_logs)) {
+            console.error("Missing logs data for charts:", data);
+            return;
+          }
+
+          // Get count of logs for each source
+          const gdriveCount = Array.isArray(data.gdrive_logs)
+            ? data.gdrive_logs.length
+            : 0;
+          const dropboxCount = Array.isArray(data.dropbox_logs)
+            ? data.dropbox_logs.length
+            : 0;
+
+          // ---------- TIME CHART ----------
+          try {
+            const timeChartContext = timeChartCtx.getContext("2d");
+
+            // In Chart.js 4.x, we need to use Chart instances differently
+            if (window.timeChart) {
+              try {
+                window.timeChart.clear();
+                window.timeChart.destroy();
+              } catch (e) {
+                console.warn("Error destroying previous time chart:", e);
+              }
+              window.timeChart = null;
+            }
+
+            // Prepare time data
+            const now = new Date();
+            const dates = [];
+            for (let i = 6; i >= 0; i--) {
+              const date = new Date();
+              date.setDate(now.getDate() - i);
+              dates.push(date.toISOString().split("T")[0]);
+            }
+
+            console.log("Date range for charts:", dates);
+
+            // Count changes by date
+            const gdriveCounts = new Array(7).fill(0);
+            const dropboxCounts = new Array(7).fill(0);
+
+            // Process Google Drive logs
+            if (Array.isArray(data.gdrive_logs)) {
+              console.log(
+                `Processing ${data.gdrive_logs.length} Google Drive logs for time chart`
+              );
+
+              data.gdrive_logs.forEach((log, index) => {
+                try {
+                  if (!log.timestamp) {
+                    console.warn(
+                      `Missing timestamp in Google Drive log at index ${index}:`,
+                      log
+                    );
+                    return;
+                  }
+
+                  let timestamp = log.timestamp;
+                  let logDate;
+
+                  // Handle different timestamp formats
+                  if (timestamp.includes(".")) {
+                    // Format with milliseconds: 2025-04-03 22:24:47.046760
+                    logDate = new Date(
+                      timestamp.split(".")[0].replace(" ", "T")
+                    );
+                  } else if (timestamp.includes("T")) {
+                    // ISO format: 2025-04-03T22:24:47
+                    logDate = new Date(timestamp);
+                  } else {
+                    // Regular format: 2025-04-03 22:24:47
+                    logDate = new Date(timestamp.replace(" ", "T"));
+                  }
+
+                  if (isNaN(logDate.getTime())) {
+                    console.warn(
+                      `Invalid date from Google Drive timestamp "${timestamp}" at index ${index}`
+                    );
+                    return;
+                  }
+
+                  const dateStr = logDate.toISOString().split("T")[0];
+                  const dateIndex = dates.indexOf(dateStr);
+
+                  if (dateIndex !== -1) {
+                    gdriveCounts[dateIndex]++;
+                  }
+                } catch (err) {
+                  console.error(
+                    `Error processing Google Drive log at index ${index}:`,
+                    err,
+                    log
+                  );
+                }
+              });
+            }
+
+            // Process Dropbox logs
+            if (Array.isArray(data.dropbox_logs)) {
+              console.log(
+                `Processing ${data.dropbox_logs.length} Dropbox logs for time chart`
+              );
+
+              data.dropbox_logs.forEach((log, index) => {
+                try {
+                  if (!log.timestamp) {
+                    console.warn(
+                      `Missing timestamp in Dropbox log at index ${index}:`,
+                      log
+                    );
+                    return;
+                  }
+
+                  let timestamp = log.timestamp;
+                  let logDate;
+
+                  // Handle different timestamp formats
+                  if (timestamp.includes(".")) {
+                    // Format with milliseconds: 2025-04-03 22:24:47.046760
+                    logDate = new Date(
+                      timestamp.split(".")[0].replace(" ", "T")
+                    );
+                  } else if (timestamp.includes("T")) {
+                    // ISO format: 2025-04-03T22:24:47
+                    logDate = new Date(timestamp);
+                  } else {
+                    // Regular format: 2025-04-03 22:24:47
+                    logDate = new Date(timestamp.replace(" ", "T"));
+                  }
+
+                  if (isNaN(logDate.getTime())) {
+                    console.warn(
+                      `Invalid date from Dropbox timestamp "${timestamp}" at index ${index}`
+                    );
+                    return;
+                  }
+
+                  const dateStr = logDate.toISOString().split("T")[0];
+                  const dateIndex = dates.indexOf(dateStr);
+
+                  if (dateIndex !== -1) {
+                    dropboxCounts[dateIndex]++;
+                  }
+                } catch (err) {
+                  console.error(
+                    `Error processing Dropbox log at index ${index}:`,
+                    err,
+                    log
+                  );
+                }
+              });
+            }
+
+            console.log("Chart data counts:", { gdriveCounts, dropboxCounts });
+
+            // Create time chart - Chart.js v4 configuration
+            window.timeChart = new Chart(timeChartContext, {
+              type: "line",
+              data: {
+                labels: dates.map((date) =>
+                  new Date(date).toLocaleDateString()
+                ),
+                datasets: [
+                  {
+                    label: "Google Drive",
+                    data: gdriveCounts,
+                    fill: false,
+                    borderColor: "#64b5f6",
+                    backgroundColor: "rgba(100, 181, 246, 0.1)",
+                    tension: 0.4,
+                    borderWidth: 3,
+                  },
+                  {
+                    label: "Dropbox",
+                    data: dropboxCounts,
+                    fill: false,
+                    borderColor: "#4fc3f7",
+                    backgroundColor: "rgba(79, 195, 247, 0.1)",
+                    tension: 0.4,
+                    borderWidth: 3,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1,
+                      color: "#bdbdbd",
+                    },
+                    grid: {
+                      color: "rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                  x: {
+                    ticks: {
+                      color: "#bdbdbd",
+                    },
+                    grid: {
+                      color: "rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                },
+                plugins: {
+                  legend: {
+                    labels: {
+                      color: "#e0e0e0",
+                    },
+                  },
+                },
+              },
+            });
+
+            console.log("Time chart created successfully");
+          } catch (error) {
+            console.error("Error creating time chart:", error);
+          }
+
+          // ---------- TYPE CHART ----------
+          try {
+            const typeChartContext = typeChartCtx.getContext("2d");
+
+            // Properly destroy chart if it exists
+            if (window.typeChart) {
+              try {
+                window.typeChart.clear();
+                window.typeChart.destroy();
+              } catch (e) {
+                console.warn("Error destroying previous type chart:", e);
+              }
+              window.typeChart = null;
+            }
+
+            // Count by type based on filter
+            const changeTypes = {
+              new_file: 0,
+              file_deleted: 0,
+              changes: 0,
+              other: 0,
+            };
+
+            let logsToProcess = [];
+            if (typeChartFilter === "all" || typeChartFilter === "gdrive") {
+              if (Array.isArray(data.gdrive_logs)) {
+                logsToProcess = logsToProcess.concat(data.gdrive_logs);
+              }
+            }
+
+            if (typeChartFilter === "all" || typeChartFilter === "dropbox") {
+              if (Array.isArray(data.dropbox_logs)) {
+                logsToProcess = logsToProcess.concat(data.dropbox_logs);
+              }
+            }
+
+            console.log(
+              `Processing ${logsToProcess.length} logs for type chart with filter: ${typeChartFilter}`
+            );
+
+            logsToProcess.forEach((log, index) => {
+              try {
+                if (!log.details) {
+                  console.warn(
+                    `Missing details in log at index ${index}:`,
+                    log
+                  );
+                  changeTypes.other++;
+                  return;
+                }
+
+                const type = log.details.type || "other";
+                changeTypes[type] = (changeTypes[type] || 0) + 1;
+              } catch (err) {
+                console.error("Error processing log for type chart:", err, log);
+                changeTypes.other++;
+              }
+            });
+
+            console.log("Type chart data:", changeTypes);
+
+            // Create type chart - Chart.js v4 configuration
+            window.typeChart = new Chart(typeChartContext, {
+              type: "doughnut",
+              data: {
+                labels: [
+                  "New Files",
+                  "Deleted Files",
+                  "Modified Files",
+                  "Other",
+                ],
+                datasets: [
+                  {
+                    data: [
+                      changeTypes["new_file"],
+                      changeTypes["file_deleted"],
+                      changeTypes["changes"],
+                      changeTypes["other"],
+                    ],
+                    backgroundColor: [
+                      "#81c784",
+                      "#e57373",
+                      "#64b5f6",
+                      "#90a4ae",
+                    ],
+                    borderColor: "#1e1e1e",
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "right",
+                    labels: {
+                      color: "#e0e0e0",
+                      padding: 15,
+                      font: {
+                        size: 12,
+                      },
+                    },
+                  },
+                  title: {
+                    display: true,
+                    text:
+                      typeChartFilter === "all"
+                        ? "All Sources"
+                        : typeChartFilter === "gdrive"
+                        ? "Google Drive Only"
+                        : "Dropbox Only",
+                    font: {
+                      size: 14,
+                    },
+                    color: "#e0e0e0",
+                  },
+                },
+              },
+            });
+
+            console.log(
+              "Type chart created successfully with filter:",
+              typeChartFilter
+            );
+          } catch (error) {
+            console.error("Error creating filtered type chart:", error);
+          }
+
+          // ---------- SOURCE CHART ----------
+          try {
+            const sourceChartContext = sourceChartCtx.getContext("2d");
+
+            // Properly destroy chart if it exists
+            if (window.sourceChart) {
+              try {
+                window.sourceChart.clear();
+                window.sourceChart.destroy();
+              } catch (e) {
+                console.warn("Error destroying previous source chart:", e);
+              }
+              window.sourceChart = null;
+            }
+
+            console.log("Source chart data:", { gdriveCount, dropboxCount });
+
+            // Create source chart - Chart.js v4 configuration
+            window.sourceChart = new Chart(sourceChartContext, {
+              type: "pie",
+              data: {
+                labels: ["Google Drive", "Dropbox"],
+                datasets: [
+                  {
+                    data: [gdriveCount, dropboxCount],
+                    backgroundColor: ["#3f8cff", "#04d9ff"],
+                    borderColor: "#1e1e1e",
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "right",
+                    labels: {
+                      color: "#e0e0e0",
+                      padding: 15,
+                      font: {
+                        size: 12,
+                      },
+                    },
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        return (
+                          context.label +
+                          ": " +
+                          context.parsed +
+                          " changes (" +
+                          context.dataset.data[context.dataIndex] +
+                          "%)"
+                        );
+                      },
+                    },
+                  },
+                },
+              },
+            });
+
+            console.log("Source chart created successfully");
+          } catch (error) {
+            console.error("Error creating source chart:", error);
+          }
+
+          // ---------- TOP MODIFIERS CHART ----------
+          try {
+            const modifiersChartContext = modifiersChartCtx.getContext("2d");
+
+            // Properly destroy chart if it exists
+            if (window.modifiersChart) {
+              try {
+                window.modifiersChart.clear();
+                window.modifiersChart.destroy();
+              } catch (e) {
+                console.warn("Error destroying previous modifiers chart:", e);
+              }
+              window.modifiersChart = null;
+            }
+
+            // Count modifications by user
+            const modifierCounts = {};
+            let allLogsForModifiers = [];
+
+            if (Array.isArray(data.gdrive_logs)) {
+              allLogsForModifiers = allLogsForModifiers.concat(
+                data.gdrive_logs
+              );
+            }
+
+            if (Array.isArray(data.dropbox_logs)) {
+              allLogsForModifiers = allLogsForModifiers.concat(
+                data.dropbox_logs
+              );
+            }
+
+            allLogsForModifiers.forEach((log) => {
+              try {
+                const details = log.details || {};
+                const modifier = details.modified_by || {};
+                const key = modifier.email || "Unknown";
+                const name = modifier.name || key.split("@")[0] || "Unknown";
+
+                if (!modifierCounts[key]) {
+                  modifierCounts[key] = {
+                    count: 0,
+                    name: name,
+                    email: key,
+                  };
+                }
+
+                modifierCounts[key].count++;
+              } catch (err) {
+                console.error("Error processing modifier:", err);
+              }
+            });
+
+            // Sort by count and get top 3 (or all if less than 3)
+            const sortedModifiers = Object.values(modifierCounts)
+              .sort((a, b) => b.count - a.count)
+              .slice(0, 3);
+
+            // Add "Others" category if there are more than 3 modifiers
+            const totalModifiers = Object.values(modifierCounts).length;
+            const remainingCount = Object.values(modifierCounts)
+              .sort((a, b) => b.count - a.count)
+              .slice(3)
+              .reduce((sum, mod) => sum + mod.count, 0);
+
+            const chartLabels = sortedModifiers.map((m) => m.name);
+            const chartData = sortedModifiers.map((m) => m.count);
+
+            if (totalModifiers > 3 && remainingCount > 0) {
+              chartLabels.push("Others");
+              chartData.push(remainingCount);
+            }
+
+            console.log("Top modifiers data:", chartLabels, chartData);
+
+            const backgroundColors = [
+              "#81c784",
+              "#64b5f6",
+              "#ffb74d",
+              "#90a4ae",
+            ];
+
+            // Create modifiers chart
+            window.modifiersChart = new Chart(modifiersChartContext, {
+              type: "bar",
+              data: {
+                labels: chartLabels,
+                datasets: [
+                  {
+                    label: "Changes Made",
+                    data: chartData,
+                    backgroundColor: backgroundColors.slice(
+                      0,
+                      chartLabels.length
+                    ),
+                    borderColor: "#1e1e1e",
+                    borderWidth: 2,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: "y",
+                scales: {
+                  y: {
+                    ticks: {
+                      color: "#e0e0e0",
+                    },
+                  },
+                  x: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1,
+                      color: "#bdbdbd",
+                    },
+                    grid: {
+                      color: "rgba(255, 255, 255, 0.1)",
+                    },
+                  },
+                },
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  title: {
+                    display: true,
+                    text: "Top File Modifiers",
+                    color: "#e0e0e0",
+                    font: {
+                      size: 14,
+                    },
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        const index = context.dataIndex;
+                        const email =
+                          index < sortedModifiers.length
+                            ? sortedModifiers[index].email
+                            : "Multiple";
+                        return [`Changes: ${context.raw}`, `Email: ${email}`];
+                      },
+                    },
+                  },
+                },
+              },
+            });
+
+            console.log("Modifiers chart created successfully");
+          } catch (error) {
+            console.error("Error creating modifiers chart:", error);
+          }
+
+          // Update type chart based on filter
+          updateTypeChart(typeChartFilter);
+
+          // Update source distribution
+          updateSourceDistribution(gdriveCount, dropboxCount);
+        } catch (error) {
+          console.error("Error in overall chart update function:", error);
+        }
+      }
+
+      // Function to update type chart based on filter
+      function updateTypeChart(filter) {
+        try {
+          if (
+            !chartData ||
+            (!chartData.gdrive_logs && !chartData.dropbox_logs)
+          ) {
+            console.error("No chart data available for type chart");
+            return;
+          }
+
+          const typeChartCtx = document.getElementById("typeChart");
+          if (!typeChartCtx) {
+            console.error("Type chart canvas element not found");
+            return;
+          }
+
+          const typeChartContext = typeChartCtx.getContext("2d");
+
+          // Properly destroy chart if it exists
+          if (window.typeChart) {
+            try {
+              window.typeChart.clear();
+              window.typeChart.destroy();
+            } catch (e) {
+              console.warn("Error destroying previous type chart:", e);
+            }
+            window.typeChart = null;
+          }
+
+          // Count by type based on filter
+          const changeTypes = {
+            new_file: 0,
+            file_deleted: 0,
+            changes: 0,
+            other: 0,
+          };
+
+          let logsToProcess = [];
+          if (filter === "all" || filter === "gdrive") {
+            if (Array.isArray(chartData.gdrive_logs)) {
+              logsToProcess = logsToProcess.concat(chartData.gdrive_logs);
+            }
+          }
+
+          if (filter === "all" || filter === "dropbox") {
+            if (Array.isArray(chartData.dropbox_logs)) {
+              logsToProcess = logsToProcess.concat(chartData.dropbox_logs);
+            }
+          }
+
+          console.log(
+            `Processing ${logsToProcess.length} logs for type chart with filter: ${filter}`
+          );
+
+          logsToProcess.forEach((log, index) => {
+            try {
+              if (!log.details) {
+                console.warn(`Missing details in log at index ${index}:`, log);
+                changeTypes.other++;
+                return;
+              }
+
+              const type = log.details.type || "other";
+              changeTypes[type] = (changeTypes[type] || 0) + 1;
+            } catch (err) {
+              console.error("Error processing log for type chart:", err, log);
+              changeTypes.other++;
+            }
+          });
+
+          console.log("Type chart data:", changeTypes);
+
+          // Create type chart - Chart.js v4 configuration
+          window.typeChart = new Chart(typeChartContext, {
+            type: "doughnut",
+            data: {
+              labels: ["New Files", "Deleted Files", "Modified Files", "Other"],
+              datasets: [
+                {
+                  data: [
+                    changeTypes["new_file"],
+                    changeTypes["file_deleted"],
+                    changeTypes["changes"],
+                    changeTypes["other"],
+                  ],
+                  backgroundColor: ["#81c784", "#e57373", "#64b5f6", "#90a4ae"],
+                  borderColor: "#1e1e1e",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: "#e0e0e0",
+                    padding: 15,
+                    font: {
+                      size: 12,
+                    },
+                  },
+                },
+                title: {
+                  display: true,
+                  text:
+                    filter === "all"
+                      ? "All Sources"
+                      : filter === "gdrive"
+                      ? "Google Drive Only"
+                      : "Dropbox Only",
+                  font: {
+                    size: 14,
+                  },
+                  color: "#e0e0e0",
+                },
+              },
+            },
+          });
+
+          console.log("Type chart created successfully with filter:", filter);
+        } catch (error) {
+          console.error("Error creating filtered type chart:", error);
+        }
+      }
+
+      // Update source distribution
+      function updateSourceDistribution(gdriveCount, dropboxCount) {
+        if (gdriveCount === 0 && dropboxCount === 0) {
+          sourceChart.data.datasets[0].data = [1, 1];
+          sourceChart.update();
+          document.getElementById("gdrive-badge").textContent =
+            "Google Drive: 0%";
+          document.getElementById("dropbox-badge").textContent = "Dropbox: 0%";
+          return;
+        }
+
+        const total = gdriveCount + dropboxCount;
+        const gdrivePercentage = Math.round((gdriveCount / total) * 100);
+        const dropboxPercentage = Math.round((dropboxCount / total) * 100);
+
+        // Update the chart
+        sourceChart.data.datasets[0].data = [gdriveCount, dropboxCount];
+        sourceChart.update();
+
+        // Update the badges with new colors
+        document.getElementById(
+          "gdrive-badge"
+        ).textContent = `Google Drive: ${gdrivePercentage}%`;
+        document.getElementById("gdrive-badge").style.backgroundColor =
+          "#3f8cff";
+
+        document.getElementById(
+          "dropbox-badge"
+        ).textContent = `Dropbox: ${dropboxPercentage}%`;
+        document.getElementById("dropbox-badge").style.backgroundColor =
+          "#04d9ff";
+        document.getElementById("dropbox-badge").style.color = "#212529"; // Darker text
+      }
+
+      // Fetch and update statistics
+      function updateStats() {
+        fetch("/api/stats")
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Stats data received:", data);
+            console.log("Dropbox stats:", data.dropbox);
+
+            // Update Google Drive statistics
+            document.getElementById("gdrive-total-changes").textContent =
+              data.google_drive.total_changes;
+            document.getElementById("gdrive-new-files").textContent =
+              data.google_drive.new_files;
+            document.getElementById("gdrive-deleted-files").textContent =
+              data.google_drive.deleted_files;
+            data.google_drive.permission_changes =
+              data.google_drive.permission_changes || 0;
+            document.getElementById("gdrive-permission-changes").textContent =
+              data.google_drive.permission_changes;
+
+            // Update Dropbox statistics
+            // Ensure all values exist with fallbacks
+            const dropboxStats = data.dropbox || {};
+            dropboxStats.total_changes = dropboxStats.total_changes || 0;
+            dropboxStats.new_files = dropboxStats.new_files || 0;
+            dropboxStats.deleted_files = dropboxStats.deleted_files || 0;
+            dropboxStats.last_24h = dropboxStats.last_24h || 0;
+
+            document.getElementById("dropbox-total").textContent =
+              dropboxStats.total_changes;
+            document.getElementById("dropbox-new-files").textContent =
+              dropboxStats.new_files;
+            document.getElementById("dropbox-deleted-files").textContent =
+              dropboxStats.deleted_files;
+            document.getElementById("dropbox-last-24h").textContent =
+              dropboxStats.last_24h;
+
+            // Update combined statistics
+            document.getElementById("total-changes").textContent =
+              data.total.total_changes;
+            document.getElementById("recent-changes").textContent =
+              data.total.last_24h;
+
+            // Update last updated timestamp
+            document.getElementById("last-updated").textContent =
+              new Date().toLocaleTimeString();
+
+            // Update charts if logs are available
+            if (data.gdrive_logs || data.dropbox_logs) {
+              updateCharts(data);
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching stats:", error);
+          });
+      }
+
+      // Fetch and update logs
+      function updateLogs() {
+        fetch("/api/logs")
+          .then((response) => response.json())
+          .then((data) => {
+            // Deduplicate logs based on file_id and timestamp (rounded to the nearest minute)
+            const uniqueLogs = data.reduce((acc, log) => {
+              const key = `${log.file_id}_${Math.floor(
+                new Date(log.timestamp).getTime() / 60000
+              )}`;
+              if (
+                !acc[key] ||
+                new Date(log.timestamp) > new Date(acc[key].timestamp)
+              ) {
+                acc[key] = log;
+              }
+              return acc;
+            }, {});
+
+            // Convert to array and sort by timestamp
+            allLogs = Object.values(uniqueLogs).sort(
+              (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            // Apply filters to logs
+            filterLogs();
+          })
+          .catch((error) => {
+            console.error("Error fetching logs:", error);
+          });
+      }
+
+      // Set up event listeners for filters
+      document.addEventListener("DOMContentLoaded", function () {
+        // Source filter
+        const sourceFilter = document.getElementById("sourceFilter");
+        if (sourceFilter) {
+          sourceFilter.addEventListener("change", function () {
+            currentFilters.source = this.value;
+            filterLogs();
+          });
+        }
+
+        // Type filter
+        const typeFilter = document.getElementById("typeFilter");
+        if (typeFilter) {
+          typeFilter.addEventListener("change", function () {
+            currentFilters.type = this.value;
+            filterLogs();
+          });
+        }
+
+        // Search filter
+        const searchFilter = document.getElementById("searchFilter");
+        if (searchFilter) {
+          searchFilter.addEventListener("input", function () {
+            currentFilters.search = this.value;
+            filterLogs();
+          });
+        }
+
+        // Clear search button
+        const clearSearch = document.getElementById("clearSearch");
+        if (clearSearch) {
+          clearSearch.addEventListener("click", function () {
+            const searchFilter = document.getElementById("searchFilter");
+            if (searchFilter) {
+              searchFilter.value = "";
+              currentFilters.search = "";
+              filterLogs();
+            }
+          });
+        }
+
+        // Type chart filters
+        const typeChartAll = document.getElementById("typeChartAll");
+        const typeChartGDrive = document.getElementById("typeChartGDrive");
+        const typeChartDropbox = document.getElementById("typeChartDropbox");
+
+        if (typeChartAll) {
+          typeChartAll.addEventListener("click", function () {
+            typeChartFilter = "all";
+            setActiveTypeChartButton(this);
+            updateTypeChart(typeChartFilter);
+          });
+        }
+
+        if (typeChartGDrive) {
+          typeChartGDrive.addEventListener("click", function () {
+            typeChartFilter = "gdrive";
+            setActiveTypeChartButton(this);
+            updateTypeChart(typeChartFilter);
+          });
+        }
+
+        if (typeChartDropbox) {
+          typeChartDropbox.addEventListener("click", function () {
+            typeChartFilter = "dropbox";
+            setActiveTypeChartButton(this);
+            updateTypeChart(typeChartFilter);
+          });
+        }
+      });
+
+      // Set active button for chart filters
+      function setActiveTypeChartButton(button) {
+        // Remove active class from all buttons
+        document
+          .querySelectorAll(
+            "#typeChartAll, #typeChartGDrive, #typeChartDropbox"
+          )
+          .forEach((btn) => btn.classList.remove("active"));
+
+        // Add active class to selected button
+        button.classList.add("active");
+      }
+
+      // Add this function before the updateTable function
+      function formatOwner(owner) {
+        if (!owner) return "Unknown Owner";
+        if (typeof owner === "object") {
+          return `${owner.name || "Unknown Owner"}${
+            owner.email ? ` (${owner.email})` : ""
+          }`;
+        }
+        return owner;
+      }
+
+      // Initial update
+      updateStats();
+      updateLogs();
+
+      // Set up periodic updates (every 30 seconds)
+      setInterval(() => {
+        updateStats();
+        updateLogs();
+      }, 30000);
+    </script>
+  </body>
+</html>

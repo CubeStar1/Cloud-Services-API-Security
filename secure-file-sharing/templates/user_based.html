@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User-Based View - Cloud Security Monitor</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Add jQuery and Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+      /* Base styles */
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Navigation */
+      .nav-pills .nav-link {
+        color: #e0e0e0;
+        border-radius: 8px;
+        padding: 10px 20px;
+        margin: 0 5px;
+        transition: all 0.3s;
+      }
+      .nav-pills .nav-link.active {
+        background-color: #1976d2;
+      }
+      .nav-pills .nav-link:hover:not(.active) {
+        background-color: #2c2c2c;
+      }
+
+      /* Search and filter */
+      .search-container {
+        position: relative;
+        margin-bottom: 30px;
+      }
+      .source-filter {
+        margin-bottom: 20px;
+      }
+      .source-filter .btn {
+        margin-right: 10px;
+        background-color: #2c2c2c;
+        border: none;
+        color: #e0e0e0;
+        padding: 8px 16px;
+        border-radius: 6px;
+      }
+      .source-filter .btn.active {
+        background-color: #1976d2;
+      }
+      .source-filter .btn:hover:not(.active) {
+        background-color: #2c2c2c;
+      }
+
+      /* Select2 customization */
+      .select2-container--default .select2-selection--single {
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 8px;
+        height: 50px;
+        padding: 10px 15px;
+      }
+
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__rendered {
+        color: #e0e0e0;
+        line-height: 28px;
+      }
+
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+        height: 48px;
+      }
+
+      .select2-dropdown {
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 8px;
+      }
+
+      .select2-container--default
+        .select2-search--dropdown
+        .select2-search__field {
+        display: none;
+      }
+
+      .select2-container--default .select2-results__option {
+        color: #e0e0e0;
+        padding: 8px 15px;
+      }
+
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background-color: #1976d2;
+      }
+
+      /* User info display */
+      .selected-user-info {
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        display: none;
+      }
+      .selected-user-info h4 {
+        margin: 0;
+        color: #64b5f6;
+      }
+
+      /* Access cards */
+      .access-card {
+        background-color: #2c2c2c;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-top: 4px solid;
+      }
+      .access-card h5 {
+        margin-bottom: 15px;
+      }
+      .access-card.owners {
+        border-top-color: #d32f2f;
+      }
+      .access-card.editors {
+        border-top-color: #388e3c;
+      }
+      .access-card.commenters {
+        border-top-color: #ffa000;
+      }
+      .access-card.viewers {
+        border-top-color: #1976d2;
+      }
+      .access-card.owners h5 {
+        color: #d32f2f;
+      }
+      .access-card.editors h5 {
+        color: #388e3c;
+      }
+      .access-card.commenters h5 {
+        color: #ffa000;
+      }
+      .access-card.viewers h5 {
+        color: #1976d2;
+      }
+
+      /* File lists */
+      .file-list {
+        list-style: none;
+        padding: 0;
+      }
+      .file-item {
+        background-color: #1e1e1e;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 3px solid;
+      }
+      .file-item .file-info {
+        flex-grow: 1;
+      }
+      .file-item .file-name {
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .file-item .file-path {
+        color: #9e9e9e;
+        font-size: 0.9rem;
+      }
+      .file-item .source-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+      }
+      .source-badge.google {
+        background-color: #1976d2;
+      }
+      .source-badge.dropbox {
+        background-color: #0061ff;
+      }
+      .access-card.owners .file-item {
+        border-left-color: #d32f2f;
+      }
+      .access-card.editors .file-item {
+        border-left-color: #388e3c;
+      }
+      .access-card.commenters .file-item {
+        border-left-color: #ffa000;
+      }
+      .access-card.viewers .file-item {
+        border-left-color: #1976d2;
+      }
+
+      /* No results message */
+      .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #9e9e9e;
+      }
+
+      /* Tree visualization */
+      .tree-visualization {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        overflow: auto;
+        display: none;
+      }
+      .tree-visualization h4 {
+        color: #64b5f6;
+        margin-bottom: 20px;
+      }
+      .node circle {
+        fill: #2c2c2c;
+        stroke: #454545;
+        stroke-width: 2px;
+      }
+      .node text {
+        font-size: 12px;
+        fill: #e0e0e0;
+      }
+      .link {
+        fill: none;
+        stroke: #454545;
+        stroke-width: 1px;
+      }
+      .node-user circle {
+        fill: #2c2c2c;
+        stroke: #e0e0e0;
+        stroke-width: 2px;
+      }
+      .node-owner circle {
+        fill: #d32f2f;
+      }
+      .node-writer circle {
+        fill: #388e3c;
+      }
+      .node-commenter circle {
+        fill: #ffa000;
+      }
+      .node-reader circle {
+        fill: #1976d2;
+      }
+      .node-file.access-owner circle {
+        fill: #d32f2f;
+        stroke: #d32f2f;
+      }
+      .node-file.access-writer circle {
+        fill: #388e3c;
+        stroke: #388e3c;
+      }
+      .node-file.access-commenter circle {
+        fill: #ffa000;
+        stroke: #ffa000;
+      }
+      .node-file.access-reader circle {
+        fill: #1976d2;
+        stroke: #1976d2;
+      }
+      .tooltip {
+        position: absolute;
+        padding: 8px 12px;
+        background: #2c2c2c;
+        border-radius: 6px;
+        color: #e0e0e0;
+        font-size: 12px;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <ul class="nav nav-pills mb-4">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/file-based">File Based</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/user-based">User Based</a>
+        </li>
+      </ul>
+
+      <!-- Source Filter -->
+      <div class="source-filter">
+        <button class="btn active" data-source="all">All Sources</button>
+        <button class="btn" data-source="google_drive">Google Drive</button>
+        <button class="btn" data-source="dropbox">Dropbox</button>
+      </div>
+
+      <!-- Search Container - SIMPLIFIED -->
+      <div class="search-container">
+        <div id="user-search-wrapper">
+          <!-- Select2 will be initialized here -->
+        </div>
+      </div>
+
+      <!-- Selected User Info -->
+      <div class="selected-user-info" id="selectedUserInfo">
+        <h4>Selected User: <span id="selectedUserEmail"></span></h4>
+      </div>
+
+      <!-- Access Cards -->
+      <div class="row" id="accessCards" style="display: none">
+        <div class="col-md-6 col-lg-3">
+          <div class="access-card owners">
+            <h5>Owned Files</h5>
+            <div class="file-list" id="ownedFiles"></div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="access-card editors">
+            <h5>Can Edit</h5>
+            <div class="file-list" id="editableFiles"></div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="access-card commenters">
+            <h5>Can Comment</h5>
+            <div class="file-list" id="commentableFiles"></div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="access-card viewers">
+            <h5>Can View</h5>
+            <div class="file-list" id="viewableFiles"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div class="no-results" id="noResults">
+        <h4>Search for a user to view their file access</h4>
+        <p>You can filter by source using the buttons above</p>
+      </div>
+
+      <!-- Tree Visualization Section -->
+      <div class="tree-visualization" id="treeVisualization">
+        <h4>User-File Relationship Tree</h4>
+        <div id="tree"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+      // Current filter state
+      let currentSource = "all";
+      let allUsers = [];
+
+      // DOM References
+      const selectedUserInfo = document.getElementById("selectedUserInfo");
+      const selectedUserEmail = document.getElementById("selectedUserEmail");
+      const accessCards = document.getElementById("accessCards");
+      const noResults = document.getElementById("noResults");
+      const treeVisualization = document.getElementById("treeVisualization");
+
+      // Create select element and initialize Select2
+      function initializeSearch() {
+        const wrapper = document.getElementById("user-search-wrapper");
+        wrapper.innerHTML = ""; // Clear any existing content
+
+        // Create select element
+        const select = document.createElement("select");
+        select.id = "userSelect";
+        select.className = "form-control";
+
+        // Add default option
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Search for a user...";
+        select.appendChild(defaultOption);
+
+        // Add to DOM
+        wrapper.appendChild(select);
+
+        // Initialize Select2
+        $("#userSelect").select2({
+          placeholder: "Search for a user...",
+          allowClear: true,
+          width: "100%",
+        });
+
+        // Add change event listener
+        $("#userSelect").on("change", function () {
+          const email = $(this).val();
+          if (email) {
+            selectedUserEmail.textContent = email;
+            selectedUserInfo.style.display = "block";
+            fetchUserPermissions(email);
+          } else {
+            showNoResults();
+          }
+        });
+      }
+
+      // Load users on page load
+      $(document).ready(function () {
+        initializeSearch();
+        loadUsers();
+
+        // Source filter buttons
+        document.querySelectorAll(".source-filter .btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            document
+              .querySelectorAll(".source-filter .btn")
+              .forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+            currentSource = button.dataset.source;
+            populateUserSelect();
+            $("#userSelect").val(null).trigger("change");
+            showNoResults();
+          });
+        });
+      });
+
+      // Load all users
+      function loadUsers() {
+        fetch("/api/users")
+          .then((response) => response.json())
+          .then((users) => {
+            allUsers = users;
+            populateUserSelect();
+          })
+          .catch((error) => {
+            console.error("Error loading users:", error);
+          });
+      }
+
+      // Populate user select dropdown
+      function populateUserSelect() {
+        const select = document.getElementById("userSelect");
+        if (!select) return; // Safety check
+
+        // Clear existing options except the first one
+        $("#userSelect")
+          .empty()
+          .append('<option value="">Search for a user...</option>');
+
+        // Create a map to merge users with same email
+        const userMap = new Map();
+
+        allUsers.forEach((user) => {
+          if (userMap.has(user.email)) {
+            const existingUser = userMap.get(user.email);
+            existingUser.sources.push(user.source);
+          } else {
+            userMap.set(user.email, {
+              email: user.email,
+              sources: [user.source],
+            });
+          }
+        });
+
+        // Filter and add users based on current source
+        Array.from(userMap.values())
+          .filter(
+            (user) =>
+              currentSource === "all" || user.sources.includes(currentSource)
+          )
+          .sort((a, b) => a.email.localeCompare(b.email))
+          .forEach((user) => {
+            const option = document.createElement("option");
+            option.value = user.email;
+            option.textContent = user.email;
+            option.dataset.sources = JSON.stringify(user.sources);
+            select.appendChild(option);
+          });
+
+        // Refresh Select2
+        $("#userSelect").trigger("change");
+      }
+
+      function fetchUserPermissions(email) {
+        fetch(`/api/user-permissions/${email}?source=${currentSource}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              showNoResults();
+              return;
+            }
+            updateAccessCards(data);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            showNoResults();
+          });
+      }
+
+      function updateAccessCards(data) {
+        accessCards.style.display = "flex";
+        noResults.style.display = "none";
+        treeVisualization.style.display = "block";
+
+        // Update each file list
+        updateFileList("ownedFiles", data.owned_files);
+        updateFileList("editableFiles", data.editable_files);
+        updateFileList("commentableFiles", data.commentable_files);
+        updateFileList("viewableFiles", data.viewable_files);
+
+        // Create tree data
+        const treeData = {
+          name: selectedUserEmail.textContent,
+          children: [
+            {
+              name: "Owned Files",
+              children: data.owned_files.map((f) => ({
+                name: f.name,
+                type: "file",
+                source: f.source,
+                path: f.path,
+                access: "owner",
+              })),
+            },
+            {
+              name: "Can Edit",
+              children: data.editable_files.map((f) => ({
+                name: f.name,
+                type: "file",
+                source: f.source,
+                path: f.path,
+                access: "writer",
+              })),
+            },
+            {
+              name: "Can Comment",
+              children: data.commentable_files.map((f) => ({
+                name: f.name,
+                type: "file",
+                source: f.source,
+                path: f.path,
+                access: "commenter",
+              })),
+            },
+            {
+              name: "Can View",
+              children: data.viewable_files.map((f) => ({
+                name: f.name,
+                type: "file",
+                source: f.source,
+                path: f.path,
+                access: "reader",
+              })),
+            },
+          ],
+        };
+
+        updateTreeVisualization(treeData);
+      }
+
+      function updateFileList(elementId, files) {
+        const list = document.getElementById(elementId);
+        list.innerHTML = "";
+
+        if (files && files.length > 0) {
+          files.forEach((file) => {
+            const fileItem = document.createElement("div");
+            fileItem.className = "file-item";
+            fileItem.innerHTML = `
+              <div class="file-info">
+                <div class="file-name">${file.name}</div>
+                <div class="file-path">${file.path || ""}</div>
+              </div>
+              <span class="source-badge ${
+                file.source === "google_drive" ? "google" : "dropbox"
+              }">
+                ${file.source === "google_drive" ? "Google Drive" : "Dropbox"}
+              </span>
+            `;
+            list.appendChild(fileItem);
+          });
+        } else {
+          list.innerHTML = '<div class="file-item">No files</div>';
+        }
+      }
+
+      function showNoResults() {
+        accessCards.style.display = "none";
+        selectedUserInfo.style.display = "none";
+        noResults.style.display = "block";
+        treeVisualization.style.display = "none";
+      }
+
+      function updateTreeVisualization(data) {
+        // Clear previous visualization
+        d3.select("#tree").html("");
+
+        // Set up dimensions
+        const margin = { top: 20, right: 90, bottom: 30, left: 90 };
+        const width = 960 - margin.left - margin.right;
+        const height = 800 - margin.top - margin.bottom;
+
+        // Create SVG container
+        const svg = d3
+          .select("#tree")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Create tree layout
+        const tree = d3.tree().size([height, width]);
+
+        // Create hierarchy
+        const root = d3.hierarchy(data);
+        const treeData = tree(root);
+
+        // Create tooltip
+        const tooltip = d3
+          .select("body")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
+
+        // Add links
+        svg
+          .selectAll(".link")
+          .data(treeData.links())
+          .enter()
+          .append("path")
+          .attr("class", "link")
+          .attr(
+            "d",
+            d3
+              .linkHorizontal()
+              .x((d) => d.y)
+              .y((d) => d.x)
+          );
+
+        // Add nodes
+        const node = svg
+          .selectAll(".node")
+          .data(treeData.descendants())
+          .enter()
+          .append("g")
+          .attr("class", (d) => {
+            let nodeClass = "node";
+            if (d.depth === 0) {
+              nodeClass += " node-user";
+            } else if (d.depth === 1) {
+              if (d.data.name === "Owned Files") nodeClass += " node-owner";
+              else if (d.data.name === "Can Edit") nodeClass += " node-writer";
+              else if (d.data.name === "Can Comment")
+                nodeClass += " node-commenter";
+              else if (d.data.name === "Can View") nodeClass += " node-reader";
+            } else if (d.depth === 2) {
+              nodeClass += ` node-file access-${d.data.access}`;
+            }
+            return nodeClass;
+          })
+          .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+        // Add circles to nodes with different sizes based on depth
+        node.append("circle").attr("r", (d) => {
+          if (d.depth === 0) return 12; // Main user node
+          if (d.depth === 1) return 8; // Category nodes
+          return 6; // File nodes
+        });
+
+        // Add labels to nodes
+        node
+          .append("text")
+          .attr("dy", ".35em")
+          .attr("x", (d) => (d.depth === 0 ? -13 : d.children ? -10 : 10))
+          .attr("text-anchor", (d) =>
+            d.depth === 0 ? "end" : d.children ? "end" : "start"
+          )
+          .text((d) => d.data.name)
+          .style("fill-opacity", 0.9);
+
+        // Add tooltips
+        node
+          .on("mouseover", function (event, d) {
+            if (d.data.type === "file") {
+              tooltip.transition().duration(200).style("opacity", 0.9);
+              tooltip
+                .html(
+                  `
+              <strong>${d.data.name}</strong><br/>
+              Source: ${d.data.source}<br/>
+              ${d.data.path ? `Path: ${d.data.path}` : ""}
+            `
+                )
+                .style("left", event.pageX + 10 + "px")
+                .style("top", event.pageY - 28 + "px");
+            }
+          })
+          .on("mouseout", function (d) {
+            tooltip.transition().duration(500).style("opacity", 0);
+          });
+
+        // Center the visualization
+        const treeWidth = width + margin.left + margin.right;
+        const treeHeight = height + margin.top + margin.bottom;
+        d3.select("#tree svg")
+          .attr("viewBox", `0 0 ${treeWidth} ${treeHeight}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+      }
+    </script>
+  </body>
+</html>

@@ -28,7 +28,7 @@ export function ContextSection() {
             <p className="text-muted-foreground">
               This platform identifies cloud service providers, API endpoints, and user activities 
               through machine learning algorithms based on live traffic analysis. The project 
-              focuses initially on SASE public cloud services like DropBox, SalesForce, 
+              focuses initially on SAAS public cloud services like DropBox, SalesForce, 
               Google Docs, OneDrive, and Box before expanding to other API providers.
             </p>
           </div>

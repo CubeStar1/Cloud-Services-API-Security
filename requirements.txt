@@ -8,4 +8,6 @@ seaborn
 google-generativeai
 openai
 dotenv
+flask
+dropbox
 

@@ -45,24 +45,6 @@ export function HeroSection() {
           Cloud Services API Security
         </motion.h1>
       </motion.div>
-      
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        className="text-xl text-muted-foreground max-w-3xl mx-auto"
-      >
-        Analyze, visualize, and secure your API traffic with AI-powered tools.
-      </motion.p>
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="flex justify-center gap-x-3 mt-12"
-      >
-        
-      </motion.div>
     </div>
   )
 } 

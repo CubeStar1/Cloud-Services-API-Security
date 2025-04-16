@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File-Based View - Cloud Security Monitor</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <!-- Add Select2 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Copy the existing styles from index.html */
+      body {
+        background-color: #121212;
+        color: #e0e0e0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+      }
+      .nav-pills .nav-link {
+        color: #e0e0e0;
+        border-radius: 8px;
+        padding: 10px 20px;
+        margin: 0 5px;
+        transition: all 0.3s;
+      }
+      .nav-pills .nav-link.active {
+        background-color: #1976d2;
+      }
+      .nav-pills .nav-link:hover:not(.active) {
+        background-color: #2c2c2c;
+      }
+      .search-container {
+        position: relative;
+        margin-bottom: 30px;
+      }
+      .search-input {
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 8px;
+        padding: 15px 20px;
+        width: 100%;
+        color: #e0e0e0;
+        font-size: 1rem;
+      }
+      .search-input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #1976d2;
+      }
+      .source-filter {
+        margin-bottom: 20px;
+      }
+      .source-filter .btn {
+        margin-right: 10px;
+        background-color: #2c2c2c;
+        border: none;
+        color: #e0e0e0;
+        padding: 8px 16px;
+        border-radius: 6px;
+      }
+      .source-filter .btn.active {
+        background-color: #1976d2;
+      }
+      .source-filter .btn:hover:not(.active) {
+        background-color: #2c2c2c;
+      }
+      .permission-card {
+        background-color: #2c2c2c;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-top: 4px solid;
+      }
+      .permission-card.owners {
+        border-top-color: #d32f2f;
+      }
+      .permission-card.editors {
+        border-top-color: #388e3c;
+      }
+      .permission-card.commenters {
+        border-top-color: #ffa000;
+      }
+      .permission-card.viewers {
+        border-top-color: #1976d2;
+      }
+      .permission-card h5 {
+        margin-bottom: 15px;
+      }
+      .permission-card.owners h5 {
+        color: #d32f2f;
+      }
+      .permission-card.editors h5 {
+        color: #388e3c;
+      }
+      .permission-card.commenters h5 {
+        color: #ffa000;
+      }
+      .permission-card.viewers h5 {
+        color: #1976d2;
+      }
+      .permission-card .user-list {
+        list-style: none;
+        padding: 0;
+      }
+      .permission-card .user-item {
+        background-color: #1e1e1e;
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        border-left: 3px solid transparent;
+      }
+      .permission-card.owners .user-item {
+        border-left-color: #d32f2f;
+      }
+      .permission-card.editors .user-item {
+        border-left-color: #388e3c;
+      }
+      .permission-card.commenters .user-item {
+        border-left-color: #ffa000;
+      }
+      .permission-card.viewers .user-item {
+        border-left-color: #1976d2;
+      }
+      .permission-card .user-name {
+        font-weight: 500;
+      }
+      .permission-card .user-email {
+        color: #9e9e9e;
+        font-size: 0.9rem;
+      }
+      .no-results {
+        text-align: center;
+        padding: 40px;
+        color: #9e9e9e;
+      }
+      .file-container {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .file-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+      }
+      .file-title {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+      .multiple-files-container {
+        max-width: 100%;
+        margin: 0 auto;
+      }
+      /* Tree Visualization Styles */
+      .tree-visualization {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        overflow: auto;
+      }
+      .tree-visualization h4 {
+        color: #64b5f6;
+        margin-bottom: 20px;
+      }
+      .node circle {
+        fill: #2c2c2c;
+        stroke: #454545;
+        stroke-width: 2px;
+      }
+      .node text {
+        font-size: 12px;
+        fill: #e0e0e0;
+      }
+      .link {
+        fill: none;
+        stroke: #454545;
+        stroke-width: 1px;
+      }
+      /* Main file node */
+      .node-file circle {
+        fill: #2c2c2c;
+        stroke: #e0e0e0;
+        stroke-width: 2px;
+      }
+      /* Role category nodes */
+      .node-owner circle {
+        fill: #d32f2f;
+      }
+      .node-writer circle {
+        fill: #388e3c;
+      }
+      .node-commenter circle {
+        fill: #ffa000;
+      }
+      .node-reader circle {
+        fill: #1976d2;
+      }
+      /* User nodes - will be colored based on their roles */
+      .node-user.role-owner circle {
+        fill: #d32f2f;
+      }
+      .node-user.role-writer circle {
+        fill: #388e3c;
+      }
+      .node-user.role-commenter circle {
+        fill: #ffa000;
+      }
+      .node-user.role-reader circle {
+        fill: #1976d2;
+      }
+      .node-user circle {
+        fill: #2c2c2c;
+        r: 5;
+      }
+      .tooltip {
+        position: absolute;
+        padding: 8px 12px;
+        background: #2c2c2c;
+        border-radius: 6px;
+        color: #e0e0e0;
+        font-size: 12px;
+        pointer-events: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+      /* Add Select2 Custom Styles */
+      .select2-container--default {
+        width: 100% !important;
+      }
+
+      .select2-container--default .select2-selection--single {
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 8px;
+        height: 50px;
+        padding: 10px;
+      }
+
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__rendered {
+        color: #e0e0e0;
+        line-height: 30px;
+      }
+
+      .select2-container--default
+        .select2-selection--single
+        .select2-selection__arrow {
+        height: 48px;
+      }
+
+      .select2-dropdown {
+        background-color: #2c2c2c;
+        border: none;
+        border-radius: 8px;
+      }
+
+      .select2-container--default
+        .select2-search--dropdown
+        .select2-search__field {
+        background-color: #1e1e1e;
+        border: 1px solid #454545;
+        color: #e0e0e0;
+      }
+
+      .select2-container--default .select2-results__option {
+        color: #e0e0e0;
+        padding: 8px 12px;
+      }
+
+      .select2-container--default
+        .select2-results__option--highlighted[aria-selected] {
+        background-color: #1976d2;
+      }
+
+      .select2-container--default
+        .select2-results__option[aria-selected="true"] {
+        background-color: #2c2c2c;
+      }
+    </style>
+    <!-- Add D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Add jQuery (required for Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Add Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navigation -->
+      <ul class="nav nav-pills mb-4">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/file-based">File Based</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/user-based">User Based</a>
+        </li>
+      </ul>
+
+      <!-- Source Filter -->
+      <div class="source-filter">
+        <button class="btn active" data-source="all">All Sources</button>
+        <button class="btn" data-source="google_drive">Google Drive</button>
+        <button class="btn" data-source="dropbox">Dropbox</button>
+      </div>
+
+      <!-- Searchable File Selection -->
+      <div class="file-selection mb-4">
+        <select class="form-select" id="fileSelect" style="width: 100%">
+          <option value="">Search for a file...</option>
+        </select>
+      </div>
+
+      <!-- File Info -->
+      <div id="fileInfo" style="display: none; margin: 20px 0">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              <span id="fileName">File Name</span>
+              <span
+                id="fileSource"
+                class="badge"
+                style="margin-left: 10px"
+              ></span>
+            </h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Permission Cards -->
+      <div class="row" id="permissionCards" style="display: none">
+        <div class="col-md-3">
+          <div class="permission-card">
+            <h5>Owners</h5>
+            <div class="user-list" id="ownersList"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="permission-card">
+            <h5>Editors</h5>
+            <div class="user-list" id="editorsList"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="permission-card">
+            <h5>Commenters</h5>
+            <div class="user-list" id="commentersList"></div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="permission-card">
+            <h5>Viewers</h5>
+            <div class="user-list" id="viewersList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div class="no-results" id="noResults">
+        <h4>Select or search for a file to view its permissions</h4>
+        <p>You can filter by source using the buttons above</p>
+      </div>
+
+      <!-- Add Tree Visualization Section before closing container div -->
+      <div
+        class="tree-visualization"
+        id="treeVisualization"
+        style="display: none"
+      >
+        <h4>File-User Relationship Tree</h4>
+        <div id="tree"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Initialize Select2
+      $(document).ready(function () {
+        $("#fileSelect").select2({
+          placeholder: "Search for a file...",
+          allowClear: true,
+          width: "100%",
+        });
+      });
+
+      // Current filter state
+      let currentSource = "all";
+      let allFiles = [];
+
+      // Load files on page load
+      window.addEventListener("load", () => {
+        loadFiles();
+      });
+
+      // Source filter buttons
+      document.querySelectorAll(".source-filter .btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          document
+            .querySelectorAll(".source-filter .btn")
+            .forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
+          currentSource = button.dataset.source;
+          updateFileSelect();
+        });
+      });
+
+      // Load all files
+      function loadFiles() {
+        fetch("/api/files")
+          .then((response) => response.json())
+          .then((files) => {
+            allFiles = files;
+            updateFileSelect();
+          })
+          .catch((error) => {
+            console.error("Error loading files:", error);
+          });
+      }
+
+      // Update file select dropdown based on current filter
+      function updateFileSelect() {
+        const select = document.getElementById("fileSelect");
+        select.innerHTML = '<option value="">Search for a file...</option>';
+
+        const filteredFiles =
+          currentSource === "all"
+            ? allFiles
+            : allFiles.filter((f) => f.source === currentSource);
+
+        filteredFiles.forEach((file) => {
+          const option = document.createElement("option");
+          option.value = file.id;
+          option.textContent = file.name;
+          select.appendChild(option);
+        });
+
+        // Trigger Select2 to update
+        $("#fileSelect").trigger("change");
+      }
+
+      // File select change handler
+      $("#fileSelect").on("change", function (e) {
+        const fileId = $(this).val();
+        if (fileId) {
+          const selectedFile = allFiles.find((f) => f.id === fileId);
+          if (selectedFile) {
+            updateFileInfo(selectedFile);
+            fetchFilePermissions(fileId);
+          }
+        } else {
+          showNoResults();
+        }
+      });
+
+      // File search functionality
+      let searchTimeout;
+      const fileSearch = document.getElementById("fileSearch");
+      const permissionCards = document.getElementById("permissionCards");
+      const noResults = document.getElementById("noResults");
+      const fileInfo = document.getElementById("fileInfo");
+
+      fileSearch.addEventListener("input", (e) => {
+        clearTimeout(searchTimeout);
+        const searchTerm = e.target.value.trim().toLowerCase();
+
+        // Clear file select
+        document.getElementById("fileSelect").value = "";
+
+        if (searchTerm) {
+          // Filter files based on search term and current source filter
+          const filteredFiles = allFiles.filter((file) => {
+            const matchesSource =
+              currentSource === "all" || file.source === currentSource;
+            const matchesSearch = file.name.toLowerCase().includes(searchTerm);
+            return matchesSource && matchesSearch;
+          });
+
+          if (filteredFiles.length > 0) {
+            // Show permissions for all matching files
+            showMultipleFilePermissions(filteredFiles);
+          } else {
+            showNoResults();
+          }
+        } else {
+          showNoResults();
+        }
+      });
+
+      function showMultipleFilePermissions(files) {
+        // Clear previous results
+        permissionCards.innerHTML = "";
+        noResults.style.display = "none";
+        fileInfo.style.display = "none";
+
+        // Create a container for each file's permissions
+        files.forEach((file, index) => {
+          const fileInfoDiv = document.createElement("div");
+          fileInfoDiv.className = "mb-4";
+          fileInfoDiv.innerHTML = `
+            <div class="card mb-3">
+              <div class="card-body">
+                <h5 class="card-title">
+                  ${file.name}
+                  <span class="badge ${
+                    file.source === "google_drive" ? "bg-primary" : "bg-info"
+                  }">
+                    ${
+                      file.source === "google_drive"
+                        ? "Google Drive"
+                        : "Dropbox"
+                    }
+                  </span>
+                </h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="permission-card owners">
+                  <h5>Owners</h5>
+                  <div class="user-list" id="ownersList-${
+                    file.id
+                  }-${index}"></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="permission-card editors">
+                  <h5>Editors</h5>
+                  <div class="user-list" id="editorsList-${
+                    file.id
+                  }-${index}"></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="permission-card commenters">
+                  <h5>Commenters</h5>
+                  <div class="user-list" id="commentersList-${
+                    file.id
+                  }-${index}"></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="permission-card viewers">
+                  <h5>Viewers</h5>
+                  <div class="user-list" id="viewersList-${
+                    file.id
+                  }-${index}"></div>
+                </div>
+              </div>
+            </div>
+          `;
+          permissionCards.appendChild(fileInfoDiv);
+
+          // Fetch and display permissions for this file
+          fetchFilePermissions(file.id, `${file.id}-${index}`);
+        });
+
+        permissionCards.style.display = "block";
+      }
+
+      function fetchFilePermissions(fileId, containerId = null) {
+        fetch(`/api/file-permissions/${fileId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              if (!containerId) showNoResults();
+              return;
+            }
+            if (containerId) {
+              updatePermissionCardsForFile(data.permissions, containerId);
+            } else {
+              updatePermissionCards(data.permissions);
+
+              // Create tree data structure
+              const treeData = {
+                name:
+                  document.getElementById("fileName").textContent ||
+                  "Selected File",
+                type: "file",
+                children: [
+                  {
+                    name: "Owners",
+                    children: (data.permissions.owner || []).map((user) => ({
+                      name: user.email,
+                      type: "user",
+                      role: "owner",
+                      displayName: user.displayName,
+                    })),
+                  },
+                  {
+                    name: "Editors",
+                    children: (data.permissions.writer || []).map((user) => ({
+                      name: user.email,
+                      type: "user",
+                      role: "writer",
+                      displayName: user.displayName,
+                    })),
+                  },
+                  {
+                    name: "Commenters",
+                    children: (data.permissions.commenter || []).map(
+                      (user) => ({
+                        name: user.email,
+                        type: "user",
+                        role: "commenter",
+                        displayName: user.displayName,
+                      })
+                    ),
+                  },
+                  {
+                    name: "Viewers",
+                    children: (data.permissions.reader || []).map((user) => ({
+                      name: user.email,
+                      type: "user",
+                      role: "reader",
+                      displayName: user.displayName,
+                    })),
+                  },
+                ],
+              };
+
+              // Update tree visualization
+              document.getElementById("treeVisualization").style.display =
+                "block";
+              updateTreeVisualization(treeData);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            if (!containerId) showNoResults();
+          });
+      }
+
+      function updatePermissionCardsForFile(data, fileId) {
+        // Update each permission list for the specific file
+        updateUserList(`ownersList-${fileId}`, data.owner);
+        updateUserList(`editorsList-${fileId}`, data.writer);
+        updateUserList(`commentersList-${fileId}`, data.commenter);
+        updateUserList(`viewersList-${fileId}`, data.reader);
+      }
+
+      function updateFileInfo(file) {
+        document.getElementById("fileName").textContent = file.name;
+        const sourceSpan = document.getElementById("fileSource");
+        sourceSpan.textContent =
+          file.source === "google_drive" ? "Google Drive" : "Dropbox";
+        sourceSpan.className = `badge ${
+          file.source === "google_drive" ? "bg-primary" : "bg-info"
+        }`;
+        fileInfo.style.display = "block";
+      }
+
+      function updatePermissionCards(data) {
+        permissionCards.style.display = "flex";
+        noResults.style.display = "none";
+        document.getElementById("treeVisualization").style.display = "block";
+
+        // Update permission cards with color classes
+        const permissionSections = [
+          { id: "ownersList", class: "owners" },
+          { id: "editorsList", class: "editors" },
+          { id: "commentersList", class: "commenters" },
+          { id: "viewersList", class: "viewers" },
+        ];
+
+        permissionSections.forEach((section) => {
+          const card = document
+            .getElementById(section.id)
+            .closest(".permission-card");
+          if (card) {
+            card.className = `permission-card ${section.class}`;
+          }
+        });
+
+        // Update each permission list
+        updateUserList("ownersList", data.owner);
+        updateUserList("editorsList", data.writer);
+        updateUserList("commentersList", data.commenter);
+        updateUserList("viewersList", data.reader);
+      }
+
+      function updateUserList(elementId, users) {
+        const list = document.getElementById(elementId);
+        list.innerHTML = "";
+
+        if (users && users.length > 0) {
+          users.forEach((user) => {
+            const userItem = document.createElement("div");
+            userItem.className = "user-item";
+            userItem.innerHTML = `
+              <div class="user-name">${user.name}</div>
+              <div class="user-email">${user.email}</div>
+            `;
+            list.appendChild(userItem);
+          });
+        } else {
+          list.innerHTML = '<div class="user-item">No users</div>';
+        }
+      }
+
+      // Remove the problematic style deletion code and update file permissions
+      function showNoResults() {
+        permissionCards.style.display = "none";
+        noResults.style.display = "block";
+        fileInfo.style.display = "none";
+        document.getElementById("treeVisualization").style.display = "none";
+      }
+
+      function updateTreeVisualization(data) {
+        // Clear previous visualization
+        d3.select("#tree").html("");
+
+        // Set up dimensions
+        const margin = { top: 20, right: 90, bottom: 30, left: 90 };
+        const width = 960 - margin.left - margin.right;
+        const height = 800 - margin.top - margin.bottom;
+
+        // Create SVG container
+        const svg = d3
+          .select("#tree")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        // Create tree layout
+        const tree = d3.tree().size([height, width]);
+
+        // Create hierarchy
+        const root = d3.hierarchy(data);
+        const treeData = tree(root);
+
+        // Create tooltip
+        const tooltip = d3
+          .select("body")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
+
+        // Add links
+        svg
+          .selectAll(".link")
+          .data(treeData.links())
+          .enter()
+          .append("path")
+          .attr("class", "link")
+          .attr(
+            "d",
+            d3
+              .linkHorizontal()
+              .x((d) => d.y)
+              .y((d) => d.x)
+          );
+
+        // Add nodes
+        const node = svg
+          .selectAll(".node")
+          .data(treeData.descendants())
+          .enter()
+          .append("g")
+          .attr("class", (d) => {
+            let nodeClass = "node";
+            if (d.depth === 0) nodeClass += " node-file";
+            else if (d.depth === 1) {
+              if (d.data.name === "Owners") nodeClass += " node-owner";
+              else if (d.data.name === "Editors") nodeClass += " node-writer";
+              else if (d.data.name === "Commenters")
+                nodeClass += " node-commenter";
+              else if (d.data.name === "Viewers") nodeClass += " node-reader";
+            } else {
+              nodeClass += " node-user role-" + d.data.role;
+            }
+            return nodeClass;
+          })
+          .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+        // Add circles to nodes with different sizes based on depth
+        node.append("circle").attr("r", (d) => {
+          if (d.depth === 0) return 12; // Main file node
+          if (d.depth === 1) return 8; // Category nodes
+          return 6; // User nodes
+        });
+
+        // Add labels to nodes
+        node
+          .append("text")
+          .attr("dy", ".35em")
+          .attr("x", (d) => (d.depth === 0 ? -13 : d.children ? -10 : 10))
+          .attr("text-anchor", (d) =>
+            d.depth === 0 ? "end" : d.children ? "end" : "start"
+          )
+          .text((d) => d.data.name)
+          .style("fill-opacity", 0.9);
+
+        // Add tooltips for users
+        node
+          .on("mouseover", function (event, d) {
+            if (d.data.type === "user") {
+              tooltip.transition().duration(200).style("opacity", 0.9);
+              tooltip
+                .html(
+                  `
+              <strong>${d.data.displayName || d.data.name}</strong><br/>
+              Role: ${d.data.role}<br/>
+              Email: ${d.data.name}
+            `
+                )
+                .style("left", event.pageX + 10 + "px")
+                .style("top", event.pageY - 28 + "px");
+            }
+          })
+          .on("mouseout", function (d) {
+            tooltip.transition().duration(500).style("opacity", 0);
+          });
+
+        // Center the visualization
+        const treeWidth = width + margin.left + margin.right;
+        const treeHeight = height + margin.top + margin.bottom;
+        d3.select("#tree svg")
+          .attr("viewBox", `0 0 ${treeWidth} ${treeHeight}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+      }
+    </script>
+  </body>
+</html>

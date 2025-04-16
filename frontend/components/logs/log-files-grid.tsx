@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { FileJson, Trash2, Download } from 'lucide-react'
-import { TrafficTable } from '@/components/dashboard/traffic-table'
+import { TrafficTable } from '@/components/anyproxy/traffic-table'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 interface LogFile {
