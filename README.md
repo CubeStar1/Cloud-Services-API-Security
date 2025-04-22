@@ -249,7 +249,7 @@ Purpose: Provide a centralized interface for monitoring the entire pipeline, vis
 
 - **Backend**: Python, AnyProxy
 - **Models**: DeBERTa, CodeBERT, Random Forest
-- **Frontend**: Next.js, React, TypeScrit, Tailwind CSS
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
 - **APIs**: Google Gemini
 
 
