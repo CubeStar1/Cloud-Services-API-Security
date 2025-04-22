@@ -81,7 +81,7 @@ python labelling.py
 ### 3. Zero-Shot Learning (`/zsl`)
 
 #### CodeBERT Implementation
-Advanced technical text classification using CodeBERT:
+
 
 ```bash
 cd zsl/codebert
@@ -119,7 +119,6 @@ Modern Next.js application with interactive UI for the entire pipeline.
 - Interactive dashboard with model visualizations
 - File browser and viewer (excluding CSV files)
 - Workflow animations and pipeline visualization
-- Dark/light theme support
 
 #### Installation
 ```bash
