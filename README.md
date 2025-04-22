@@ -247,9 +247,9 @@ Purpose: Provide a centralized interface for monitoring the entire pipeline, vis
 
 ## Technologies Used
 
-- **Backend**: Python, Node.js, AnyProxy
+- **Backend**: Python, AnyProxy
 - **Models**: DeBERTa, CodeBERT, Random Forest
-- **Frontend**: Next.js, React, Tailwind CSS, Framer Motion
-- **APIs**: OpenAI GPT-4, Google Gemini
+- **Frontend**: Next.js, React, TypeScrit, Tailwind CSS
+- **APIs**: Google Gemini
 
 
