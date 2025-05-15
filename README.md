@@ -81,7 +81,7 @@ python labelling.py
 ### 3. Zero-Shot Learning (`/zsl`)
 
 #### CodeBERT Implementation
-Advanced technical text classification using CodeBERT:
+
 
 ```bash
 cd zsl/codebert
@@ -119,7 +119,6 @@ Modern Next.js application with interactive UI for the entire pipeline.
 - Interactive dashboard with model visualizations
 - File browser and viewer (excluding CSV files)
 - Workflow animations and pipeline visualization
-- Dark/light theme support
 
 #### Installation
 ```bash
@@ -247,10 +246,10 @@ Purpose: Provide a centralized interface for monitoring the entire pipeline, vis
 
 ## Technologies Used
 
-- **Backend**: Python, Node.js, AnyProxy
+- **Backend**: Python, AnyProxy
 - **Models**: DeBERTa, CodeBERT, Random Forest
-- **Frontend**: Next.js, React, Tailwind CSS, Framer Motion
-- **APIs**: OpenAI GPT-4, Google Gemini
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **APIs**: Google Gemini
 
 ## C Code Generation System Explained
 
