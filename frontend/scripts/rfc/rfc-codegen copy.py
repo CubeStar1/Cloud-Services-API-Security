@@ -81,7 +81,6 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     # Write header
     write_line("#include <stdio.h>")
     write_line("#include <string.h>")
-    write_line("#include <ctype.h>")  # Needed for tolower() and isalnum()
     write_line("")
 
     # Add hash table implementation
@@ -177,7 +176,7 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line(f"    for(int i = 0; i < {len(feature_names)}; i++) {{", 1)
     write_line("        features[i] = 0.0f;", 2)
     write_line("    }", 1)
-    write_line("", 1)
+    write_line("")
 
     # Process input fields
     write_line("    // Process each input field", 1)
@@ -191,38 +190,26 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line("        referer ? referer : \"\",", 2)
     write_line("        accept ? accept : \"\"", 2)
     write_line("    };", 1)
-    write_line("", 1)
+    write_line("")
 
-    write_line("    char token_buffer[1024]; // Buffer for current token", 1)
-    write_line("    int token_len;", 1)
-    write_line("", 1)
+    write_line("    char buffer[4096];  // Buffer for tokenization", 1)
+    write_line("    char* token;", 1)
+    write_line("")
     
-    write_line("    // Process each input field, mimicking CountVectorizer tokenization", 1)
+    write_line("    // Process each input field", 1)
     write_line("    for (int i = 0; i < 8; i++) {", 1)
-    write_line("        const char* p = inputs[i];", 2)
-    write_line("        while (*p) {", 2)
-    write_line("            // Skip non-alphanumeric characters", 3)
-    write_line("            while (*p && !isalnum((unsigned char)*p)) {", 3)
-    write_line("                p++;", 4)
+    write_line("        if (!inputs[i] || !inputs[i][0]) continue;", 2)
+    write_line("        strncpy(buffer, inputs[i], sizeof(buffer) - 1);", 2)
+    write_line("        buffer[sizeof(buffer) - 1] = '\\0';", 2)
+    write_line("")
+    write_line("        // Tokenize input", 2)
+    write_line("        token = strtok(buffer, \" \\t\\n\\r/:.?=&\");", 2)
+    write_line("        while (token) {", 2)
+    write_line("            int feature_idx = find_feature(token);", 3)
+    write_line("            if (feature_idx >= 0) {", 3)
+    write_line("                features[feature_idx] = 1.0f;", 4)
     write_line("            }", 3)
-    write_line("            if (!*p) break; // End of string", 3)
-    write_line("", 3)
-    write_line("            // Mark start of token and find its end", 3)
-    write_line("            const char* token_start = p;", 3)
-    write_line("            token_len = 0;", 3)
-    write_line("            while (*p && isalnum((unsigned char)*p) && token_len < sizeof(token_buffer) - 1) {", 3)
-    write_line("                token_buffer[token_len++] = tolower((unsigned char)*p);", 4)
-    write_line("                p++;", 4)
-    write_line("            }", 3)
-    write_line("            token_buffer[token_len] = '\\0'; // Null-terminate the token", 3)
-    write_line("", 3)
-    write_line("            // Process token if length >= 2 (like \\w\\w+)", 3)
-    write_line("            if (token_len >= 2) {", 3)
-    write_line("                int feature_idx = find_feature(token_buffer);", 4)
-    write_line("                if (feature_idx >= 0) {", 4)
-    write_line("                    features[feature_idx] = 1.0f;", 5)
-    write_line("                }", 4)
-    write_line("            }", 3)
+    write_line("            token = strtok(NULL, \" \\t\\n\\r/:.?=&\");", 3)
     write_line("        }", 2)
     write_line("    }", 1)
     write_line("}")
@@ -266,78 +253,78 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line("}")
     write_line("")
 
-    # # Function to process a batch of test samples
-    # write_line("void process_test_samples() {")
-    # write_line("    float features[5000];  // Feature array for predictions", 1)
-    # write_line("    int total_samples = 0, correct_service = 0, correct_activity = 0;", 1)
-    # write_line("    int predicted_service, predicted_activity;  // Declare prediction variables once", 1)
-    # write_line("", 1)
+    # Function to process a batch of test samples
+    write_line("void process_test_samples() {")
+    write_line("    float features[5000];  // Feature array for predictions", 1)
+    write_line("    int total_samples = 0, correct_service = 0, correct_activity = 0;", 1)
+    write_line("    int predicted_service, predicted_activity;  // Declare prediction variables once", 1)
+    write_line("", 1)
 
-    # # Write test data as C array initializers
-    # for idx, row in test_data.iterrows():
-    #     write_line(f'    // Test sample {idx + 1}', 1)
+    # Write test data as C array initializers
+    for idx, row in test_data.iterrows():
+        write_line(f'    // Test sample {idx + 1}', 1)
         
-    #     # Helper function to sanitize and escape strings
-    #     def sanitize_string(s):
-    #         if pd.isna(s):
-    #             return ""
-    #         # Escape backslashes and quotes first
-    #         s = str(s).replace('\\', '\\\\').replace('"', '\\"')
-    #         # Replace UTF-8 charset declaration with escaped version
-    #         s = s.replace('charset=UTF-8', 'charset=\\\"UTF-8\\\"')
-    #         # Handle other special characters if needed
-    #         return s
+        # Helper function to sanitize and escape strings
+        def sanitize_string(s):
+            if pd.isna(s):
+                return ""
+            # Escape backslashes and quotes first
+            s = str(s).replace('\\', '\\\\').replace('"', '\\"')
+            # Replace UTF-8 charset declaration with escaped version
+            s = s.replace('charset=UTF-8', 'charset=\\\"UTF-8\\\"')
+            # Handle other special characters if needed
+            return s
 
-    #     # Sanitize all input strings
-    #     host = sanitize_string(row["headers_Host"])
-    #     url = sanitize_string(row["url"])
-    #     method = sanitize_string(row["method"])
-    #     origin = sanitize_string(row.get("requestHeaders_Origin", ""))
-    #     content_type = sanitize_string(row.get("requestHeaders_Content_Type", ""))
-    #     response_type = sanitize_string(row.get("responseHeaders_Content_Type", ""))
-    #     referer = sanitize_string(row.get("requestHeaders_Referer", ""))
-    #     accept = sanitize_string(row.get("requestHeaders_Accept", ""))
+        # Sanitize all input strings
+        host = sanitize_string(row["headers_Host"])
+        url = sanitize_string(row["url"])
+        method = sanitize_string(row["method"])
+        origin = sanitize_string(row.get("requestHeaders_Origin", ""))
+        content_type = sanitize_string(row.get("requestHeaders_Content_Type", ""))
+        response_type = sanitize_string(row.get("responseHeaders_Content_Type", ""))
+        referer = sanitize_string(row.get("requestHeaders_Referer", ""))
+        accept = sanitize_string(row.get("requestHeaders_Accept", ""))
 
-    #     # Write sanitized strings
-    #     write_line(f'    const char* host_{idx} = "{host}";', 1)
-    #     write_line(f'    const char* url_{idx} = "{url}";', 1)
-    #     write_line(f'    const char* method_{idx} = "{method}";', 1)
-    #     write_line(f'    const char* origin_{idx} = "{origin}";', 1)
-    #     write_line(f'    const char* content_type_{idx} = "{content_type}";', 1)
-    #     write_line(f'    const char* response_type_{idx} = "{response_type}";', 1)
-    #     write_line(f'    const char* referer_{idx} = "{referer}";', 1)
-    #     write_line(f'    const char* accept_{idx} = "{accept}";', 1)
-    #     write_line("", 1)
+        # Write sanitized strings
+        write_line(f'    const char* host_{idx} = "{host}";', 1)
+        write_line(f'    const char* url_{idx} = "{url}";', 1)
+        write_line(f'    const char* method_{idx} = "{method}";', 1)
+        write_line(f'    const char* origin_{idx} = "{origin}";', 1)
+        write_line(f'    const char* content_type_{idx} = "{content_type}";', 1)
+        write_line(f'    const char* response_type_{idx} = "{response_type}";', 1)
+        write_line(f'    const char* referer_{idx} = "{referer}";', 1)
+        write_line(f'    const char* accept_{idx} = "{accept}";', 1)
+        write_line("", 1)
         
-    #     write_line(f'    printf("Processing sample {idx + 1}...\\n");', 1)
-    #     write_line(f'    extract_features(host_{idx}, url_{idx}, method_{idx}, origin_{idx},', 1)
-    #     write_line(f'                    content_type_{idx}, response_type_{idx},', 1)
-    #     write_line(f'                    referer_{idx}, accept_{idx}, features);', 1)
-    #     write_line("", 1)
+        write_line(f'    printf("Processing sample {idx + 1}...\\n");', 1)
+        write_line(f'    extract_features(host_{idx}, url_{idx}, method_{idx}, origin_{idx},', 1)
+        write_line(f'                    content_type_{idx}, response_type_{idx},', 1)
+        write_line(f'                    referer_{idx}, accept_{idx}, features);', 1)
+        write_line("", 1)
         
-    #     write_line("    predicted_service = predict_service(features);", 1)
-    #     write_line("    predicted_activity = predict_activity(features);", 1)
+        write_line("    predicted_service = predict_service(features);", 1)
+        write_line("    predicted_activity = predict_activity(features);", 1)
         
-    #     # Add actual labels for comparison
-    #     true_service = row['service_encoded']
-    #     true_activity = row['activityType_encoded']
+        # Add actual labels for comparison
+        true_service = row['service_encoded']
+        true_activity = row['activityType_encoded']
         
-    #     write_line(f'    printf("  Predicted Service: %d (True: {true_service})\\n", predicted_service);', 1)
-    #     write_line(f'    printf("  Predicted Activity: %d (True: {true_activity})\\n", predicted_activity);', 1)
-    #     write_line("", 1)
+        write_line(f'    printf("  Predicted Service: %d (True: {true_service})\\n", predicted_service);', 1)
+        write_line(f'    printf("  Predicted Activity: %d (True: {true_activity})\\n", predicted_activity);', 1)
+        write_line("", 1)
         
-    #     write_line(f"    if (predicted_service == {true_service}) correct_service++;", 1)
-    #     write_line(f"    if (predicted_activity == {true_activity}) correct_activity++;", 1)
-    #     write_line("    total_samples++;", 1)
-    #     write_line("", 1)
+        write_line(f"    if (predicted_service == {true_service}) correct_service++;", 1)
+        write_line(f"    if (predicted_activity == {true_activity}) correct_activity++;", 1)
+        write_line("    total_samples++;", 1)
+        write_line("", 1)
 
-    # # Print final accuracy statistics
-    # write_line('    printf("\\nFinal Results:\\n");', 1)
-    # write_line('    printf("Total samples: %d\\n", total_samples);', 1)
-    # write_line('    printf("Service Accuracy: %.4f\\n", (float)correct_service / total_samples);', 1)
-    # write_line('    printf("Activity Accuracy: %.4f\\n", (float)correct_activity / total_samples);', 1)
-    # write_line("}")
-    # write_line("")
+    # Print final accuracy statistics
+    write_line('    printf("\\nFinal Results:\\n");', 1)
+    write_line('    printf("Total samples: %d\\n", total_samples);', 1)
+    write_line('    printf("Service Accuracy: %.4f\\n", (float)correct_service / total_samples);', 1)
+    write_line('    printf("Activity Accuracy: %.4f\\n", (float)correct_activity / total_samples);', 1)
+    write_line("}")
+    write_line("")
 
     # Generate a simple main function for testing individual samples
     write_line("int main() {")
@@ -366,9 +353,9 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line('    printf("  Service: %d\\n", predicted_service);', 1)
     write_line('    printf("  Activity: %d\\n", predicted_activity);', 1)
     write_line("", 1)
-    # write_line('    printf("\\nTo run full test set, uncomment process_test_samples() in main()\\n");', 1)
-    # write_line("    process_test_samples();  // Uncomment to run full test set", 1)
-    # write_line("", 1)
+    write_line('    printf("\\nTo run full test set, uncomment process_test_samples() in main()\\n");', 1)
+    write_line("    process_test_samples();  // Uncomment to run full test set", 1)
+    write_line("", 1)
     write_line("    return 0;", 1)
     write_line("}")
 

@@ -252,4 +252,57 @@ Purpose: Provide a centralized interface for monitoring the entire pipeline, vis
 - **Frontend**: Next.js, React, Tailwind CSS, Framer Motion
 - **APIs**: OpenAI GPT-4, Google Gemini
 
+## C Code Generation System Explained
+
+The Random Forest Classifier is converted into optimized C code for runtime efficiency. Here's how the system works, explained in a simple way:
+
+### Hash Table System (Like a Library)
+
+Imagine our system as a library with thousands of words (features). We need to find these words quickly when processing API requests. Here's how it works:
+
+#### 1. The Library Structure
+```c
+typedef struct {
+    int indices[10];  // Like 10 spots on each shelf
+    int count;        // How many words are on this shelf
+} HashBucket;
+
+typedef struct {
+    const char* term;      // The actual word
+    int feature_index;     // Word's special number
+} FeatureEntry;
+```
+
+#### 2. Organization System
+- We have 8,192 shelves (HASH_TABLE_SIZE)
+- Each shelf can hold up to 10 words
+- Words are placed on shelves based on their "hash" (like a shelf number)
+
+#### 3. Real Example
+Let's say we have these API words:
+```
+Words to store:
+- "GET"
+- "POST"
+- "api"
+- "users"
+```
+
+The system organizes them like this:
+```
+Shelf 1234: ["GET", "api"]        // Two words on this shelf
+Shelf 5678: ["POST"]              // One word on this shelf
+... other shelves ...
+```
+
+#### 4. Finding Words
+When processing an API request like "GET /api/users":
+
+1. Split into words: ["GET", "api", "users"]
+2. For each word:
+   - Calculate its shelf number (hash)
+   - Go directly to that shelf
+   - Look through at most 10 words
+   - If found, mark it in our features
+
 

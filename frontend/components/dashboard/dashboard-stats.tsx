@@ -1,36 +1,29 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Activity, BarChart3, ServerCrash } from 'lucide-react'
+import { Activity, BarChart3, ServerCrash, Zap, Play, Square } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 // Define props for the component
 interface DashboardStatsProps {
   totalRequests: number;
   anomaliesCount: number;
-  selectedModel: string;
-  isRunning: boolean; // To potentially adjust display based on status
+  mostFrequentService: { service: string; count: number } | null;
+  isRunning: boolean;
+  onToggleRun: () => void;
 }
-
-// Mapping for display names
-const modelDisplayNames: { [key: string]: string } = {
-  'deberta': 'DeBERTa',
-  'codebert': 'CodeBERT',
-  'random-forest': 'Random Forest'
-};
 
 export function DashboardStats({ 
   totalRequests, 
   anomaliesCount, 
-  selectedModel,
-  isRunning
+  mostFrequentService,
+  isRunning,
+  onToggleRun
 }: DashboardStatsProps) {
-  const displayModelName = modelDisplayNames[selectedModel] || selectedModel; // Fallback to key if not found
-
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          {/* Changed title slightly */}
           <CardTitle className="text-sm font-medium">Total Requests Captured</CardTitle>
           <Activity className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
@@ -43,7 +36,7 @@ export function DashboardStats({
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Classified Requests</CardTitle>
+          <CardTitle className="text-sm font-medium">Total Requests Classified</CardTitle>
           <ServerCrash className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -53,15 +46,28 @@ export function DashboardStats({
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Active Model</CardTitle>
+          <CardTitle className="text-sm font-medium">Top Application</CardTitle>
           <BarChart3 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          {/* Display the selected model name */}
-          <div className="text-2xl font-bold">{displayModelName}</div>
+          <div className="text-2xl font-bold">
+            {mostFrequentService ? mostFrequentService.service : 'N/A'}
+          </div>
           <p className="text-xs text-muted-foreground">
-            {isRunning ? 'Currently classifying' : 'Selected for next run'}
+            {mostFrequentService ? `(${mostFrequentService.count} requests)` : 'No classifications yet'}
           </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Start/Stop Classification</CardTitle>
+          <Zap className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent className="flex items-center justify-center pt-4 pb-2">
+          <Button onClick={onToggleRun} variant={isRunning ? "destructive" : "default"}>
+            {isRunning ? <Square className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
+            {isRunning ? 'Stop Process' : 'Start Process'}
+          </Button>
         </CardContent>
       </Card>
     </div>

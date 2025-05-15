@@ -30,7 +30,7 @@ if %ERRORLEVEL% NEQ 0 (
 :: Compile the C code
 echo.
 echo Step 3: Compiling C code...
-gcc api_classifier.c -o api_classifier.exe
+gcc api_classifier.c -o api_classifier.exe -lm
 if %ERRORLEVEL% NEQ 0 (
     echo Error: C compilation failed!
     cd "%ORIGINAL_DIR%"

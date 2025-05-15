@@ -3,7 +3,7 @@ import { SidebarConfig } from "@/components/global/app-sidebar";
 
 const sidebarConfig: SidebarConfig = {
   brand: {
-    title: "Cloud API Security",
+    title: "Dashboard",
     icon: Icons.shield,
     href: "/"
   },

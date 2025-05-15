@@ -3,13 +3,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Toaster, toast } from 'sonner'
 import { DashboardStats } from '@/components/dashboard/dashboard-stats'
-import { ModelSelectionPanel } from '@/components/dashboard/model-selection-panel'
-import { ProcessControlPanel } from '@/components/dashboard/process-control-panel'
 import { LiveDataFeed } from '@/components/dashboard/live-data-feed'
 import { LiveClassificationResults } from '@/components/dashboard/live-classification-results'
 import { ServiceFrequencyChart } from '@/components/dashboard/service-frequency-chart'
 import { ActivityFrequencyChart } from '@/components/dashboard/activity-frequency-chart'
-import { Play, Square } from 'lucide-react'
 
 // Define interfaces for data types (can be moved to a types file)
 interface LogEntry {
@@ -69,7 +66,6 @@ const MAX_ITEMS = 50; // Max items to keep in live lists
 
 export default function DashboardPage() {
     const [isRunning, setIsRunning] = useState(false);
-    const [selectedModel, setSelectedModel] = useState('random-forest');
     const [liveLogs, setLiveLogs] = useState<LogEntry[]>([]);
     const [classificationResults, setClassificationResults] = useState<ClassificationResult[]>([]);
 
@@ -125,21 +121,16 @@ export default function DashboardPage() {
         return Object.entries(counts).map(([activity, count]) => ({ activity, count })).sort((a, b) => b.count - a.count); // Sort descending
     }, [classificationResults]);
 
+    // Calculate most frequent service for the stats card
+    const mostFrequentService = useMemo(() => {
+        return serviceFrequency.length > 0 ? serviceFrequency[0] : null;
+    }, [serviceFrequency]);
+
     // Handlers
     const handleToggleRun = useCallback(() => {
         const newState = !isRunning;
         setIsRunning(newState);
-        toast(newState ? 'Started live process' : 'Stopped live process', {
-          description: `Using model: ${selectedModel}`,
-          icon: newState ? <Play className="h-4 w-4" /> : <Square className="h-4 w-4" />
-        })
-    }, [isRunning, selectedModel]);
-
-    const handleModelChange = useCallback((value: string) => {
-        setSelectedModel(value);
-        if(isRunning) {
-            toast('Model selection changed', { description: `Will use ${value} for new classifications.` })
-        }
+        toast(newState ? 'Started live process' : 'Stopped live process') 
     }, [isRunning]);
 
     return (
@@ -147,26 +138,14 @@ export default function DashboardPage() {
             <div className="space-y-6">
                 <h1 className="text-3xl font-bold">Live Dashboard</h1>
                 
-                {/* Pass calculated stats and state to DashboardStats */}
+                {/* Pass updated props to DashboardStats */}
                 <DashboardStats 
-                    isRunning={isRunning}
-                    selectedModel={selectedModel}
                     totalRequests={totalRequests}
                     anomaliesCount={anomaliesCount}
+                    mostFrequentService={mostFrequentService}
+                    isRunning={isRunning}
+                    onToggleRun={handleToggleRun}
                 />
-
-                {/* Control Panels Side-by-Side */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ModelSelectionPanel 
-                        selectedModel={selectedModel} 
-                        onModelChange={handleModelChange} 
-                        disabled={isRunning} // Disable model change while running
-                    />
-                    <ProcessControlPanel 
-                        isRunning={isRunning} 
-                        onToggleRun={handleToggleRun} 
-                    />
-                </div>
 
                 {/* Frequency Charts Side-by-Side */}
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
