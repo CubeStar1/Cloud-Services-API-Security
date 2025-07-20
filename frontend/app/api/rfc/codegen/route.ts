@@ -2,15 +2,28 @@ import { NextResponse } from 'next/server'
 import { spawn, ChildProcess } from 'child_process'
 import path from 'path'
 
-export async function POST() {
+export async function POST(request: Request) {
     try {
+        const body = await request.json()
+        const { codegenType } = body 
+
         const output: string[] = []
-        const scriptPath = path.join(process.cwd(), 'scripts', 'rfc', 'run_rfc.bat')
+        let scriptPath = ''
+        let scriptCwd = ''
+
+        const projectRoot = process.cwd() 
+
+        if (codegenType === 'emlearn') {
+            scriptPath = path.join(projectRoot,  'scripts', 'rfc', 'em-learn', 'windows-scripts', 'run_rfc_em_inference.bat')
+            scriptCwd = path.join(projectRoot,  'scripts', 'rfc', 'em-learn', 'windows-scripts')
+        } else { // Default to 'normal'
+            scriptPath = path.join(projectRoot,  'scripts', 'rfc', 'run_rfc.bat')
+            scriptCwd = path.join(projectRoot,  'scripts', 'rfc')
+        }
 
         return new Promise((resolve) => {
-            let childProcess: ChildProcess
-            childProcess = spawn('cmd.exe', ['/c', scriptPath], {
-                cwd: path.join(process.cwd(), 'scripts', 'rfc')
+            const childProcess: ChildProcess = spawn('cmd.exe', ['/c', scriptPath], {
+                cwd: scriptCwd,
             })
 
             childProcess.stdout?.on('data', (data: Buffer) => {
@@ -32,7 +45,7 @@ export async function POST() {
                 } else {
                     resolve(NextResponse.json({ 
                         success: false, 
-                        error: 'Code generation failed', 
+                        error: `Script execution failed with code ${code}`,
                         output 
                     }, { status: 500 }))
                 }
@@ -42,15 +55,15 @@ export async function POST() {
                 resolve(NextResponse.json({ 
                     success: false, 
                     error: error.message,
-                    output
+                    output // Include output accumulated so far, if any
                 }, { status: 500 }))
             })
         })
-    } catch (error) {
-        console.error('Error during code generation:', error)
+    } catch (error: any) {
+        console.error('Error during code generation request setup:', error)
         return NextResponse.json({ 
             success: false, 
-            error: 'Internal server error' 
+            error: error.message || 'Internal server error' 
         }, { status: 500 })
     }
 } 

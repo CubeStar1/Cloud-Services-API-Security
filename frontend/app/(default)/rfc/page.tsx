@@ -10,6 +10,8 @@ import { TreesIcon, AlertCircle, Code2Icon, Copy, Check, Expand, MinusSquare } f
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/components/ui/use-toast"
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-block"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 
 interface CodeFile {
     name: string;
@@ -36,6 +38,7 @@ export default function RandomForestPage() {
     const [copied, setCopied] = useState(false)
     const { toast } = useToast()
     const [isExpanded, setIsExpanded] = useState(false)
+    const [codegenType, setCodegenType] = useState<'normal' | 'emlearn'>('normal')
 
     // Fetch CSV and model files
     useEffect(() => {
@@ -166,7 +169,8 @@ export default function RandomForestPage() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    file: selectedFile.name
+                    file: selectedFile.name,
+                    codegenType: codegenType
                 })
             })
 
@@ -175,11 +179,11 @@ export default function RandomForestPage() {
             if (response.ok) {
                 setGenerationOutput(data.output || [])
                 // Refresh code files after generation
-                const codeResponse = await fetch('/api/rfc/code')
-                if (codeResponse.ok) {
-                    const codeData = await codeResponse.json()
-                    setCodeFiles(codeData.files)
-                }
+                // const codeResponse = await fetch('/api/rfc/code')
+                // if (codeResponse.ok) {
+                //     const codeData = await codeResponse.json()
+                //     setCodeFiles(codeData.files)
+                // }
                 toast({
                     title: "Success",
                     description: "Code generation completed successfully"
@@ -324,6 +328,17 @@ export default function RandomForestPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                <RadioGroup defaultValue="normal" onValueChange={(value) => setCodegenType(value as 'normal' | 'emlearn')} className="mb-4 flex space-x-4">
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="normal" id="normal" />
+                                        <Label htmlFor="normal">Normal</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="emlearn" id="emlearn" />
+                                        <Label htmlFor="emlearn">Emlearn</Label>
+                                    </div>
+                                </RadioGroup>
+
                                 <div className="grid grid-cols-2 gap-2 mb-4">
                                     {codeFiles.map((file) => (
                                         <Button
@@ -416,11 +431,11 @@ export default function RandomForestPage() {
                             <CardContent className="space-y-4">
                                 <Button
                                     onClick={startCodeGeneration}
-                                    disabled={isGenerating}
+                                    disabled={isGenerating || !selectedFile}
                                     className="w-full"
                                 >
                                     <Code2Icon className="mr-2 h-4 w-4" />
-                                    {isGenerating ? 'Generating...' : 'Generate Code'}
+                                    {isGenerating ? 'Generating...' : `Generate ${codegenType === 'emlearn' ? 'Emlearn' : 'Normal'} Code`}
                                 </Button>
 
                                 <ProgressDisplay

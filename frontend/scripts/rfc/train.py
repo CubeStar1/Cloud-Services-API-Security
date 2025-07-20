@@ -19,7 +19,7 @@ BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fi
 
 # Path configuration
 PATHS = {
-    'input_data': os.path.join(BASE_PATH, 'data', 'output', 'codebert'),
+    'input_data': os.path.join(BASE_PATH, 'data', 'output', 'codebert', 'predictions'),
     'output_data': os.path.join(BASE_PATH, 'data', 'output', 'rfc'),
     'models': os.path.join(BASE_PATH, 'data', 'models', 'rfc'),
     'test_data': os.path.join(BASE_PATH, 'data', 'output', 'rfc', 'test')

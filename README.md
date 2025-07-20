@@ -15,6 +15,7 @@ Cloud-Services-API-Security/
 │   ├── components/          # Reusable UI components
 │   ├── public/              # Static assets
 │   └── lib/                 # Utility functions and hooks
+│   └── data/                # Dataset storage
 ├── labelling/              # Initial labeling using GPT-4/Gemini
 │   ├── labelling.py       # Main labeling script
 ├── zsl/                    # Zero-shot learning models
@@ -29,12 +30,10 @@ Cloud-Services-API-Security/
 ## Project Overview
 
 1. **Data Collection**: 
-   - Automated agent for data collection
-   - Manual proxy-based traffic capture
 2. **Initial Labeling**: 
 3. **Zero-Shot Learning**
-4. **Training**: 
-   - Random Forest Classifier on labeled data
+4. **Random Forest Training and C Code Generation**: 
+   - Random Forest Classifier on labeled data and C Code Generation
 5. **Frontend Application**:
    - Interactive dashboard
    - Data visualization
@@ -43,17 +42,8 @@ Cloud-Services-API-Security/
 ## Components
 
 ### 1. Data Collection (`/data-collection`)
-Two approaches for gathering cloud service traffic:
 
-#### a) Automated Agent
-```bash
-cd data-collection/agent
-npm install
-cp .env.example .env
-npm run build && npm start
-```
-
-#### b) Manual Capture
+#### Manual Capture
 ```bash
 cd data-collection/manual
 anyproxy --port 8001 --rule general-json-key.js
@@ -148,18 +138,26 @@ git clone https://github.com/CubeStar1/Cloud-Services-API-Security.git
 cd Cloud-Services-API-Security
 ```
 
-2. Install Python dependencies:
+2. Set up Python virtual environment and install dependencies:
 ```bash
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+# source venv/bin/activate
+
+# Install Python dependencies
 pip install -r requirements.txt
 ```
 
-3. Set up Node.js components:
+3. Set up frontend components:
 ```bash
-cd data-collection/agent
+cd frontend
 npm install
-
-cd ../../frontend
-npm install
+cd ..
 ```
 
 4. Install AnyProxy:
@@ -169,79 +167,137 @@ npm install -g anyproxy
 
 ## Configuration and Workflow
 
-### 1. Data Collection
-- Configure services in `data-collection/agent/services.config.ts`
-  - Define cloud services to monitor
-  - Set up authentication credentials
-- Set up proxy rules in `data-collection/manual/general-json-key.js`
-  - Define traffic capture patterns
-
-Purpose: Gather raw HTTP traffic data from various cloud services through automated and manual methods.
-
-### 2. Initial Labeling (Training Data Generation)
-- Configure API keys in `labelling/.env`:
-  ```
-  OPENAI_API_KEY=your_key
-  GOOGLE_API_KEY=your_key
-  ```
-- Adjust settings in `labelling/labelling.py`:
+### File Structure and Paths
+- The project uses two main data directories:
+  - Root `data/` folder: Used by command-line scripts
+  - `frontend/data/` folder: Used by the web GUI
+- Script paths (like in `zsl/codebert/inference.py`) point to the root `data/` directory
+- Example path structure in scripts:
   ```python
-  CONFIG = {
-      'batch_size': 10,
-      'use_openai': True  # Toggle between OpenAI/Gemini
+  BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+  PATHS = {
+      'train_data': os.path.join(BASE_PATH, "data", "labelled", "train_set.xlsx"),
+      'test_data': os.path.join(BASE_PATH, "data", "labelled", "test_set.xlsx"),
+      'predictions_folder': os.path.join(BASE_PATH, "data", "output", "codebert", "predictions"),
   }
   ```
 
-Purpose: Generate initial labeled dataset using GPT-4/Gemini to train the CodeBERT model.
+## 1. Command-Line Interface (CLI) Workflow
 
-### 3. Zero-Shot Learning
+### Data Collection
+1. Configure proxy rules:
+   ```bash
+   # Edit the proxy configuration
+   nano data-collection/manual/general-json-key.js
+   ```
+   - Define traffic capture patterns
+   - Set up any required service configurations
+
+2. Start the proxy server:
+   ```bash
+   cd data-collection/manual
+   anyproxy --port 8001 --rule general-json-key.js
+   ```
+   - Captured data is stored in `data/raw/`
+
+### Data Processing Pipeline
+1. **Convert Logs to CSV**
+   ```bash
+   # Process raw logs into CSV format
+   cd data-collection/manual
+   python csv-creation-without-tagging.py
+   ```
+   - Outputs structured CSV files to `data/logs/csv/`
+
+2. **Run DeBERTa Inference (Zero-Shot Learning)**
+   ```bash
+   cd zsl/deberta
+   python inference.py 
+   ```
+   - Processes CSV files from the logs
+   - Outputs predictions to `data/output/deberta/`
+
+3. **Run CodeBERT on DeBERTa Output**
+
+   ```bash
+   cd zsl/codebert
+   python train.py 
+   ```
+   ```bash
+   cd zsl/codebert
+   python inference.py 
+   ```
+   - Takes DeBERTa predictions as input
+   - Outputs refined predictions to `data/output/codebert/`
+
+4. **Run Random Forest Classifier**
+   ```bash
+   cd rfc
+   python train.py 
+   ```
+   - Processes CodeBERT outputs
+   - Generates final predictions in `data/output/rfc/`
+
+## 2. Web GUI Workflow
+
+### Starting the GUI
+1. Start the frontend and backend servers:
+   ```bash
+   # In one terminal
+   cd frontend
+   npm run dev
+   
+   ```
+2. Access the GUI at `http://localhost:3000`
+
+### Main GUI Routes and Workflow
+
+#### 1. `/anyproxy` - Data Collection
+   - Configure and control the AnyProxy instance
+   - View captured traffic in real-time
+   - Raw data stored in `frontend/data/raw/`
+
+#### 2. `/logs` - Log Processing
+   - Convert raw logs to CSV format
+   - Processed logs saved in `frontend/data/logs/csv/`
+   - View and filter processed logs
+
+#### 3. `/zsl/deberta` - DeBERTa Zero-Shot Learning
+   - Run inference on processed logs
+   - View and analyze predictions
+   - Outputs to `frontend/data/output/deberta/`
+
+#### 4. `/zsl/codebert` - CodeBERT Analysis
+   - Process DeBERTa outputs
+   - Refine predictions
+   - Outputs to `frontend/data/output/codebert/`
+
+#### 5. `/rfc` - Random Forest Classifier and C Code Generation
+   - Train and run the RFC model
+   - Ensure you have a clean, labelled output from CodeBERT in `frontend/data/output/codebert/predictions/`
+   - Outputs to `frontend/data/output/rfc/`
+   - C Code generated in `frontend/data/output/rfc/codegen/` for manual C code generation
+   - C Code generated in `frontend/data/output/rfc/em-codegen/` for C code generation using EM Learn Library (https://github.com/EmLearn/EmLearn)
+
+#### 6. `/files` - File Management
+   - Browse all generated files
+   - Download or delete files
+   - Navigate through output directories
+
+### Important Notes
+- The GUI and CLI use separate data directories to prevent conflicts
+- To share data between CLI and GUI, manually copy files between `data/` and `frontend/data/`
+- All outputs are timestamped for version control
+- The GUI provides visualizations and progress tracking not available in CLI
 Run both models on unlabeled traffic data:
 
-#### a) CodeBERT
-```bash
-cd zsl/codebert
-python inference.py 
-```
-
-#### b) DeBERTa
-```bash
-cd zsl/deberta
-python inference.py 
-```
-
-Purpose: Generate high-confidence predictions for both known and unknown patterns in the traffic data.
-
-### 4. Random Forest Training
-Configure in `rfc/train.py`:
-```python
-# Data processing
-features = [
-    'headers_Host',
-    'url',
-    'method',
-    'requestHeaders_Content_Type',
-    # ... other features
-]
-```
-
-Purpose: Train the final classifier using the combined predictions from CodeBERT and DeBERTa for service and activity classification.
-
-### 5. Frontend Application
-Start the interactive frontend application:
-
-```bash
-cd frontend
-npm run dev
-```
-
-Purpose: Provide a centralized interface for monitoring the entire pipeline, visualizing results, and managing files.
 
 ## Complete Workflow
 
 1. Collect API traffic data using AnyProxy
 2. Process and label initial data with GPT-4/Gemini
 3. Apply zero-shot learning with DeBERTa and CodeBERT
-4. Train Random Forest classifier on labeled data
+4. Train Random Forest classifier on labeled data and generate C code
 5. View results and manage files through the frontend application
 
 ## Technologies Used
@@ -249,7 +305,6 @@ Purpose: Provide a centralized interface for monitoring the entire pipeline, vis
 - **Backend**: Python, AnyProxy
 - **Models**: DeBERTa, CodeBERT, Random Forest
 - **Frontend**: Next.js, React, TypeScript, Tailwind CSS
-- **APIs**: Google Gemini
 
 ## C Code Generation System Explained
 

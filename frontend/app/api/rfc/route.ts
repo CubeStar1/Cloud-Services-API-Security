@@ -5,7 +5,7 @@ import fs from "fs"
 
 // Helper function to get CodeBERT output files
 function getCodeBertFiles() {
-    const codebertDir = path.join(process.cwd(), 'data', 'output', 'codebert')
+    const codebertDir = path.join(process.cwd(), 'data', 'output', 'codebert', 'predictions')
     
     if (!fs.existsSync(codebertDir)) {
         return []
