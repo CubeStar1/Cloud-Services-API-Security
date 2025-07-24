@@ -10,6 +10,7 @@ Cloud-Services-API-Security/
 │   ├── agent/                # Automated data collection
 │   └── manual/              # Manual traffic capture
 ├── data/                    # Dataset storage
+├── backend/                 # Backend API server
 ├── frontend/                # Next.js web application
 │   ├── app/                 # Next.js App Router structure
 │   ├── components/          # Reusable UI components
@@ -110,6 +111,7 @@ Modern Next.js application with interactive UI for the entire pipeline.
 - File browser and viewer (excluding CSV files)
 - Workflow animations and pipeline visualization
 
+
 #### Installation
 ```bash
 cd frontend
@@ -129,6 +131,33 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 - **DeBERTa/CodeBERT**: Model visualization interfaces
 - **RFC Generation**: Random Forest results
 - **Files**: File browser and management
+
+### 6. Backend API Server (`/backend`)
+
+FastAPI server with endpoints for:
+- Data collection
+- Initial labeling
+- Zero-shot learning
+- Random Forest training
+- C code generation
+
+#### Installation
+```bash
+
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+# source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the development server
+uvicorn backend.main:app --reload
+```
 
 ## Installation
 
@@ -160,7 +189,24 @@ npm install
 cd ..
 ```
 
-4. Install AnyProxy:
+4. Set up backend API server:
+```bash
+python -m venv venv
+
+# Activate the virtual environment
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+# source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the development server
+uvicorn backend.main:app --reload
+```
+
+5. Install AnyProxy:
 ```bash
 npm install -g anyproxy
 ```

@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/components/ui/use-toast"
 import { CodeBlock, CodeBlockCode, CodeBlockGroup } from "@/components/ui/code-block"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import RfcInferencePanel from "@/components/rfc/inference-panel"
 import { Label } from "@/components/ui/label"
 
 interface CodeFile {
@@ -239,6 +240,7 @@ export default function RandomForestPage() {
                     <TabsTrigger value="train">Training</TabsTrigger>
                     <TabsTrigger value="models">Models</TabsTrigger>
                     <TabsTrigger value="codegen">Code Generation</TabsTrigger>
+                    <TabsTrigger value="inference">Inference</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="train" className="space-y-4">
@@ -446,6 +448,11 @@ export default function RandomForestPage() {
                             </CardContent>
                         </Card>
                     </div>
+                </TabsContent>
+
+                {/* Inference Tab */}
+                <TabsContent value="inference">
+                    <RfcInferencePanel />
                 </TabsContent>
             </Tabs>
         </div>

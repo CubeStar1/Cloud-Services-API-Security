@@ -1,140 +1,53 @@
-import { NextRequest, NextResponse } from "next/server"
-import { spawn } from "child_process"
-import path from "path"
-import fs from "fs"
+import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
 
-// Helper function to get CodeBERT output files
-function getCodeBertFiles() {
-    const codebertDir = path.join(process.cwd(), 'data', 'output', 'codebert', 'predictions')
-    
-    if (!fs.existsSync(codebertDir)) {
-        return []
-    }
-
-    return fs.readdirSync(codebertDir)
-        .filter(file => file.endsWith('.csv'))
-        .map(file => {
-            const filePath = path.join(codebertDir, file)
-            const stats = fs.statSync(filePath)
-            return {
-                name: file,
-                path: filePath,
-                timestamp: stats.mtimeMs
-            }
-        })
-        .sort((a, b) => b.timestamp - a.timestamp)
-}
-
-// Helper function to get model files
-function getModelFiles() {
-    const modelDir = path.join(process.cwd(), 'data', 'models', 'rfc')
-    
-    if (!fs.existsSync(modelDir)) {
-        return []
-    }
-
-    return fs.readdirSync(modelDir)
-        .filter(file => file.endsWith('.joblib'))
-        .map(file => {
-            const filePath = path.join(modelDir, file)
-            const stats = fs.statSync(filePath)
-            return {
-                name: file,
-                path: filePath,
-                timestamp: stats.mtimeMs
-            }
-        })
-        .sort((a, b) => b.timestamp - a.timestamp)
-}
-
+/* GET ?type=models|predictions
+ * models        -> data/output/rfc/models  (joblib files)
+ * (default)     -> data/output/codebert/predictions (csv files)
+ */
 export async function GET(req: NextRequest) {
-    try {
-        const type = req.nextUrl.searchParams.get('type')
-        
-        if (type === 'models') {
-            return NextResponse.json({
-                files: getModelFiles()
-            })
-        }
+  try {
+    const backend = process.env.BACKEND_URL ?? 'http://localhost:8000';
+    const type = req.nextUrl.searchParams.get('type');
+    let params: any;
 
-        return NextResponse.json({
-            files: getCodeBertFiles()
-        })
-    } catch (error) {
-        console.error('Error fetching files:', error)
-        return NextResponse.json(
-            { error: 'Failed to fetch files' },
-            { status: 500 }
-        )
+    switch (type) {
+      case 'models': params = { subdir: 'output/rfc/models', ext: 'joblib' }
+        break;
+      case 'predictions': params = { subdir: 'output/codebert/predictions', ext: 'csv' }
+        break;
+      case 'test': params = { subdir: 'output/rfc/test', ext: 'csv' }
+        break;
+      default:
+        params = { subdir: 'output/codebert/predictions', ext: 'csv' }
+        break;
     }
+
+    const { data } = await axios.get(`${backend}/files`, { params });
+    return NextResponse.json({ files: data });
+  } catch (err: any) {
+    console.error('files-list error', err.message);
+    return NextResponse.json({ error: 'Failed to fetch files' }, { status: 500 });
+  }
 }
 
+/* POST { file } → triggers RFC Python training */
 export async function POST(req: NextRequest) {
-    try {
-        const { file } = await req.json()
-        
-        if (!file) {
-            return NextResponse.json(
-                { error: 'No file specified' },
-                { status: 400 }
-            )
-        }
+  try {
+    const { file } = await req.json();
+    if (!file)
+      return NextResponse.json({ error: 'No file specified' }, { status: 400 });
 
-        const pythonProcess = spawn('python', [
-            'scripts/rfc/train.py',
-            file
-        ])
-
-        let output: string[] = []
-        let error: string | null = null
-        let metrics: any = null
-
-        return new Promise((resolve) => {
-            pythonProcess.stdout.on('data', (data) => {
-                const lines = data.toString().split('\n').filter(Boolean)
-                output.push(...lines)
-            })
-
-            pythonProcess.stderr.on('data', (data) => {
-                error = data.toString()
-            })
-
-            pythonProcess.on('close', (code) => {
-                if (code === 0) {
-                    // Extract metrics from the output
-                    const serviceAccuracy = output.find(line => line.includes('Service Classification Accuracy:'))
-                    const activityAccuracy = output.find(line => line.includes('Activity Classification Accuracy:'))
-                    const uniqueServices = output.find(line => line.includes('Found'))?.match(/(\d+) unique services/)?.[1]
-                    const uniqueActivities = output.find(line => line.includes('Found'))?.match(/(\d+) unique activities/)?.[1]
-
-                    if (serviceAccuracy && activityAccuracy && uniqueServices && uniqueActivities) {
-                        metrics = {
-                            service_accuracy: parseFloat(serviceAccuracy.split(':')[1].trim()),
-                            activity_accuracy: parseFloat(activityAccuracy.split(':')[1].trim()),
-                            unique_services: parseInt(uniqueServices),
-                            unique_activities: parseInt(uniqueActivities)
-                        }
-                    }
-
-                    resolve(NextResponse.json({
-                        success: true,
-                        output,
-                        metrics
-                    }))
-                } else {
-                    resolve(NextResponse.json({
-                        success: false,
-                        error: error || 'Training failed',
-                        output
-                    }, { status: 500 }))
-                }
-            })
-        })
-    } catch (error) {
-        console.error('Error during training:', error)
-        return NextResponse.json(
-            { error: 'Training failed' },
-            { status: 500 }
-        )
-    }
-} 
+    const backend = process.env.BACKEND_URL ?? 'http://localhost:8000';
+    const { data } = await axios.post(
+      `${backend}/rfc/train/python`,
+      { input_file: file },
+      { timeout: 60 * 60 * 1000 } // 1 hour
+    );
+    return NextResponse.json(data);
+  } catch (err: any) {
+    const msg = err.response?.data?.error ?? err.message ?? 'Training failed';
+    const output = err.response?.data?.output ?? [];
+    return NextResponse.json({ error: msg, output }, { status: 500 });
+  }
+}

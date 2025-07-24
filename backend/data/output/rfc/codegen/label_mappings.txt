@@ -1,0 +1,100 @@
+Service Class Mappings:
+0: Canva
+1: ChatGPT
+2: Cisco Webex
+3: Dropbox
+4: Evernote
+5: Facebook
+6: Gmail
+7: GoTo
+8: Google Accounts
+9: Google Contacts
+10: Google Docs
+11: Google Drive
+12: Google Meet
+13: Google Play
+14: Google Sheets
+15: Google Slides
+16: Microsoft Office
+17: Microsoft OneDrive
+18: Microsoft OneDrive 
+19: Microsoft Outlook
+20: Microsoft Teams
+21: Quip
+22: Sheet DB
+23: Slack
+24: Spotify
+25: Unknown Service
+26: User Guiding
+27: Zendesk
+28: Zoom
+29: google drive
+
+Activity Class Mappings:
+0: APICall
+1: Access
+2: AccessDenied
+3: AccountCreate
+4: AddMember
+5: Attempt
+6: Audit
+7: Call
+8: Configure
+9: Create
+10: CreateChannel
+11: CreateFolder
+12: CreateItem
+13: CreateMeeting
+14: Delete
+15: Dowload
+16: Download
+17: Edit
+18: EmailSend
+19: FileDelete
+20: FileDownload
+21: FileEdit
+22: FilePreview
+23: FileShare
+24: FileUpload
+25: FolderCreate
+26: GenerateLead
+27: GuideView
+28: HealthCheck
+29: Identify
+30: Invite
+31: JoinMeeting
+32: Leave
+33: Leave Meeting
+34: LeaveMeeting
+35: Login
+36: Logout
+37: Meeting
+38: Message
+39: Payment
+40: PermissionChange
+41: PromptSubmit
+42: Query
+43: RateLimit
+44: Receive
+45: RegisterDevice
+46: Report
+47: ResponseReceive
+48: ScheduleMeeting
+49: Search
+50: Send
+51: ShareLinkCreate
+52: Subscription
+53: Sync
+54: SyncFolderItems
+55: SyncStart
+56: Track
+57: Unknown
+58: Unknown Activity
+59: Update
+60: Upload
+61: UserEngagement
+62: Verify
+63: Visualization
+64: download
+65: login
+66: upload

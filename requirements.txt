@@ -9,5 +9,8 @@ google-generativeai
 openai
 dotenv
 flask
+fastapi
+uvicorn[standard]
+groq
 dropbox
 

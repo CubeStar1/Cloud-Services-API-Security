@@ -5,3 +5,4 @@ data/*
 secure-file-sharing/f1.py
 __pycache__
 latex
+data/output/rfc/codegen/*

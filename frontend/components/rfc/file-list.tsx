@@ -19,20 +19,20 @@ interface FileListProps {
 export function FileList({ files, onSelect, selectedFile }: FileListProps) {
     if (!files.length) {
         return (
-            <div className="flex h-[450px] items-center justify-center rounded-md border border-dashed">
+            <div className="flex h-[250px] items-center justify-center rounded-md border border-dashed">
                 <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
                     <FileIcon className="h-10 w-10 text-muted-foreground" />
                     <h3 className="mt-4 text-lg font-semibold">No files found</h3>
                     <p className="mb-4 mt-2 text-sm text-muted-foreground">
                         No CodeBERT output files found. Process your data through CodeBERT first.
                     </p>
-                </div>
+                </div>  
             </div>
         )
     }
 
     return (
-        <ScrollArea className="h-[450px] rounded-md border">
+        <ScrollArea className="h-[250px] rounded-md border">
             <div className="p-4">
                 <div className="space-y-4">
                     {files.map((file) => (
