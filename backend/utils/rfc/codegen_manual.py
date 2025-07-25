@@ -9,8 +9,33 @@ import os
 from datetime import datetime
 from pathlib import Path
 
+# Project root is three levels up from this file (backend/utils/path_config.py)
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+DATA_DIR = PROJECT_ROOT / "backend" / "data"
 # Import path configuration
-from ..path_config import PATHS
+PATHS = {
+    "data_folder": DATA_DIR,
+    "raw_json_folder": DATA_DIR / "logs" / "raw-json",
+    "csv_folder": DATA_DIR / "logs" / "csv",
+    "labelled_folder": DATA_DIR / "labelled",
+    "metadata_file": DATA_DIR / "labelled" / "metadata.json",
+
+    # RFC Python training specific paths
+    "rfc_python_train_input": DATA_DIR / "output" / "codebert" / "predictions",
+    "rfc_python_train_models": DATA_DIR / "output" / "rfc" / "models",
+    "rfc_python_train_test": DATA_DIR / "output" / "rfc" / "test",
+
+    # RFC C code generation specific paths
+    "rfc_codegen_input_folder": DATA_DIR / "output" / "codebert" / "predictions",
+    "rfc_codegen_output_folder": DATA_DIR / "output" / "rfc" / "codegen",
+
+    # RFC Inference specific paths
+    "rfc_python_inference_input_folder": DATA_DIR / "output" / "codebert" / "predictions",
+    "rfc_python_inference_output_folder": DATA_DIR / "output" / "rfc" / "inference",
+    "rfc_python_inference_models": DATA_DIR / "output" / "rfc" / "models",
+    
+}
 
 def print_status(message: str):
     """Print status message with immediate flush"""
@@ -243,111 +268,130 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line("}")
     write_line("")
 
-    # Function to process a batch of test samples
-    write_line("void process_test_samples() {")
-    write_line("    float features[5000];  // Feature array for predictions", 1)
-    write_line("    int total_samples = 0, correct_service = 0, correct_activity = 0;", 1)
-    write_line("    int predicted_service, predicted_activity;  // Declare prediction variables once", 1)
-    write_line("", 1)
+    # # Function to process a batch of test samples
+    # write_line("void process_test_samples() {")
+    # write_line("    float features[5000];  // Feature array for predictions", 1)
+    # write_line("    int total_samples = 0, correct_service = 0, correct_activity = 0;", 1)
+    # write_line("    int predicted_service, predicted_activity;  // Declare prediction variables once", 1)
+    # write_line("", 1)
 
-    # Write test data as C array initializers
-    for idx, row in test_data.iterrows():
-        write_line(f'    // Test sample {idx + 1}', 1)
+    # # Write test data as C array initializers
+    # for idx, row in test_data.iterrows():
+    #     write_line(f'    // Test sample {idx + 1}', 1)
         
-        # Helper function to sanitize and escape strings
-        def sanitize_string(s):
-            if pd.isna(s):
-                return ""
-            # Escape backslashes and quotes first
-            s = str(s).replace('\\', '\\\\').replace('"', '\\"')
-            # Replace UTF-8 charset declaration with escaped version
-            s = s.replace('charset=UTF-8', 'charset=\\\"UTF-8\\\"')
-            # Handle other special characters if needed
-            return s
+    #     # Helper function to sanitize and escape strings
+    #     def sanitize_string(s):
+    #         if pd.isna(s):
+    #             return ""
+    #         # Escape backslashes and quotes first
+    #         s = str(s).replace('\\', '\\\\').replace('"', '\\"')
+    #         # Replace UTF-8 charset declaration with escaped version
+    #         s = s.replace('charset=UTF-8', 'charset=\\\"UTF-8\\\"')
+    #         # Handle other special characters if needed
+    #         return s
 
-        # Sanitize all input strings
-        host = sanitize_string(row["headers_Host"])
-        url = sanitize_string(row["url"])
-        method = sanitize_string(row["method"])
-        origin = sanitize_string(row.get("requestHeaders_Origin", ""))
-        content_type = sanitize_string(row.get("requestHeaders_Content_Type", ""))
-        response_type = sanitize_string(row.get("responseHeaders_Content_Type", ""))
-        referer = sanitize_string(row.get("requestHeaders_Referer", ""))
-        accept = sanitize_string(row.get("requestHeaders_Accept", ""))
+    #     # Sanitize all input strings
+    #     host = sanitize_string(row["headers_Host"])
+    #     url = sanitize_string(row["url"])
+    #     method = sanitize_string(row["method"])
+    #     origin = sanitize_string(row.get("requestHeaders_Origin", ""))
+    #     content_type = sanitize_string(row.get("requestHeaders_Content_Type", ""))
+    #     response_type = sanitize_string(row.get("responseHeaders_Content_Type", ""))
+    #     referer = sanitize_string(row.get("requestHeaders_Referer", ""))
+    #     accept = sanitize_string(row.get("requestHeaders_Accept", ""))
 
-        # Write sanitized strings
-        write_line(f'    const char* host_{idx} = "{host}";', 1)
-        write_line(f'    const char* url_{idx} = "{url}";', 1)
-        write_line(f'    const char* method_{idx} = "{method}";', 1)
-        write_line(f'    const char* origin_{idx} = "{origin}";', 1)
-        write_line(f'    const char* content_type_{idx} = "{content_type}";', 1)
-        write_line(f'    const char* response_type_{idx} = "{response_type}";', 1)
-        write_line(f'    const char* referer_{idx} = "{referer}";', 1)
-        write_line(f'    const char* accept_{idx} = "{accept}";', 1)
-        write_line("", 1)
+    #     # Write sanitized strings
+    #     write_line(f'    const char* host_{idx} = "{host}";', 1)
+    #     write_line(f'    const char* url_{idx} = "{url}";', 1)
+    #     write_line(f'    const char* method_{idx} = "{method}";', 1)
+    #     write_line(f'    const char* origin_{idx} = "{origin}";', 1)
+    #     write_line(f'    const char* content_type_{idx} = "{content_type}";', 1)
+    #     write_line(f'    const char* response_type_{idx} = "{response_type}";', 1)
+    #     write_line(f'    const char* referer_{idx} = "{referer}";', 1)
+    #     write_line(f'    const char* accept_{idx} = "{accept}";', 1)
+    #     write_line("", 1)
         
-        write_line(f'    printf("Processing sample {idx + 1}...\\n");', 1)
-        write_line(f'    extract_features(host_{idx}, url_{idx}, method_{idx}, origin_{idx},', 1)
-        write_line(f'                    content_type_{idx}, response_type_{idx},', 1)
-        write_line(f'                    referer_{idx}, accept_{idx}, features);', 1)
-        write_line("", 1)
+    #     write_line(f'    printf("Processing sample {idx + 1}...\\n");', 1)
+    #     write_line(f'    extract_features(host_{idx}, url_{idx}, method_{idx}, origin_{idx},', 1)
+    #     write_line(f'                    content_type_{idx}, response_type_{idx},', 1)
+    #     write_line(f'                    referer_{idx}, accept_{idx}, features);', 1)
+    #     write_line("", 1)
         
-        write_line("    predicted_service = predict_service(features);", 1)
-        write_line("    predicted_activity = predict_activity(features);", 1)
+    #     write_line("    predicted_service = predict_service(features);", 1)
+    #     write_line("    predicted_activity = predict_activity(features);", 1)
         
-        # Add actual labels for comparison
-        true_service = row['service_encoded']
-        true_activity = row['activityType_encoded']
+    #     # Add actual labels for comparison
+    #     true_service = row['service_encoded']
+    #     true_activity = row['activityType_encoded']
         
-        write_line(f'    printf("  Predicted Service: %d (True: {true_service})\\n", predicted_service);', 1)
-        write_line(f'    printf("  Predicted Activity: %d (True: {true_activity})\\n", predicted_activity);', 1)
-        write_line("", 1)
+    #     write_line(f'    printf("  Predicted Service: %d (True: {true_service})\\n", predicted_service);', 1)
+    #     write_line(f'    printf("  Predicted Activity: %d (True: {true_activity})\\n", predicted_activity);', 1)
+    #     write_line("", 1)
         
-        write_line(f"    if (predicted_service == {true_service}) correct_service++;", 1)
-        write_line(f"    if (predicted_activity == {true_activity}) correct_activity++;", 1)
-        write_line("    total_samples++;", 1)
-        write_line("", 1)
+    #     write_line(f"    if (predicted_service == {true_service}) correct_service++;", 1)
+    #     write_line(f"    if (predicted_activity == {true_activity}) correct_activity++;", 1)
+    #     write_line("    total_samples++;", 1)
+    #     write_line("", 1)
 
-    # Print final accuracy statistics
-    write_line('    printf("\\nFinal Results:\\n");', 1)
-    write_line('    printf("Total samples: %d\\n", total_samples);', 1)
-    write_line('    printf("Service Accuracy: %.4f\\n", (float)correct_service / total_samples);', 1)
-    write_line('    printf("Activity Accuracy: %.4f\\n", (float)correct_activity / total_samples);', 1)
-    write_line("}")
-    write_line("")
+    # # Print final accuracy statistics
+    # write_line('    printf("\\nFinal Results:\\n");', 1)
+    # write_line('    printf("Total samples: %d\\n", total_samples);', 1)
+    # write_line('    printf("Service Accuracy: %.4f\\n", (float)correct_service / total_samples);', 1)
+    # write_line('    printf("Activity Accuracy: %.4f\\n", (float)correct_activity / total_samples);', 1)
+    # write_line("}")
+    # write_line("")
 
-    # Generate a simple main function for testing individual samples
-    write_line("int main() {")
-    write_line('    printf("API Classifier Demo\\n\\n");', 1)
-    write_line("    float features[5000] = {0};  // Feature array for predictions", 1)
-    write_line("", 1)
-    write_line("    // Example test case (Dropbox Upload Precheck API call)", 1)
-    write_line('    const char* test_host = "https://www.dropbox.com/cmd/upload_precheck";', 1)
-    write_line('    const char* test_url = "https://www.dropbox.com/cmd/upload_precheck";', 1)
-    write_line('    const char* test_method = "POST";', 1)
-    write_line('    const char* test_origin = "";', 1)
-    write_line('    const char* test_content_type = "";', 1)
-    write_line('    const char* test_response_type = "text/plain; charset=utf-8";', 1)
-    write_line('    const char* test_referer = "";', 1)
-    write_line('    const char* test_accept = "";', 1)
-    write_line("", 1)
-    write_line('    printf("Processing test sample...\\n");', 1)
-    write_line("    extract_features(test_host, test_url, test_method, test_origin,", 1)
-    write_line("                    test_content_type, test_response_type,", 1)
-    write_line("                    test_referer, test_accept, features);", 1)
-    write_line("", 1)
+    # Generate CLI main function for inference
+    write_line("int main(int argc, char* argv[]) {")
+    write_line("    if (argc < 9) {")
+    write_line("        fprintf(stderr, \"Warning: expected 8 params but got %d. Missing values will be treated as empty.\\n\", argc-1);")
+    write_line("    }", 1)
+    write_line("    const char* host = argc>1 ? argv[1] : \"\";", 1)
+    write_line("    const char* url = argc>2 ? argv[2] : \"\";", 1)
+    write_line("    const char* method = argc>3 ? argv[3] : \"\";", 1)
+    write_line("    const char* origin = argc>4 ? argv[4] : \"\";", 1)
+    write_line("    const char* req_ct = argc>5 ? argv[5] : \"\";", 1)
+    write_line("    const char* resp_ct = argc>6 ? argv[6] : \"\";", 1)
+    write_line("    const char* referer = argc>7 ? argv[7] : \"\";", 1)
+    write_line("    const char* accept = argc>8 ? argv[8] : \"\";", 1)
+    write_line("    float features[5000] = {0};", 1)
+    write_line("    extract_features(host, url, method, origin, req_ct, resp_ct, referer, accept, features);", 1)
     write_line("    int predicted_service = predict_service(features);", 1)
     write_line("    int predicted_activity = predict_activity(features);", 1)
-    write_line("", 1)
-    write_line('    printf("Predictions for Dropbox Upload Precheck API call:\\n");', 1)
-    write_line('    printf("  Service: %d\\n", predicted_service);', 1)
-    write_line('    printf("  Activity: %d\\n", predicted_activity);', 1)
-    write_line("", 1)
-    write_line('    printf("\\nTo run full test set, uncomment process_test_samples() in main()\\n");', 1)
-    write_line("    process_test_samples();  // Uncomment to run full test set", 1)
-    write_line("", 1)
+    write_line("    printf(\"{\\\"service_id\\\":%d,\\\"activity_id\\\":%d}\\n\", predicted_service, predicted_activity);", 1)
     write_line("    return 0;", 1)
     write_line("}")
+
+
+    # write_line("    float features[5000] = {0};  // Feature array for predictions", 1)
+    # write_line("", 1)
+    # write_line("    // Example test case (Dropbox Upload Precheck API call)", 1)
+    # write_line('    const char* test_host = "https://www.dropbox.com/cmd/upload_precheck";', 1)
+    # write_line('    const char* test_url = "https://www.dropbox.com/cmd/upload_precheck";', 1)
+    # write_line('    const char* test_method = "POST";', 1)
+    # write_line('    const char* test_origin = "";', 1)
+    # write_line('    const char* test_content_type = "";', 1)
+    # write_line('    const char* test_response_type = "text/plain; charset=utf-8";', 1)
+    # write_line('    const char* test_referer = "";', 1)
+    # write_line('    const char* test_accept = "";', 1)
+    # write_line("", 1)
+    # write_line('    printf("Processing test sample...\\n");', 1)
+    # write_line("    extract_features(test_host, test_url, test_method, test_origin,", 1)
+    # write_line("                    test_content_type, test_response_type,", 1)
+    # write_line("                    test_referer, test_accept, features);", 1)
+    # write_line("", 1)
+    # write_line("    int predicted_service = predict_service(features);", 1)
+    # write_line("    int predicted_activity = predict_activity(features);", 1)
+    # write_line("", 1)
+    # write_line('    printf("Predictions for Dropbox Upload Precheck API call:\\n");', 1)
+    # write_line('    printf("  Service: %d\\n", predicted_service);', 1)
+    # write_line('    printf("  Activity: %d\\n", predicted_activity);', 1)
+    # write_line("", 1)
+    # write_line('    printf("\\nTo run full test set, uncomment process_test_samples() in main()\\n");', 1)
+    # write_line("    process_test_samples();  // Uncomment to run full test set", 1)
+    # write_line("", 1)
+    # write_line("    return 0;", 1)
+    # write_line("}")
 
 # Load and preprocess training dataset
 def load_and_preprocess_data():

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import joblib
+import time
 import pandas as pd
 from sklearn.pipeline import Pipeline
 
@@ -144,7 +145,7 @@ def predict_rfc_python(
 def batch_predict_rfc_python(
     requests_data: List[Dict[str, Any]], 
     logs: List[str] | None = None
-) -> List[Dict[str, Any]]:
+) -> Tuple[List[Dict[str, Any]], float]:
     """Perform batch inference using trained RFC models.
     
     Args:
@@ -162,11 +163,12 @@ def batch_predict_rfc_python(
         activity_model: Pipeline = models["activity_model"]
         service_encoder = models["service_encoder"]
         activity_encoder = models["activity_encoder"]
+        start_time = time.perf_counter()
         
         results = []
         
         for i, request_data in enumerate(requests_data):
-            _status(f"Processing request {i+1}/{len(requests_data)}", logs)
+            # _status(f"Processing request {i+1}/{len(requests_data)}", logs)
             
             # Extract and combine features
             features = [
@@ -182,6 +184,8 @@ def batch_predict_rfc_python(
             
             combined_features = " ".join(str(f) if f else "" for f in features)
             
+            # Measure inference time
+            iter_start = time.perf_counter()
             # Make predictions
             service_pred_encoded = service_model.predict([combined_features])[0]
             service_pred_proba = service_model.predict_proba([combined_features])[0]
@@ -192,7 +196,14 @@ def batch_predict_rfc_python(
             activity_pred_proba = activity_model.predict_proba([combined_features])[0]
             activity_prediction = activity_encoder.inverse_transform([activity_pred_encoded])[0]
             activity_confidence = round(float(max(activity_pred_proba)), 2)
+            iter_end_time = time.perf_counter()
+            elapsed_ms = (iter_end_time - iter_start) * 1000.0
             
+            _status(f"Processing request {i+1}/{len(requests_data)} [{elapsed_ms:.2f} ms] Service: {service_prediction} ({service_confidence:.2f}), "
+                f"Activity: {activity_prediction} ({activity_confidence:.2f})",
+                logs,
+            )
+
             enriched = {
                 **request_data,
                 "service_prediction": str(service_prediction),
@@ -201,9 +212,10 @@ def batch_predict_rfc_python(
                 "activity_confidence": activity_confidence,
             }
             results.append(enriched)
-        
-        _status(f"Batch inference completed for {len(results)} requests", logs)
-        return results
+
+        total_time = time.perf_counter() - start_time 
+        _status(f"Processed {len(results)} requests in {total_time:.2f} seconds", logs)
+        return results, round(total_time, 2)
     except Exception as e:
         error_msg = f"Batch inference error: {e}"
         _status(error_msg, logs)
@@ -214,7 +226,7 @@ def batch_predict_rfc_python(
 def batch_predict_rfc_python_file(
     filename: str,
     logs: List[str] | None = None,
-) -> List[Dict[str, Any]]:
+) -> Tuple[List[Dict[str, Any]], float]:
     """Load a CSV file located in the RFC test directory and run batch inference.
 
     Parameters

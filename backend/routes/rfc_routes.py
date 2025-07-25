@@ -12,6 +12,7 @@ from ..utils.rfc.codegen_manual import train_rfc_c_manual
 from ..utils.rfc.codegen_emlearn import train_rfc_c_emlearn
 from ..utils.rfc.python_inference import predict_rfc_python
 from ..utils.rfc.python_inference import batch_predict_rfc_python_file
+from ..utils.rfc.c_inference import predict_rfc_c, batch_predict_rfc_c_file
 
 router = APIRouter()
 
@@ -47,6 +48,28 @@ async def train_c_emlearn() -> dict[str, object]:
 
 
 
+@router.post("/inference/c", summary="Run inference using compiled RFC C classifier")
+async def inference_c(
+    request: RfcInferenceRequest | None = None,
+    file: str | None = Query(None, description="Relative filename under data/output/rfc/test directory"),
+) -> dict[str, object]:
+    logs: list[str] = []
+    try:
+        if file:
+            try:
+                results, time = batch_predict_rfc_c_file(file, logs)
+            except FileNotFoundError:
+                return {"success": False, "error": "File not found", "output": logs}
+            return {"success": True, "output": logs, "results": results, "time": time}
+        else:
+            if request is None:
+                return {"success": False, "error": "Request body missing", "output": logs}
+            result = predict_rfc_c(request.dict(), logs)
+            return {"success": True, "output": logs, **result}
+    except Exception as exc:
+        return {"success": False, "error": str(exc), "output": logs}
+
+
 @router.post("/inference/python", summary="Run inference using trained RFC Python models")
 async def inference_python(
     request: RfcInferenceRequest | None = None,
@@ -57,10 +80,10 @@ async def inference_python(
         if file:
            
             try:
-                results = batch_predict_rfc_python_file(file, logs)
+                results, time = batch_predict_rfc_python_file(file, logs)
             except FileNotFoundError:
                 return {"success": False, "error": "File not found", "output": logs}
-            return {"success": True, "output": logs, "results": results}
+            return {"success": True, "output": logs, "results": results, "time": time}
         else:
             if request is None:
                 return {"success": False, "error": "Request body missing", "output": logs}

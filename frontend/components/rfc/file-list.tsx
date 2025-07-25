@@ -19,7 +19,7 @@ interface FileListProps {
 export function FileList({ files, onSelect, selectedFile }: FileListProps) {
     if (!files.length) {
         return (
-            <div className="flex h-[250px] items-center justify-center rounded-md border border-dashed">
+            <div className="flex h-[25rem] items-center justify-center rounded-md border border-dashed">
                 <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
                     <FileIcon className="h-10 w-10 text-muted-foreground" />
                     <h3 className="mt-4 text-lg font-semibold">No files found</h3>
@@ -32,7 +32,7 @@ export function FileList({ files, onSelect, selectedFile }: FileListProps) {
     }
 
     return (
-        <ScrollArea className="h-[250px] rounded-md border">
+        <ScrollArea className="h-[15rem] rounded-md border">
             <div className="p-4">
                 <div className="space-y-4">
                     {files.map((file) => (

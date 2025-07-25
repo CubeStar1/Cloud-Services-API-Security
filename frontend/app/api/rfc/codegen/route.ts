@@ -1,69 +1,37 @@
 import { NextResponse } from 'next/server'
-import { spawn, ChildProcess } from 'child_process'
-import path from 'path'
 
 export async function POST(request: Request) {
     try {
         const body = await request.json()
         const { codegenType } = body 
 
-        const output: string[] = []
-        let scriptPath = ''
-        let scriptCwd = ''
+        // Decide which backend endpoint to call
+        const backendBase = process.env.BACKEND_URL || 'http://localhost:8000'
+        const endpointPath = codegenType === 'emlearn' ? '/rfc/train/c/emlearn' : '/rfc/train/c/manual'
+        const url = `${backendBase}${endpointPath}`
 
-        const projectRoot = process.cwd() 
+        try {
+            const backendResp = await fetch(url, { method: 'POST' })
+            const data = await backendResp.json()
 
-        if (codegenType === 'emlearn') {
-            scriptPath = path.join(projectRoot,  'scripts', 'rfc', 'em-learn', 'windows-scripts', 'run_rfc_em_inference.bat')
-            scriptCwd = path.join(projectRoot,  'scripts', 'rfc', 'em-learn', 'windows-scripts')
-        } else { // Default to 'normal'
-            scriptPath = path.join(projectRoot,  'scripts', 'rfc', 'run_rfc.bat')
-            scriptCwd = path.join(projectRoot,  'scripts', 'rfc')
+            // Ensure the response shape mimics the old script behaviour
+            if (backendResp.ok && data.success) {
+                return NextResponse.json({ success: true, output: data.output ?? [] })
+            }
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: data.error || `Backend returned status ${backendResp.status}`,
+                    output: data.output ?? []
+                },
+                { status: 500 }
+            )
+        } catch (error: any) {
+            console.error('Error contacting backend:', error)
+            return NextResponse.json({ success: false, error: error.message || 'Fetch failed' }, { status: 500 })
         }
-
-        return new Promise((resolve) => {
-            const childProcess: ChildProcess = spawn('cmd.exe', ['/c', scriptPath], {
-                cwd: scriptCwd,
-            })
-
-            childProcess.stdout?.on('data', (data: Buffer) => {
-                const lines = data.toString().split('\n')
-                output.push(...lines.filter((line: string) => line.trim()))
-            })
-
-            childProcess.stderr?.on('data', (data: Buffer) => {
-                const lines = data.toString().split('\n')
-                output.push(...lines.filter((line: string) => line.trim()))
-            })
-
-            childProcess.on('close', (code: number | null) => {
-                if (code === 0) {
-                    resolve(NextResponse.json({ 
-                        success: true, 
-                        output 
-                    }))
-                } else {
-                    resolve(NextResponse.json({ 
-                        success: false, 
-                        error: `Script execution failed with code ${code}`,
-                        output 
-                    }, { status: 500 }))
-                }
-            })
-
-            childProcess.on('error', (error: Error) => {
-                resolve(NextResponse.json({ 
-                    success: false, 
-                    error: error.message,
-                    output // Include output accumulated so far, if any
-                }, { status: 500 }))
-            })
-        })
     } catch (error: any) {
-        console.error('Error during code generation request setup:', error)
-        return NextResponse.json({ 
-            success: false, 
-            error: error.message || 'Internal server error' 
-        }, { status: 500 })
+        console.error('Error parsing request:', error)
+        return NextResponse.json({ success: false, error: error.message || 'Request failed' }, { status: 500 })
     }
-} 
+}

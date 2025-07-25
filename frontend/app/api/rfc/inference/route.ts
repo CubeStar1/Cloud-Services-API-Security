@@ -10,13 +10,16 @@ const BACKEND = process.env.BACKEND_URL ?? 'http://localhost:8000';
  * 2) { ...features }                      – run single inference with explicit features
  */
 export async function POST(req: Request) {
+  const url = new URL(req.url);
+  const engine = url.searchParams.get("engine") ?? "python";
   try {
     const json = await req.json();
 
     // Case 1: file-based batch inference
     if (json.file) {
+      const endpoint = engine === "c" ? "c" : "python";
       const { data } = await axios.post(
-        `${BACKEND}/rfc/inference/python`,
+        `${BACKEND}/rfc/inference/${endpoint}`,
         {},
         { params: { file: json.file }, timeout: 60_000 }
       );
@@ -24,8 +27,9 @@ export async function POST(req: Request) {
     }
 
     // Case 2: single prediction
+    const endpointSingle = engine === "c" ? "c" : "python";
     const { data } = await axios.post(
-      `${BACKEND}/rfc/inference/python`,
+      `${BACKEND}/rfc/inference/${endpointSingle}`,
       json,
       { timeout: 60_000 }
     );

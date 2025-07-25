@@ -2,15 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FileList, FileInfo } from "@/components/rfc/file-list";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/components/ui/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ResultsTable } from "@/components/rfc/results-table"
-import { CsvDownloadButton } from "@/components/rfc/csv-download-button"
+import { ResultsTable } from "@/components/rfc/results-table";
+import { CsvDownloadButton } from "@/components/rfc/csv-download-button";
+import { ApiOutput } from "./api-output";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown, Loader2 } from "lucide-react"
 
 interface SingleInputState {
   headers_Host?: string;
@@ -30,7 +38,8 @@ export default function RfcInferencePanel() {
   const [testFiles, setTestFiles] = useState<FileInfo[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileInfo | null>(null);
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<Array<{ output?: string[]; success?: boolean; [key: string]: any }>>([]);
+  const [engine, setEngine] = useState<"python" | "c">("python");
 
   // fetch test files once
   useEffect(() => {
@@ -59,7 +68,7 @@ export default function RfcInferencePanel() {
       } else if (selectedFile) {
         body = { file: selectedFile.name };
       }
-      const res = await fetch("/api/rfc/inference", {
+      const res = await fetch(`/api/rfc/inference?engine=${engine}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -67,12 +76,13 @@ export default function RfcInferencePanel() {
       const data = await res.json();
       if (res.ok && data.success) {
         const rawResults = data.results ? data.results : [data];
-          const filtered = rawResults.filter((r: any) =>
-            (r.service_prediction ?? r.service) !== "Unknown Service" &&
-            (r.activity_prediction ?? r.activity) !== "Unknown Activity"
-          );
-          setResults(filtered);
+        const filtered = rawResults.filter((r: any) =>
+          (r.service_prediction ?? r.service) !== "Unknown Service" &&
+          (r.activity_prediction ?? r.activity) !== "Unknown Activity"
+        );
+        setResults([...filtered, { output: data.output, success: true, time: data.time }]);
       } else {
+        setResults([{ output: data.output, success: false, error: data.error }]);
         toast({ variant: "destructive", title: "Error", description: data.error ?? "Inference failed" });
       }
     } catch (e: any) {
@@ -84,11 +94,27 @@ export default function RfcInferencePanel() {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="single" value={mode} onValueChange={(v) => setMode(v as any)}>
+        <Tabs defaultValue="single" value={mode} onValueChange={(v) => setMode(v as any)} className="flex-1">
         <TabsList>
           <TabsTrigger value="single">Single Prediction</TabsTrigger>
           <TabsTrigger value="file">File Batch</TabsTrigger>
         </TabsList>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-4">
+              Engine: {engine === 'python' ? 'Python' : 'C'}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setEngine('python')}>
+              Python
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setEngine('c')}>
+              C
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <TabsContent value="single">
           <Card>
             <CardHeader>
@@ -120,8 +146,8 @@ export default function RfcInferencePanel() {
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="file">
-          <div className="space-y-4">
+        <TabsContent value="file" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
                 <CardTitle>Test CSV Files</CardTitle>
@@ -129,31 +155,60 @@ export default function RfcInferencePanel() {
               </CardHeader>
               <CardContent>
                 <FileList files={testFiles} selectedFile={selectedFile} onSelect={setSelectedFile} />
-                <Button onClick={handlePredict} disabled={!selectedFile || loading} className="w-full mt-4">
-                  {loading ? "Predicting..." : "Predict"}
+                
+              </CardContent>
+              <CardFooter>
+              <Button 
+                  onClick={handlePredict} 
+                  disabled={!selectedFile || loading} 
+                  className="w-full mt-4"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Predicting...
+                    </>
+                  ) : (
+                    "Predict"
+                  )}
                 </Button>
-              </CardContent>
+              </CardFooter>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Results</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {results.length ? (
-                    <div className="space-y-2">
-                      <div className="flex justify-end">
-                        <CsvDownloadButton rows={results} />
-                      </div>
-                  <ResultsTable rows={results} />
-                      </div>
-                ) : (
-                  <Alert>
-                    <AlertDescription>No results yet.</AlertDescription>
-                  </Alert>
-                )}
-              </CardContent>
-            </Card>
+            
+            <ApiOutput 
+              output={results[results.length - 1]?.output} 
+              success={results[results.length - 1]?.success} 
+              time={results[results.length - 1]?.time}
+            />
           </div>
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <CardTitle>Results</CardTitle>
+                {results.length > 0 && <CsvDownloadButton rows={results} />}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {results.length > 0 ? (
+                <div className="space-y-2">
+                  <ResultsTable rows={results} />
+                </div>
+              ) : (
+                <Alert>
+                  <AlertDescription>
+                    {loading ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Processing...
+                      </div>
+                    ) : (
+                      "No results yet. Select a file and click Predict to see results."
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
