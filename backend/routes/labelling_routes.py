@@ -1,4 +1,3 @@
-"""Labelling related endpoints."""
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException

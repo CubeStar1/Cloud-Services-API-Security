@@ -1,4 +1,3 @@
-"""API route modules are imported here for easy inclusion in FastAPI app."""
 from fastapi import APIRouter
 
 from . import csv_routes, labelling_routes, rfc_routes, files_routes
