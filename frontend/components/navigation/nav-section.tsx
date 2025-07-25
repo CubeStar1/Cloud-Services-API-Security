@@ -3,6 +3,8 @@
 import { ChevronRight, LucideIcon } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -40,34 +42,77 @@ export function NavSection({
   collapsibleTitle,
 }: NavSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
+  const pathname = usePathname()
+
+  // Common button styles
+  const baseButtonClass = "group/menu-button font-medium gap-3 h-9 rounded-md text-sm"
+  // "Panda" active state: Light background, dark text/icon
+  const activeClasses = "bg-muted text-primary shadow-[0_1px_2px_0_rgb(0_0_0/.3),inset_0_1px_0_0_rgb(255_255_255/.12)] border border-muted"
+  const hoverClasses = "hover:bg-accent"
+
+  const baseIconClass = "h-4 w-4 text-muted-foreground group-hover/menu-button:text-foreground"
+  // "Panda" active icon state
+  const activeIconClass = "group-data-[active=true]/menu-button:text-primary"
 
   const MenuItems = () => (
     <>
-      {items.map((item) => (
-        <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton asChild>
-            <Link href={item.href}>
-              <item.icon className="mr-2 h-4 w-4" />
-              <span>{item.title}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
+      {items.map((item) => {
+        const isActive = pathname === item.href
+        return (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton 
+              asChild
+              className={cn(
+                baseButtonClass,
+                hoverClasses,
+                isActive && activeClasses
+              )}
+              data-active={isActive}
+            >
+              <Link href={item.href}>
+                <item.icon 
+                  className={cn(
+                    baseIconClass,
+                    isActive && activeIconClass
+                  )}
+                />
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )
+      })}
     </>
   )
 
   const CollapsibleItems = () => (
     <SidebarMenuSub>
-      {items.map((item) => (
-        <SidebarMenuSubItem key={item.title}>
-          <SidebarMenuSubButton asChild>
-            <Link href={item.href}>
-              <item.icon className="mr-2 h-4 w-4" />
-              <span>{item.title}</span>
-            </Link>
-          </SidebarMenuSubButton>
-        </SidebarMenuSubItem>
-      ))}
+      {items.map((item) => {
+        const isActive = pathname === item.href
+        return (
+          <SidebarMenuSubItem key={item.title}>
+            <SidebarMenuSubButton 
+              asChild
+              className={cn(
+                baseButtonClass,
+                hoverClasses,
+                isActive && activeClasses
+              )}
+              data-active={isActive}
+            >
+              <Link href={item.href}>
+                <item.icon 
+                   className={cn(
+                    baseIconClass,
+                    isActive && activeIconClass
+                  )}
+                />
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+        )
+      })}
     </SidebarMenuSub>
   )
 
@@ -78,17 +123,19 @@ export function NavSection({
         {collapsible ? (
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <CollapsibleTrigger asChild>
-              <SidebarMenuButton>
-                {SectionIcon && <SectionIcon className="mr-2 h-4 w-4" />}
+              {/* Apply only base styles + standard hover to the trigger */}
+              <SidebarMenuButton className={cn(baseButtonClass, hoverClasses)}>
+                {SectionIcon && <SectionIcon className={cn(baseIconClass, "mr-2")} />}
                 <span>{collapsibleTitle}</span>
                 <ChevronRight 
-                  className={`ml-auto h-4 w-4 transition-transform duration-200 ${
+                  className={cn(
+                    "ml-auto h-4 w-4 text-muted-foreground transition-transform duration-200",
                     isOpen ? 'rotate-90' : ''
-                  }`} 
+                  )}
                 />
               </SidebarMenuButton>
             </CollapsibleTrigger>
-            <CollapsibleContent>
+            <CollapsibleContent className="ml-4">
               <CollapsibleItems />
             </CollapsibleContent>
           </Collapsible>

@@ -14,6 +14,7 @@ import { NavProfile } from "@/components/navigation/nav-profile"
 import { LucideProps, LucideIcon } from "lucide-react"
 import Icons from "@/components/global/icons"
 import defaultConfig from "@/lib/config/sidebar"
+import Image from "next/image"
 
 type NavItem = {
   title: string
@@ -45,23 +46,28 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ config = defaultConfig, ...props }: AppSidebarProps) {
-  // const { data: user } = useUser()
 
-  // if (!user) return null
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <div className="relative border-b border-border/10 px-6 py-5 backdrop-blur-xl">
           <Link href={config.brand?.href || "/"} className="relative flex items-center gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 shadow-lg ring-2 ring-blue-500/20 dark:from-blue-500 dark:via-indigo-500 dark:to-violet-500">
-              {config.brand?.icon && (
+            <div className="flex h-10 w-10 items-center justify-center rounded- ">
+              {/* {config.brand?.icon && (
                 <config.brand.icon className="h-5 w-5 text-white shadow-sm" />
-              )}
+              )} */}
+              <Image
+                src="/cloud-security-logo.png"
+                alt="Cloud Security Logo"
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full"
+              />
             </div>
             <div className="flex flex-col gap-0.5">
               <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                {config.brand?.title}
+                Dashboard
               </h1>
             </div>
           </Link>
@@ -80,7 +86,6 @@ export function AppSidebar({ config = defaultConfig, ...props }: AppSidebarProps
       </SidebarContent>
       <SidebarRail />
       <SidebarFooter>
-        {/* <NavProfile user={user} /> */}
       </SidebarFooter>
     </Sidebar>
   )
