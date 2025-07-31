@@ -22,15 +22,9 @@ async def list_or_read_files(
         description="Relative path to a single file inside data folder to read (takes precedence)",
     ),
 ):
-    """List files or return the content of a single file in the data directory.
-
-    If `file` is provided, this endpoint returns a JSON object with the file's
-    metadata and its text content (assuming UTF-8). Otherwise it returns a list
-    of metadata objects like before.
-    """
+    """List files or return the content of a single file in the data directory."""
     from pathlib import Path
 
-    # If specific file requested, return its content
     if file:
         try:
             return read_data_file(file)
@@ -39,6 +33,5 @@ async def list_or_read_files(
         except FileNotFoundError:
             return {"error": "File not found"}
 
-    # Otherwise list files
     extensions = [e.strip() for e in ext.split(",")] if ext else None
     return list_data_files(subdir, extensions)

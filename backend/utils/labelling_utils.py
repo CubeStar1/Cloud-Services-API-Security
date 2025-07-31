@@ -137,7 +137,6 @@ def label_file(csv_path: Path, client: Groq, meta: Dict[str, Any]) -> pd.DataFra
             df.at[idx, "predicted_service"] = service
             df.at[idx, "predicted_activity"] = activity
 
-        # update metadata every 20 rows
         if (idx + 1) % 20 == 0 or idx == total_rows - 1:
             meta["labelling_progress"][name] = idx + 1
             save_metadata(meta)
@@ -156,11 +155,8 @@ def run_full_labelling(api_key: str | None = None) -> Dict[str, Any]:
     if not api_key:
         raise ValueError("GROQ_API_KEY not set and no api_key provided")
 
-    # Ensure CSVs exist & get combined dataset
     convert_all_raw_json_to_csv()
     combined_df = load_combined_dataset()
-
-    # Split into train/test CSV files
     train_path, test_path = split_and_save(combined_df)
 
     meta = load_metadata()

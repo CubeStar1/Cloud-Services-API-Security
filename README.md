@@ -30,8 +30,8 @@ Cloud-Services-API-Security/
 
 ## Project Overview
 
-1. **Data Collection**: 
-2. **Initial Labeling**: 
+1. **Data Collection**
+2. **Initial Labeling** 
 3. **Zero-Shot Learning**
 4. **Random Forest Training and C Code Generation**: 
    - Random Forest Classifier on labeled data and C Code Generation
@@ -39,8 +39,17 @@ Cloud-Services-API-Security/
    - Interactive dashboard
    - Data visualization
    - Model interaction
+6. **Backend Application**:
+   - API server
+   - Model inference
+   - C code generation and model training
+## Pre-requisites
 
-## Components
+1. Python 3.9 or higher
+2. Node.js 22 with npm 
+3. AnyProxy
+
+<!-- ## Components
 
 ### 1. Data Collection (`/data-collection`)
 
@@ -157,59 +166,66 @@ pip install -r requirements.txt
 
 # Run the development server
 uvicorn backend.main:app --reload
-```
+``` -->
 
 ## Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/CubeStar1/Cloud-Services-API-Security.git
-cd Cloud-Services-API-Security
-```
+   ```bash
+   git clone https://github.com/CubeStar1/Cloud-Services-API-Security.git
+   cd Cloud-Services-API-Security
+   ```
 
 2. Set up Python virtual environment and install dependencies:
-```bash
-# Create a virtual environment
-python -m venv venv
+   ```bash
+   # Create a virtual environment
+   python -m venv venv
 
-# Activate the virtual environment
-# On Windows:
-.\venv\Scripts\activate
-# On macOS/Linux:
-# source venv/bin/activate
+   # Activate the virtual environment
+   # On Windows:
+   .\venv\Scripts\activate
+   # On macOS/Linux:
+   # source venv/bin/activate
 
-# Install Python dependencies
-pip install -r requirements.txt
-```
+   # Install Python dependencies
+   pip install -r requirements.txt
+   ```
 
 3. Set up frontend components:
-```bash
-cd frontend
-npm install
-cd ..
-```
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
 
 4. Set up backend API server:
-```bash
-python -m venv venv
 
-# Activate the virtual environment
-# On Windows:
-.\venv\Scripts\activate
-# On macOS/Linux:
-# source venv/bin/activate
+   From the project root directory, perform the following steps:
+   ```bash
+   python -m venv venv
 
-# Install dependencies
-pip install -r requirements.txt
+   # Activate the virtual environment
+   # On Windows:
+   .\venv\Scripts\activate
+   # On macOS/Linux:
+   # source venv/bin/activate
 
-# Run the development server
-uvicorn backend.main:app --reload
-```
+   # Install dependencies
+   pip install -r requirements.txt
+
+   # Run the development server
+   uvicorn backend.main:app --reload
+   ```
 
 5. Install AnyProxy:
-```bash
-npm install -g anyproxy
-```
+   ```bash
+   npm install -g anyproxy
+   ```
+
+
+6. Unzip the contents of the `backend/data/output/rfc/codegen/codegen.zip` into the `backend/data/output/rfc/codegen` directory.
+   > [!IMPORTANT] 
+   > Make sure you have the C code files unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
 
 ## Configuration and Workflow
 
@@ -228,7 +244,69 @@ npm install -g anyproxy
   }
   ```
 
-## 1. Command-Line Interface (CLI) Workflow
+## 1. Web GUI Workflow
+
+### Starting the GUI
+1. Start the frontend and backend servers:
+   ```bash
+   # In one terminal
+   cd frontend
+   npm run dev
+   ```
+
+   ```bash
+   # In another terminal
+   cd ..  # Go back to the root directory
+   ./venv/Scripts/activate
+   uvicorn backend.main:app --reload
+   ```
+
+   > [!IMPORTANT]
+   > Make sure you have the C code file unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
+2. Access the GUI at `http://localhost:3000`
+
+### Main GUI Routes and Workflow
+
+#### 1. `/anyproxy` - Data Collection
+   - Configure and control the AnyProxy instance
+   - View captured traffic in real-time
+   - Raw data stored in `frontend/data/raw/`
+
+#### 2. `/logs` - Log Processing
+   - Convert raw logs to CSV format
+   - Processed logs saved in `frontend/data/logs/csv/`
+   - View and filter processed logs
+
+#### 3. `/zsl/deberta` - DeBERTa Zero-Shot Learning
+   - Run inference on processed logs
+   - View and analyze predictions
+   - Outputs to `frontend/data/output/deberta/`
+
+#### 4. `/zsl/codebert` - CodeBERT Analysis
+   - Process DeBERTa outputs
+   - Refine predictions
+   - Outputs to `frontend/data/output/codebert/`
+
+#### 5. `/rfc` - Random Forest Classifier and C Code Generation
+   - Train and run the RFC model
+   - Ensure you have a clean, labelled output from CodeBERT in `frontend/data/output/codebert/predictions/`
+   - Outputs to `frontend/data/output/rfc/`
+   - C Code generated in `frontend/data/output/rfc/codegen/` for manual C code generation
+   - C Code generated in `frontend/data/output/rfc/em-codegen/` for C code generation using EM Learn Library (https://github.com/EmLearn/EmLearn)
+
+#### 6. `/files` - File Management
+   - Browse all generated files
+   - Download or delete files
+   - Navigate through output directories
+
+### Important Notes
+- The GUI and CLI use separate data directories to prevent conflicts
+- To share data between CLI and GUI, manually copy files between `data/` and `frontend/data/`
+- All outputs are timestamped for version control
+- The GUI provides visualizations and progress tracking not available in CLI
+Run both models on unlabeled traffic data:  
+
+## 2. Command-Line Interface (CLI) Workflow
 
 ### Data Collection
 1. Configure proxy rules:
@@ -284,75 +362,23 @@ npm install -g anyproxy
    - Processes CodeBERT outputs
    - Generates final predictions in `data/output/rfc/`
 
-## 2. Web GUI Workflow
 
-### Starting the GUI
-1. Start the frontend and backend servers:
-   ```bash
-   # In one terminal
-   cd frontend
-   npm run dev
-   
-   ```
-2. Access the GUI at `http://localhost:3000`
-
-### Main GUI Routes and Workflow
-
-#### 1. `/anyproxy` - Data Collection
-   - Configure and control the AnyProxy instance
-   - View captured traffic in real-time
-   - Raw data stored in `frontend/data/raw/`
-
-#### 2. `/logs` - Log Processing
-   - Convert raw logs to CSV format
-   - Processed logs saved in `frontend/data/logs/csv/`
-   - View and filter processed logs
-
-#### 3. `/zsl/deberta` - DeBERTa Zero-Shot Learning
-   - Run inference on processed logs
-   - View and analyze predictions
-   - Outputs to `frontend/data/output/deberta/`
-
-#### 4. `/zsl/codebert` - CodeBERT Analysis
-   - Process DeBERTa outputs
-   - Refine predictions
-   - Outputs to `frontend/data/output/codebert/`
-
-#### 5. `/rfc` - Random Forest Classifier and C Code Generation
-   - Train and run the RFC model
-   - Ensure you have a clean, labelled output from CodeBERT in `frontend/data/output/codebert/predictions/`
-   - Outputs to `frontend/data/output/rfc/`
-   - C Code generated in `frontend/data/output/rfc/codegen/` for manual C code generation
-   - C Code generated in `frontend/data/output/rfc/em-codegen/` for C code generation using EM Learn Library (https://github.com/EmLearn/EmLearn)
-
-#### 6. `/files` - File Management
-   - Browse all generated files
-   - Download or delete files
-   - Navigate through output directories
-
-### Important Notes
-- The GUI and CLI use separate data directories to prevent conflicts
-- To share data between CLI and GUI, manually copy files between `data/` and `frontend/data/`
-- All outputs are timestamped for version control
-- The GUI provides visualizations and progress tracking not available in CLI
-Run both models on unlabeled traffic data:
 
 
 ## Complete Workflow
 
 1. Collect API traffic data using AnyProxy
-2. Process and label initial data with GPT-4/Gemini
-3. Apply zero-shot learning with DeBERTa and CodeBERT
-4. Train Random Forest classifier on labeled data and generate C code
-5. View results and manage files through the frontend application
+2. Apply zero-shot learning with DeBERTa and CodeBERT
+3. Train Random Forest classifier on labeled data and generate C code
+4. View results and manage files through the frontend application
 
 ## Technologies Used
 
-- **Backend**: Python, AnyProxy
+- **Backend**: Python, AnyProxy, FastAPI
 - **Models**: DeBERTa, CodeBERT, Random Forest
 - **Frontend**: Next.js, React, TypeScript, Tailwind CSS
 
-## C Code Generation System Explained
+<!-- ## C Code Generation System Explained
 
 The Random Forest Classifier is converted into optimized C code for runtime efficiency. Here's how the system works, explained in a simple way:
 
@@ -403,6 +429,6 @@ When processing an API request like "GET /api/users":
    - Calculate its shelf number (hash)
    - Go directly to that shelf
    - Look through at most 10 words
-   - If found, mark it in our features
+   - If found, mark it in our features -->
 
 

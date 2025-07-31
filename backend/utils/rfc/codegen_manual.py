@@ -9,11 +9,9 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-# Project root is three levels up from this file (backend/utils/path_config.py)
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 DATA_DIR = PROJECT_ROOT / "backend" / "data"
-# Import path configuration
 PATHS = {
     "data_folder": DATA_DIR,
     "raw_json_folder": DATA_DIR / "logs" / "raw-json",
@@ -80,10 +78,9 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
         write_line("}")
         write_line("")
 
-    # Write header
     write_line("#include <stdio.h>")
     write_line("#include <string.h>")
-    write_line("#include <ctype.h>")  # Needed for tolower() and isalnum()
+    write_line("#include <ctype.h>")  
     write_line("")
 
     # Add hash table implementation
@@ -112,7 +109,6 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line(f"#define NUM_FEATURES {len(vocabulary)}")
     write_line("")
 
-    # Add optimized hash function
     write_line("// FNV-1a hash function")
     write_line("static inline unsigned int hash_string(const char* str) {")
     write_line("    unsigned int hash = 2166136261u;", 1)
@@ -125,7 +121,6 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line("}")
     write_line("")
 
-    # Static hash table
     write_line("// Static hash table buckets")
     write_line("typedef struct {")
     write_line("    int indices[10];  // Allow up to 10 entries per bucket", 1)
@@ -146,14 +141,12 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
         hash_val %= 8192
         buckets[hash_val].append(i)
 
-    # Write pre-computed buckets
     for bucket in buckets:
-        indices = bucket + [-1] * (10 - len(bucket))  # Pad with -1
+        indices = bucket + [-1] * (10 - len(bucket)) 
         write_line(f"    {{ {{ {', '.join(map(str, indices))} }}, {len(bucket)} }},", 1)
     write_line("};")
     write_line("")
 
-    # Add optimized feature lookup
     write_line("// Find feature index")
     write_line("static inline int find_feature(const char* term) {")
     write_line("    unsigned int hash = hash_string(term);", 1)
@@ -168,7 +161,6 @@ def tree_to_c_code(trees, feature_names, label_encoders, vectorizer, test_data, 
     write_line("}")
     write_line("")
 
-    # Generate feature extraction function
     write_line("void extract_features(const char* headers_host, const char* url, const char* method,")
     write_line("                     const char* headers_origin, const char* content_type,")
     write_line("                     const char* response_content_type, const char* referer,")
@@ -507,7 +499,7 @@ def train_rfc_c_manual(logs: list[str] = None) -> dict[str, object]:
                     vectorizer.get_feature_names_out(),
                     {'service': le_service, 'activity': le_activity},
                     vectorizer,
-                    test_df,  # Pass test data to generate C code with test samples
+                    test_df,  
                     file=f
                 )
             log_message(f"C code has been written to {output_file}")

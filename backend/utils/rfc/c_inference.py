@@ -30,7 +30,7 @@ _activity_map: Dict[int, str] | None = None
 def _load_label_maps() -> None:
     global _service_map, _activity_map
     if _service_map is not None and _activity_map is not None:
-        return  # already loaded
+        return  
 
     _service_map, _activity_map = {}, {}
     if not LABEL_MAP_FILE.exists():
@@ -167,7 +167,6 @@ def predict_rfc_c(request_data: Dict[str, Any], logs: List[str] | None = None) -
     service_id = int(out.get("service_id", -1))
     activity_id = int(out.get("activity_id", -1))
 
-    # optional label decoding
     _load_label_maps()
     service_label = _service_map.get(service_id) if _service_map else None
     activity_label = _activity_map.get(activity_id) if _activity_map else None
@@ -192,10 +191,8 @@ def batch_predict_rfc_c(requests_data: List[Dict[str, Any]], logs: List[str] | N
         res = predict_rfc_c(req, logs)
         results.append({**req, **res})
         
-        # Calculate time taken for this prediction
-        iter_time = (time.perf_counter() - iter_start) * 1000  # Convert to milliseconds
+        iter_time = (time.perf_counter() - iter_start) * 1000  
         
-        # Format the status message with confidence scores if available
         service = res.get('service', 'Unknown Service')
         activity = res.get('activity', 'Unknown Activity')
         

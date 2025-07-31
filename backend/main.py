@@ -4,7 +4,6 @@ from .routes import router as api_router
 
 app = FastAPI(title="Cloud Services API Security Backend")
 
-# Include API routes
 app.include_router(api_router)
 
 

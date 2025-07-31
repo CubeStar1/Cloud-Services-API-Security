@@ -1,9 +1,6 @@
 from pathlib import Path
 
-# Project root is three levels up from this file (backend/utils/path_config.py)
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-# Reuse existing data directory in project root
 DATA_DIR = PROJECT_ROOT / "backend" / "data"
 
 PATHS = {
@@ -29,7 +26,6 @@ PATHS = {
     
 }
 
-# Ensure directories exist when module is imported
 for key, path in PATHS.items():
-    if "_file" not in key:  # skip files
+    if "_file" not in key:  
         Path(path).mkdir(parents=True, exist_ok=True)

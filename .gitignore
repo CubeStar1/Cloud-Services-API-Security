@@ -7,4 +7,5 @@ __pycache__
 latex
 codebert
 models
-codegen
+api_classifier.c
+api_classifier.exe

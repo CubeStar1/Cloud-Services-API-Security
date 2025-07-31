@@ -7,8 +7,8 @@ import joblib
 
 try:
     from emlearn import convert
-except ImportError:  # gracefully handle missing dependency
-    convert = None  # type: ignore
+except ImportError:  
+    convert = None 
 
 from ..path_config import DATA_DIR
 
@@ -35,18 +35,15 @@ def train_rfc_c_emlearn(model_dir: str | Path | None = None, logs: List[str] | N
     svc_le = joblib.load(model_dir / "service_encoder.joblib")
 
     _status("Converting service classifier via emlearn", logs)
-    portable_model = convert(svc_model)  # type: ignore
+    portable_model = convert(svc_model)  
 
     c_path = out_dir / "rfc_em_inference.c"
     h_path = include_dir / "service_classifier_eml.h"
-    # write C source and header
-    c_path.write_text(portable_model.to_c())  # type: ignore
-    h_path.write_text(portable_model.to_h())  # type: ignore
+    c_path.write_text(portable_model.to_c())  
+    h_path.write_text(portable_model.to_h())  
 
-    # save model binary for runtime if needed
-    joblib.dump(portable_model, models_dir / "service_classifier_eml.joblib")  # type: ignore
+    joblib.dump(portable_model, models_dir / "service_classifier_eml.joblib")  
 
-    # label mappings
     label_map_path = out_dir / "label_mappings.json"
     import json
     json.dump({int(i): cls for i, cls in enumerate(svc_le.classes_)}, label_map_path.open("w", encoding="utf-8"), indent=2)

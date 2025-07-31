@@ -52,7 +52,6 @@ def read_data_file(rel_path: str) -> Dict[str, object]:
     base_dir: Path = PATHS["data_folder"].resolve()
     target: Path = (base_dir / rel_path).resolve()
 
-    # Ensure the requested file is inside the data directory
     if base_dir not in target.parents and target != base_dir:
         raise ValueError("Invalid file path")
     if not target.exists() or not target.is_file():
@@ -62,7 +61,7 @@ def read_data_file(rel_path: str) -> Dict[str, object]:
     try:
         content = target.read_text(encoding="utf-8", errors="replace")
     except Exception:
-        content = ""  # binary or non-text
+        content = ""  
 
     return {
         "name": target.name,
