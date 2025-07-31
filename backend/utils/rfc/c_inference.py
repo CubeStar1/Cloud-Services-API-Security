@@ -136,8 +136,8 @@ def predict_rfc_c(request_data: Dict[str, Any], logs: List[str] | None = None) -
     quoted_payload = [f'"{a}"' for a in args_payload] if sys.platform.startswith("win") else args_payload
     args = [str(exe), *quoted_payload]
 
-    # _status(f"Args payload: {args_payload}", logs)
-    # _status(f"Running C classifier (argc={len(args)}): {' '.join(args[:2])} …", logs)
+    _status(f"Args payload: {args_payload}", logs)
+    _status(f"Running C classifier (argc={len(args)}): {' '.join(args[:2])} …", logs)
     try:
         proc = subprocess.run(
             args,
@@ -154,10 +154,10 @@ def predict_rfc_c(request_data: Dict[str, Any], logs: List[str] | None = None) -
     for ln in stdout_lines:
         try:
             parsed = json.loads(ln)
-            # _status(f"C output (parsed): {ln}", logs)
+            _status(f"C output (parsed): {ln}", logs)
             break
         except json.JSONDecodeError:
-            # _status(f"C output (ignored): {ln}", logs)
+            _status(f"C output (ignored): {ln}", logs)
             continue
 
     if parsed is None:

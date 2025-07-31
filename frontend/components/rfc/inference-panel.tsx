@@ -80,7 +80,21 @@ export default function RfcInferencePanel() {
           (r.service_prediction ?? r.service) !== "Unknown Service" &&
           (r.activity_prediction ?? r.activity) !== "Unknown Activity"
         );
-        setResults([...filtered, { output: data.output, success: true, time: data.time }]);
+        
+        // Add output metadata to the last result for display
+        if (filtered.length > 0) {
+          filtered[filtered.length - 1] = {
+            ...filtered[filtered.length - 1],
+            output: data.output,
+            success: true,
+            time: data.time
+          };
+        } else {
+          // If no valid predictions, still show output
+          filtered.push({ output: data.output, success: true, time: data.time });
+        }
+        
+        setResults(filtered);
       } else {
         setResults([{ output: data.output, success: false, error: data.error }]);
         toast({ variant: "destructive", title: "Error", description: data.error ?? "Inference failed" });
@@ -94,57 +108,89 @@ export default function RfcInferencePanel() {
 
   return (
     <div className="space-y-6">
-        <Tabs defaultValue="single" value={mode} onValueChange={(v) => setMode(v as any)} className="flex-1">
-        <TabsList>
-          <TabsTrigger value="single">Single Prediction</TabsTrigger>
-          <TabsTrigger value="file">File Batch</TabsTrigger>
-        </TabsList>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-4">
-              Engine: {engine === 'python' ? 'Python' : 'C'}
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setEngine('python')}>
-              Python
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setEngine('c')}>
-              C
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <TabsContent value="single">
-          <Card>
-            <CardHeader>
-              <CardTitle>Single Prediction</CardTitle>
-              <CardDescription>Enter request features to predict service & activity.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {Object.keys(singleInput).map((key) => key)}
-              {[
-                "headers_Host",
-                "url",
-                "method",
-                "requestHeaders_Origin",
-                "requestHeaders_Content_Type",
-                "responseHeaders_Content_Type",
-                "requestHeaders_Referer",
-                "requestHeaders_Accept",
-              ].map((field) => (
-                <Input
-                  key={field}
-                  placeholder={field}
-                  value={(singleInput as any)[field] || ""}
-                  onChange={(e) => setSingleInput({ ...singleInput, [field]: e.target.value })}
-                />
-              ))}
-              <Button onClick={handlePredict} disabled={loading} className="w-full">
-                {loading ? "Predicting..." : "Predict"}
+      <Tabs defaultValue="single" value={mode} onValueChange={(v) => setMode(v as any)} className="flex-1">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <TabsList>
+            <TabsTrigger value="single">Single Prediction</TabsTrigger>
+            <TabsTrigger value="file">File Batch</TabsTrigger>
+          </TabsList>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Engine: {engine === 'python' ? 'Python' : 'C'}
+                <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
-            </CardContent>
-          </Card>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setEngine('python')}>
+                Python
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setEngine('c')}>
+                C
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <TabsContent value="single" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Single Prediction</CardTitle>
+                <CardDescription>Enter request features to predict service & activity.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[
+                  "headers_Host",
+                  "url",
+                  "method",
+                  "requestHeaders_Origin",
+                  "requestHeaders_Content_Type",
+                  "responseHeaders_Content_Type",
+                  "requestHeaders_Referer",
+                  "requestHeaders_Accept",
+                ].map((field) => (
+                  <Input
+                    key={field}
+                    placeholder={field}
+                    value={(singleInput as any)[field] || ""}
+                    onChange={(e) => setSingleInput({ ...singleInput, [field]: e.target.value })}
+                  />
+                ))}
+              </CardContent>
+              <CardFooter>
+                <Button onClick={handlePredict} disabled={loading} className="w-full">
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Predicting...
+                    </>
+                  ) : (
+                    "Predict"
+                  )}
+                </Button>
+              </CardFooter>
+            </Card>
+            
+            <ApiOutput 
+              output={results[results.length - 1]?.output} 
+              success={results[results.length - 1]?.success} 
+              time={results[results.length - 1]?.time}
+            />
+          </div>
+          
+          {results.length > 0 && results.some(r => r.service_prediction || r.service || r.activity_prediction || r.activity) && (
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Prediction Results</CardTitle>
+                  <CsvDownloadButton rows={results} />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ResultsTable rows={results} />
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
         <TabsContent value="file" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
