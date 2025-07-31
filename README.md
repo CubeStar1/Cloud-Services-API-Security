@@ -224,8 +224,8 @@ uvicorn backend.main:app --reload
 
 
 6. Unzip the contents of the `backend/data/output/rfc/codegen/codegen.zip` into the `backend/data/output/rfc/codegen` directory.
-   > [!IMPORTANT] 
-   > Make sure you have the C code files unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
+> [!IMPORTANT] 
+> Make sure you have the C code files unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
 
 ## Configuration and Workflow
 
@@ -261,8 +261,8 @@ uvicorn backend.main:app --reload
    uvicorn backend.main:app --reload
    ```
 
-   > [!IMPORTANT]
-   > Make sure you have the C code file unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
+> [!IMPORTANT]
+> Make sure you have the C code file unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
 2. Access the GUI at `http://localhost:3000`
 
 ### Main GUI Routes and Workflow
