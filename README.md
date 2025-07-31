@@ -227,22 +227,7 @@ uvicorn backend.main:app --reload
 > [!IMPORTANT] 
 > Make sure you have the C code files unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
 
-## Configuration and Workflow
 
-### File Structure and Paths
-- The project uses two main data directories:
-  - Root `data/` folder: Used by command-line scripts
-  - `frontend/data/` folder: Used by the web GUI
-- Script paths (like in `zsl/codebert/inference.py`) point to the root `data/` directory
-- Example path structure in scripts:
-  ```python
-  BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-  PATHS = {
-      'train_data': os.path.join(BASE_PATH, "data", "labelled", "train_set.xlsx"),
-      'test_data': os.path.join(BASE_PATH, "data", "labelled", "test_set.xlsx"),
-      'predictions_folder': os.path.join(BASE_PATH, "data", "output", "codebert", "predictions"),
-  }
-  ```
 
 ## 1. Web GUI Workflow
 
@@ -264,6 +249,8 @@ uvicorn backend.main:app --reload
 > [!IMPORTANT]
 > Make sure you have the C code file unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
 2. Access the GUI at `http://localhost:3000`
+
+3. Run inference on a custom csv file by placing a file in `backend/data/output/rfc/test/test_set.csv` and going to `http://localhost:3000/rfc`, choosing the file from the file browser and clicking on the `Inference` tab.
 
 ### Main GUI Routes and Workflow
 
@@ -292,7 +279,6 @@ uvicorn backend.main:app --reload
    - Ensure you have a clean, labelled output from CodeBERT in `frontend/data/output/codebert/predictions/`
    - Outputs to `frontend/data/output/rfc/`
    - C Code generated in `frontend/data/output/rfc/codegen/` for manual C code generation
-   - C Code generated in `frontend/data/output/rfc/em-codegen/` for C code generation using EM Learn Library (https://github.com/EmLearn/EmLearn)
 
 #### 6. `/files` - File Management
    - Browse all generated files
@@ -363,7 +349,22 @@ Run both models on unlabeled traffic data:
    - Generates final predictions in `data/output/rfc/`
 
 
+## Configuration and Workflow
 
+### File Structure and Paths
+- The project uses two main data directories:
+  - Root `data/` folder: Used by command-line scripts
+  - `frontend/data/` folder: Used by the web GUI
+- Script paths (like in `zsl/codebert/inference.py`) point to the root `data/` directory
+- Example path structure in scripts:
+  ```python
+  BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+  PATHS = {
+      'train_data': os.path.join(BASE_PATH, "data", "labelled", "train_set.xlsx"),
+      'test_data': os.path.join(BASE_PATH, "data", "labelled", "test_set.xlsx"),
+      'predictions_folder': os.path.join(BASE_PATH, "data", "output", "codebert", "predictions"),
+  }
+  ```
 
 ## Complete Workflow
 
