@@ -13,7 +13,7 @@ const sidebarConfig: SidebarConfig = {
       items: [
         {
           title: "Dashboard",
-          href: "/dashboard",
+          href: "/dashboard2",
           icon: Icons.layoutDashboard
         },
         {

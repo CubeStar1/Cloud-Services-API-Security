@@ -54,7 +54,7 @@ export function LiveClassificationResults({ results }: LiveClassificationResults
                                 {results.map((result) => (
                                     <TableRow key={result.id}>
                                         <TableCell className="font-mono text-xs">{result.timestamp}</TableCell>
-                                        <TableCell className="font-mono text-xs">{result.requestSnippet}</TableCell>
+                                        <TableCell className="font-mono text-xs max-w-[200px] truncate" title={result.requestSnippet}>{result.requestSnippet}</TableCell>
                                         <TableCell className="text-xs font-medium">{result.predictedService}</TableCell>
                                         <TableCell className="text-xs">{result.predictedActivity}</TableCell>
                                         <TableCell>

@@ -138,6 +138,7 @@ def predict_rfc_c(request_data: Dict[str, Any], logs: List[str] | None = None) -
 
     # _status(f"Args payload: {args_payload}", logs)
     # _status(f"Running C classifier (argc={len(args)}): {' '.join(args[:2])} …", logs)
+    start_time = time.perf_counter()
     try:
         proc = subprocess.run(
             args,
@@ -148,6 +149,8 @@ def predict_rfc_c(request_data: Dict[str, Any], logs: List[str] | None = None) -
     except subprocess.CalledProcessError as e:
         raise RuntimeError(
             f"C classifier failed with code {e.returncode}: {e.stderr.strip()}" ) from e
+    
+    inference_time = (time.perf_counter() - start_time) * 1000
 
     stdout_lines = [ln.strip() for ln in proc.stdout.splitlines() if ln.strip()]
     parsed: dict[str, Any] | None = None
@@ -176,6 +179,7 @@ def predict_rfc_c(request_data: Dict[str, Any], logs: List[str] | None = None) -
         "activity_id": activity_id,
         "service": service_label,
         "activity": activity_label,
+        "inference_time": inference_time,
     }
     return result
 

@@ -139,13 +139,13 @@ export default function DashboardPage() {
                 <h1 className="text-3xl font-bold">Live Dashboard</h1>
                 
                 {/* Pass updated props to DashboardStats */}
-                <DashboardStats 
+                {/* <DashboardStats 
                     totalRequests={totalRequests}
                     anomaliesCount={anomaliesCount}
                     mostFrequentService={mostFrequentService}
                     isRunning={isRunning}
                     onToggleRun={handleToggleRun}
-                />
+                /> */}
 
                 {/* Frequency Charts Side-by-Side */}
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

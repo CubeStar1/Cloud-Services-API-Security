@@ -91,6 +91,7 @@ def predict_rfc_python(
         
         # Make predictions
         _status("Making predictions...", logs)
+        start_time = time.perf_counter()
         
         # Service prediction
         service_pred_encoded = service_model.predict([combined_features])[0]
@@ -104,6 +105,8 @@ def predict_rfc_python(
         activity_prediction = activity_encoder.inverse_transform([activity_pred_encoded])[0]
         activity_confidence = float(max(activity_pred_proba))
         
+        inference_time = (time.perf_counter() - start_time) * 1000
+
         _status(f"Service prediction: {service_prediction} (confidence: {service_confidence:.4f})", logs)
         _status(f"Activity prediction: {activity_prediction} (confidence: {activity_confidence:.4f})", logs)
         
@@ -129,7 +132,8 @@ def predict_rfc_python(
             "activity_confidence": activity_confidence,
             "activity_probabilities": activity_probabilities,
             "combined_features": combined_features,
-            "feature_count": len([f for f in features if f])
+            "feature_count": len([f for f in features if f]),
+            "inference_time": inference_time
         }
         
     except FileNotFoundError as e:
