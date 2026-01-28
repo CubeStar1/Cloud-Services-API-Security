@@ -62,6 +62,16 @@ const sidebarConfig: SidebarConfig = {
             icon: Icons.layoutDashboard
           }
         ]
+      },
+      {
+        label: "OT Security",
+        items: [
+          {
+            title: "Scanner",
+            href: "/ot-security",
+            icon: Icons.shield
+          }
+        ]
       }
     
   ]

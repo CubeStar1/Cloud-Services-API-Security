@@ -1,0 +1,20 @@
+{
+  "name": "cloud-services-api-security",
+  "version": "1.0.0",
+  "description": "![Frontend Dashboard](./frontend/public/cas-dashboard.png)\r ![RFC Generation](./frontend/public/cas-rfc.png)",
+  "homepage": "https://github.com/CubeStar1/Cloud-Services-API-Security#readme",
+  "bugs": {
+    "url": "https://github.com/CubeStar1/Cloud-Services-API-Security/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CubeStar1/Cloud-Services-API-Security.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "secure-file-sharing": "python app.py"
+  }
+}

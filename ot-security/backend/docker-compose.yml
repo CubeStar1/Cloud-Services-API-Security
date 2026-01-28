@@ -1,0 +1,158 @@
+
+
+services:
+  # -------------------
+  # OT SIDE
+  # -------------------
+  plc1:
+    image: oitc/modbus-server
+    platform: linux/amd64
+    container_name: plc1
+    hostname: plc1
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.21
+    ports:
+      - "5021:502"
+    restart: always
+
+  plc2:
+    image: oitc/modbus-server
+    platform: linux/amd64
+    container_name: plc2
+    hostname: plc2
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.22
+    ports:
+      - "5022:502"
+    restart: always
+
+  plc3:
+    image: oitc/modbus-server
+    platform: linux/amd64
+    container_name: plc3
+    hostname: plc3
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.23
+    ports:
+      - "5023:502"
+    restart: always
+
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: mqtt
+    hostname: mqtt
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.25
+    ports:
+      - "1883:1883"
+    volumes:
+
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: always
+
+  hmi:
+    image: nginx:alpine
+    container_name: hmi
+    hostname: hmi
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.24
+    ports:
+      - "8085:80"
+    restart: always
+
+  # -------------------
+  # IT SIDE
+  # -------------------
+  webserver:
+    image: nginx:alpine
+    container_name: webserver
+    hostname: webserver
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.31
+    ports:
+      - "8081:80"
+    restart: always
+
+  database:
+    image: mysql:5.7
+    platform: linux/amd64
+    container_name: database
+    hostname: database
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.32
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    restart: always
+
+  # -------------------
+  # FASTAPI BACKEND
+  # -------------------
+  fastapi-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-backend
+    hostname: fastapi
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.50
+    ports:
+      - "8000:8000"
+    restart: always
+    user: root
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./scan_results:/app/scan_results
+      - ./main.py:/app/main.py
+      - ./fusion_layer.py:/app/fusion_layer.py
+      - ./scan.py:/app/scan.py
+      - ./detector.py:/app/detector.py
+      - ./logbert_ics_ot.py:/app/logbert_ics_ot.py
+      - ./ot_check.py:/app/ot_check.py
+      # Model files for ML inference
+      - ./logbert_ics_model.pt:/app/logbert_ics_model.pt
+      - ./logbert_ics_model_tokenizer.pkl:/app/logbert_ics_model_tokenizer.pkl
+      - ./AE-BATADAL-l5-cf2.5.h5:/app/AE-BATADAL-l5-cf2.5.h5
+      - ./serviceAccountKey.json:/app/serviceAccountKey.json
+    depends_on:
+      - mqtt
+      - plc1
+      - plc2
+      - plc3
+
+  # -------------------
+  # OT SIMULATOR
+  # -------------------
+  simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.simulator
+    container_name: simulator
+    hostname: simulator
+    networks:
+      ot_lab_ot_net:
+        ipv4_address: 172.20.0.51
+    restart: always
+    depends_on:
+      - mqtt
+      - plc1
+      - plc2
+      - plc3
+
+networks:
+  ot_lab_ot_net:
+    name: ot_lab_ot_net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24

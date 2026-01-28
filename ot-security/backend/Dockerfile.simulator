@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install required Python packages
+RUN pip install --no-cache-dir paho-mqtt pymodbus>=3.0.0
+
+# Copy ONLY the simulator script
+COPY simulator.py .
+
+# Run the simulator with unbuffered output
+CMD ["python", "-u", "simulator.py"]
