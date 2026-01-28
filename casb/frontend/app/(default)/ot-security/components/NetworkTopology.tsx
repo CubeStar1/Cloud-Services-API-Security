@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import ReactFlow, {
+import {
+  ReactFlow,
   Background,
   Controls,
   Node,
   Edge,
   MarkerType,
-} from "react-flow-renderer";
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 import { Card } from "@/components/ui/card";
 
 interface NetworkTopologyProps {
