@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RefreshCw, Table as TableIcon, LayoutList } from 'lucide-react'
 import { TrafficTable } from './traffic-table'
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { toast } from 'sonner'
 
 interface LogFile {
     name: string
@@ -38,13 +39,20 @@ export function TrafficLogs() {
     const [isLoading, setIsLoading] = useState(false)
     const [viewMode, setViewMode] = useState<ViewMode>('cards')
 
+    const [isLive, setIsLive] = useState(false)
+    const [eventSource, setEventSource] = useState<EventSource | null>(null)
+
     const fetchLogFiles = async () => {
         try {
-            const response = await fetch('/api/anyproxy/logs')
+            // Fetch only JSON files from raw-json directory to avoid CSV crash
+            const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+            const response = await fetch(`${BACKEND_URL}/files?subdir=logs/raw-json&ext=json`)
             const files = await response.json()
-            setLogFiles(files)
-            if (files.length > 0 && !selectedFile) {
-                setSelectedFile(files[0].name)
+            if (Array.isArray(files)) {
+                setLogFiles(files)
+                if (files.length > 0 && !selectedFile && !isLive) {
+                    setSelectedFile(files[0].name)
+                }
             }
         } catch (error) {
             console.error('Error fetching log files:', error)
@@ -52,13 +60,29 @@ export function TrafficLogs() {
     }
 
     const fetchLogs = async () => {
-        if (!selectedFile) return
+        if (!selectedFile || isLive) return
         
         setIsLoading(true)
         try {
-            const response = await fetch(`/api/anyproxy/logs?file=${encodeURIComponent(selectedFile)}`)
+            // Fetch file content directly from backend
+            const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+            const response = await fetch(`${BACKEND_URL}/files?file=logs/raw-json/${encodeURIComponent(selectedFile)}`)
             const data = await response.json()
-            setLogs(data)
+            
+                try {
+                    const cleanContent = data.content.trim().replace(/,\s*$/, '')
+                    if (cleanContent) {
+                         const parsed = JSON.parse(`[${cleanContent}]`)
+                         // File content is directly the request/response objects, not wrapped in { type: 'log', data: ... }
+                         // So we just use parsed directly.
+                         setLogs(parsed.reverse()) // Reverse to show newest first if file is appended
+                    } else {
+                        setLogs([])
+                    }
+                } catch (e) {
+                    console.error("Error parsing logs:", e)
+                    setLogs([])
+                }
         } catch (error) {
             console.error('Error fetching logs:', error)
         } finally {
@@ -66,19 +90,58 @@ export function TrafficLogs() {
         }
     }
 
+    // Streaming effect
+    useEffect(() => {
+        if (!isLive) {
+            if (eventSource) {
+                eventSource.close()
+                setEventSource(null)
+            }
+            return
+        }
+
+        const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        const es = new EventSource(`${BACKEND_URL}/anyproxy/logs/stream`)
+        
+        es.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data)
+                // Stream data IS wrapped in { type: 'log', data: ... } from rule.js console.log
+                if (data.type === 'log') {
+                    setLogs(prev => [data.data, ...prev].slice(0, 1000))
+                }
+            } catch (e) {
+                console.error('Error parsing stream data:', e)
+            }
+        }
+
+        es.onerror = (error) => {
+            console.error('EventSource error:', error)
+            es.close()
+            setIsLive(false) 
+            toast.error("Live stream disconnected")
+        }
+
+        setEventSource(es)
+
+        return () => {
+            es.close()
+        }
+    }, [isLive])
+
+    // Initial load only
     useEffect(() => {
         fetchLogFiles()
-        const interval = setInterval(fetchLogFiles, 5000) // Check for new files every 5 seconds
+        const interval = setInterval(fetchLogFiles, 5000) // Keep file list update
         return () => clearInterval(interval)
     }, [])
 
     useEffect(() => {
-        if (selectedFile) {
+        if (selectedFile && !isLive) {
             fetchLogs()
-            const interval = setInterval(fetchLogs, 2000) // Update logs every 2 seconds
-            return () => clearInterval(interval)
+            // Removed interval polling for file content. User can use Refresh button.
         }
-    }, [selectedFile])
+    }, [selectedFile, isLive])
 
     const renderHeaders = (log: LogEntry) => {
         const headers = [
@@ -106,6 +169,7 @@ export function TrafficLogs() {
             <div className="space-y-4 p-4">
                 {logs.map((log, index) => (
                     <div key={index} className="rounded-lg border bg-card p-4">
+                        {/* existing card content... reusing same structure but simplified for diff */}
                         <div className="flex items-center gap-2 mb-3">
                             <Badge variant={log.type === 'request' ? "outline" : "default"}>
                                 {log.type.toUpperCase()}
@@ -113,6 +177,7 @@ export function TrafficLogs() {
                             <Badge variant="secondary">
                                 {log.method}
                             </Badge>
+                             {/* Added detailed timestamp in card if needed, or rely on order */}
                         </div>
                         <div className="space-y-2">
                             <div className="text-sm break-all">
@@ -131,9 +196,14 @@ export function TrafficLogs() {
                         </div>
                     </div>
                 ))}
-                {(!selectedFile || logs.length === 0) && (
+                {(!isLive && (!selectedFile || logs.length === 0)) && (
                     <div className="text-center text-muted-foreground py-8">
-                        {!selectedFile ? 'Select a log file to view logs' : 'No logs available in this file'}
+                        {!selectedFile ? 'Select a log file or start Live Stream' : 'No logs available in this file'}
+                    </div>
+                )}
+                {isLive && logs.length === 0 && (
+                     <div className="text-center text-muted-foreground py-8">
+                        Waiting for traffic...
                     </div>
                 )}
             </div>
@@ -154,7 +224,19 @@ export function TrafficLogs() {
                                 <TableIcon className="h-4 w-4" />
                             </ToggleGroupItem>
                         </ToggleGroup>
-                        <Select value={selectedFile} onValueChange={setSelectedFile}>
+                        
+                         <Button
+                            variant={isLive ? "destructive" : "default"}
+                            size="sm"
+                            onClick={() => {
+                                setIsLive(!isLive)
+                                if (!isLive) setLogs([]) // Clear old logs when starting stream
+                            }}
+                        >
+                            {isLive ? 'Stop Live' : 'Go Live'}
+                        </Button>
+
+                        <Select value={selectedFile} onValueChange={setSelectedFile} disabled={isLive}>
                             <SelectTrigger className="w-[200px]">
                                 <SelectValue placeholder="Select log file" />
                             </SelectTrigger>
@@ -175,7 +257,7 @@ export function TrafficLogs() {
                             variant="outline"
                             size="sm"
                             onClick={fetchLogs}
-                            disabled={isLoading || !selectedFile}
+                            disabled={isLoading || !selectedFile || isLive}
                         >
                             <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
                             Refresh

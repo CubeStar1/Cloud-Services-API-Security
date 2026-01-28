@@ -15,13 +15,14 @@ export function ProxyControl() {
     const handleProxyAction = async (action: 'start' | 'stop') => {
         setIsLoading(true)
         try {
-            const response = await fetch('/api/anyproxy', {
+            const endpoint = action === 'start' ? 'start' : 'stop'
+            const body = action === 'start' ? { filename } : {}
+            const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+            
+            const response = await fetch(`${BACKEND_URL}/anyproxy/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    action,
-                    filename: action === 'start' ? filename : undefined
-                })
+                body: JSON.stringify(body)
             })
             const data = await response.json()
             
@@ -41,15 +42,15 @@ export function ProxyControl() {
 
     // Check proxy status on component mount
     useState(() => {
-        fetch('/api/anyproxy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'status' })
-        })
+        const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+        fetch(`${BACKEND_URL}/anyproxy/status`)
         .then(res => res.json())
         .then(data => {
             if (data.status === 'success') {
                 setIsRunning(data.isRunning)
+                if (data.currentLogFile) {
+                    setFilename(data.currentLogFile.replace('.json', ''))
+                }
             }
         })
         .catch(console.error)
