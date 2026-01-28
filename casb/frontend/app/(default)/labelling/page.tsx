@@ -8,6 +8,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, AlertCircle, FileText, FileCheck } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 interface FileInfo {
     name: string
@@ -29,6 +31,9 @@ export default function LabellingPage() {
         progress: [],
         error: null
     })
+
+    const [services, setServices] = useState("Service A, Service B")
+    const [activities, setActivities] = useState("Login, Upload, Download, Logout, Search, API Call, Message, Payment, Unknown")
 
     // Fetch files on component mount
     useEffect(() => {
@@ -59,7 +64,12 @@ export default function LabellingPage() {
 
         try {
             const response = await fetch('/api/labelling', {
-                method: 'POST'
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    services: services.split(',').map(s => s.trim()).filter(Boolean),
+                    activities: activities.split(',').map(s => s.trim()).filter(Boolean)
+                })
             })
             const data = await response.json()
 
@@ -144,6 +154,35 @@ export default function LabellingPage() {
                     )}
                 </Button>
             </div>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Configuration</CardTitle>
+                    <CardDescription>Define the classes for classification (comma-separated)</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="services">Services</Label>
+                            <Textarea
+                                id="services"
+                                placeholder="Service A, Service B..."
+                                value={services}
+                                onChange={(e) => setServices(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="activities">Activities</Label>
+                            <Textarea
+                                id="activities"
+                                placeholder="Login, Logout, Upload..."
+                                value={activities}
+                                onChange={(e) => setActivities(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
 
             <Tabs defaultValue="files" className="space-y-4">
                 <TabsList>

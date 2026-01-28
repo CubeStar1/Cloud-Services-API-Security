@@ -11,12 +11,8 @@ api_classifier.c
 api_classifier.exe
 
 # Model and Data placeholders
-models/
 codebert/
-latex/
 
 # Data directories
-cli/data/
-frontend/data/
 test_set_20260128.csv
 test_set_20260128.csv

@@ -1,59 +1,70 @@
-import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
+import path from 'path';
 
-
-
-
-
-// Get all log files from the directory
-function getLogFiles() {
-    const logsDir = path.join(process.cwd(), 'data', 'logs', 'raw-json')
-    if (!fs.existsSync(logsDir)) {
-        return []
-    }
-    return fs.readdirSync(logsDir)
-        .filter(file => file.endsWith('.json'))
-        .map(file => ({
-            name: file,
-            path: path.join(logsDir, file),
-            timestamp: fs.statSync(path.join(logsDir, file)).mtime.getTime()
-        }))
-        .sort((a, b) => b.timestamp - a.timestamp) // Sort by most recent first
-}
-
-// Read logs from a specific file
-function readLogsFromFile(filePath: string) {
-    try {
-        const fileContent = fs.readFileSync(filePath, 'utf-8')
-        const cleanContent = fileContent.replace(/,\s*$/, '')
-        return JSON.parse(`[${cleanContent}]`)
-    } catch (error) {
-        console.error(`Error reading file ${filePath}:`, error)
-        return []
-    }
-}
+const BACKEND = process.env.BACKEND_URL ?? 'http://localhost:8000';
 
 export async function GET(req: NextRequest) {
     try {
-        const searchParams = req.nextUrl.searchParams
-        const file = searchParams.get('file')
+        const searchParams = req.nextUrl.searchParams;
+        const file = searchParams.get('file');
+        const format = searchParams.get('format'); // 'json' or 'csv'
 
         // If a specific file is requested
         if (file) {
-            const filePath = path.join(process.cwd(), 'data', 'logs', 'raw-json', file)
-            if (!fs.existsSync(filePath)) {
-                return NextResponse.json({ error: 'File not found' }, { status: 404 })
+            // Infer directory from extension if not explicit path
+            let subdir = 'logs/raw-json';
+            if (file.endsWith('.csv')) {
+                subdir = 'logs/csv';
             }
-            const logs = readLogsFromFile(filePath)
-            return NextResponse.json(logs)
+
+            // Safety check: avoid double prefixing if UI changes to send full relative path
+            const relPath = file.includes('/') ? file : `${subdir}/${file}`;
+            
+            const { data } = await axios.get(`${BACKEND}/files`, {
+                params: { file: relPath }
+            });
+            
+            if (data.error) {
+                 return NextResponse.json({ error: data.error }, { status: 404 });
+            }
+            
+            let content = data.content;
+            
+            // Special parsing for our raw JSON logs
+            if (file.endsWith('.json') && typeof content === 'string') {
+                 try {
+                     const cleanContent = content.replace(/,\s*$/, '');
+                     const parsed = JSON.parse(`[${cleanContent}]`);
+                     return NextResponse.json(parsed);
+                 } catch (e) {
+                     console.error('Error parsing proxy log content:', e);
+                     return NextResponse.json([]);
+                 }
+            }
+            
+            // For CSV or other files, return content as is (or handle CSV parsing if needed later)
+            return NextResponse.json(content);
         }
 
         // Otherwise, return list of available log files
-        const files = getLogFiles()
-        return NextResponse.json(files)
-    } catch (error) {
-        console.error('Error handling logs request:', error)
-        return NextResponse.json({ error: 'Failed to process request' }, { status: 500 })
+        let params: any = { subdir: 'logs' }; // Default: fetch all logs recursively
+
+        if (format === 'json') {
+            params = { subdir: 'logs/raw-json', ext: 'json' };
+        } else if (format === 'csv') {
+            params = { subdir: 'logs/csv', ext: 'csv' };
+        }
+
+        const { data } = await axios.get(`${BACKEND}/files`, {
+            params
+        });
+        
+        return NextResponse.json(data);
+        
+    } catch (error: any) {
+        console.error('Error handling logs request:', error.message);
+        const status = error.response?.status ?? 500;
+        return NextResponse.json({ error: 'Failed to process request' }, { status });
     }
-} 
+}

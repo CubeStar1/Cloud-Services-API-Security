@@ -8,10 +8,14 @@ from ..types.labelling import LabellingRequest
 router = APIRouter()
 
 @router.post("/label", summary="Run full labelling workflow")
-async def label(request: LabellingRequest) -> dict[str, str | list[str]]:
+async def label(request: LabellingRequest) -> dict[str, Any]:
     """Trigger the complete labelling process (conversion ➜ split ➜ classification)."""
     try:
-        return run_full_labelling(api_key=request.api_key)
+        return run_full_labelling(
+            api_key=request.api_key,
+            services=request.services,
+            activities=request.activities
+        )
     except Exception as exc:
         return {"success": False, "message": "Labelling failed", "error": str(exc)}
 

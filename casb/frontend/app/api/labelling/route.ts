@@ -1,82 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { spawn } from 'child_process'
-import path from 'path'
-import fs from 'fs'
+import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
 
-// Get all CSV files from the directory
-function getCsvFiles() {
-    const csvDir = path.join(process.cwd(), 'data', 'logs', 'csv')
-    if (!fs.existsSync(csvDir)) {
-        return []
-    }
-    return fs.readdirSync(csvDir)
-        .filter(file => file.endsWith('.csv'))
-        .map(file => ({
-            name: file,
-            path: path.join(csvDir, file),
-            timestamp: fs.statSync(path.join(csvDir, file)).mtime.getTime()
-        }))
-        .sort((a, b) => b.timestamp - a.timestamp)
-}
+const BACKEND = process.env.BACKEND_URL ?? 'http://localhost:8000';
+const GROQ_API_KEY = process.env.GROQ_API_KEY!
 
+// GET: List CSV files (proxy to backend listing)
 export async function GET() {
-    try {
-        const files = getCsvFiles()
-        return NextResponse.json(files)
-    } catch (error) {
-        console.error('Error getting CSV files:', error)
-        return NextResponse.json({ error: 'Failed to get CSV files' }, { status: 500 })
-    }
+  try {
+    // Request files with subdir=logs/csv and ext=csv
+    const { data } = await axios.get(`${BACKEND}/files`, {
+      params: { subdir: 'logs/csv', ext: 'csv' },
+    });
+    return NextResponse.json(data);
+  } catch (error: any) {
+    console.error('Error getting CSV files:', error.message);
+    return NextResponse.json({ error: 'Failed to get CSV files' }, { status: 500 });
+  }
 }
 
+// POST: Trigger labelling
 export async function POST(req: NextRequest) {
-    try {
-        const scriptPath = path.join(process.cwd(), 'scripts', 'labelling.py')
-        
-        // Spawn the Python process
-        const pythonProcess = spawn('python', [scriptPath])
-        
-        let output = ''
-        let error = ''
-        
-        // Collect stdout data
-        pythonProcess.stdout.on('data', (data) => {
-            const newData = data.toString()
-            output += newData
-            console.log(newData) // Log progress in real-time
-        })
-        
-        // Collect stderr data
-        pythonProcess.stderr.on('data', (data) => {
-            const newData = data.toString()
-            error += newData
-            console.error(newData)
-        })
-        
-        // Wait for the process to complete
-        const exitCode = await new Promise((resolve) => {
-            pythonProcess.on('close', resolve)
-        })
-        
-        if (exitCode === 0) {
-            return NextResponse.json({ 
-                success: true, 
-                message: 'Labelling completed successfully',
-                output 
-            })
-        } else {
-            return NextResponse.json({ 
-                success: false, 
-                message: 'Labelling failed',
-                error 
-            }, { status: 500 })
-        }
-    } catch (error:any) {
-        console.error('Error running labelling script:', error)
-        return NextResponse.json({ 
-            success: false, 
-            message: 'Failed to run labelling script',
-            error: error.message 
-        }, { status: 500 })
-    }
-} 
+  try {
+    const body = await req.json().catch(() => ({})); // Handle empty body if any
+    const payload = { 
+        ...body, 
+        api_key: GROQ_API_KEY,
+        services: body.services,
+        activities: body.activities
+    };
+    const { data } = await axios.post(`${BACKEND}/label`, payload);
+    return NextResponse.json(data);
+  } catch (error: any) {
+    console.error('Error running labelling:', error.message);
+    const status = error.response?.status ?? 500;
+    const message = error.response?.data?.message ?? error.message ?? 'Failed to run labelling';
+    return NextResponse.json({ success: false, message, error: message }, { status });
+  }
+}

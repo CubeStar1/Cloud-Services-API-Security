@@ -7,75 +7,44 @@ import { Button } from '@/components/ui/button'
 import { FileJson, Trash2, Download } from 'lucide-react'
 import { TrafficTable } from '@/components/anyproxy/traffic-table'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { CSVViewer } from '@/components/ui/csv-viewer'
 
-interface LogFile {
+export interface LogFile {
     name: string
     path: string
     timestamp: number
 }
 
-interface LogEntry {
-    type: 'request' | 'response'
-    url: string
-    method: string
-    headers_Host: string
-    requestHeaders_Origin?: string
-    requestHeaders_Content_Type?: string
-    requestHeaders_Referer?: string
-    requestHeaders_Accept?: string
-    responseHeaders_Content_Type?: string
-    body: any
+interface LogFilesGridProps {
+    files: LogFile[]
+    type?: 'json' | 'csv'
 }
 
-export function LogFilesGrid() {
-    const [logFiles, setLogFiles] = useState<LogFile[]>([])
-    const [selectedFileContent, setSelectedFileContent] = useState<LogEntry[]>([])
-    const [isLoading, setIsLoading] = useState(true)
-
-    const fetchLogFiles = async () => {
-        try {
-            const response = await fetch('/api/anyproxy/logs')
-            const files = await response.json()
-            setLogFiles(files)
-        } catch (error) {
-            console.error('Error fetching log files:', error)
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
+export function LogFilesGrid({ files, type = 'json' }: LogFilesGridProps) {
+    // We use 'any' for content because it could be LogEntry[] (JSON) or string (CSV)
+    const [selectedFileContent, setSelectedFileContent] = useState<any>(null)
+    
+    // Internal fetching only for CONTENT of a specific file
     const fetchFileContent = async (fileName: string) => {
         try {
+            // API route expects ?file=filename
             const response = await fetch(`/api/anyproxy/logs?file=${encodeURIComponent(fileName)}`)
             const data = await response.json()
             setSelectedFileContent(data)
         } catch (error) {
             console.error('Error fetching file content:', error)
-            setSelectedFileContent([])
+            setSelectedFileContent(null)
         }
     }
-
-    // Fetch log files on component mount
-    useState(() => {
-        fetchLogFiles()
-    })
 
     const formatDate = (timestamp: number) => {
         return new Date(timestamp).toLocaleString()
     }
 
-    const getRequestCount = (logs: LogEntry[]) => {
-        return logs.filter(log => log.type === 'request').length
-    }
-
-    const getResponseCount = (logs: LogEntry[]) => {
-        return logs.filter(log => log.type === 'response').length
-    }
-
     return (
         <div className="container mx-auto py-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {logFiles.map((file) => (
+                {files.map((file) => (
                     <Card key={file.name} className="hover:shadow-lg transition-shadow">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <div className="flex items-center space-x-2">
@@ -114,15 +83,24 @@ export function LogFilesGrid() {
                                             Traffic logs from {formatDate(file.timestamp)}
                                         </DialogDescription>
                                     </DialogHeader>
-                                    <div className="flex-1 overflow-hidden">
-                                        <TrafficTable logs={selectedFileContent} />
+                                    <div className="flex-1 overflow-hidden h-full">
+                                        {selectedFileContent === null ? (
+                                            <div className="flex items-center justify-center h-full">Loading...</div>
+                                        ) : type === 'csv' || (typeof selectedFileContent === 'string') ? (
+                                            <CSVViewer 
+                                                data={typeof selectedFileContent === 'string' ? selectedFileContent : ''} 
+                                                className="h-[calc(80vh-100px)] border rounded" 
+                                            />
+                                        ) : (
+                                            <TrafficTable logs={selectedFileContent} />
+                                        )}
                                     </div>
                                 </DialogContent>
                             </Dialog>
                         </CardContent>
                     </Card>
                 ))}
-                {logFiles.length === 0 && !isLoading && (
+                {files.length === 0 && (
                     <div className="col-span-full text-center text-muted-foreground py-12">
                         No log files available
                     </div>
@@ -130,4 +108,4 @@ export function LogFilesGrid() {
             </div>
         </div>
     )
-} 
+}

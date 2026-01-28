@@ -8,4 +8,3 @@ router.include_router(labelling_routes.router, tags=["label"])
 router.include_router(rfc_routes.router, prefix="/rfc", tags=["rfc"])
 router.include_router(files_routes.router, tags=["files"])
 
-

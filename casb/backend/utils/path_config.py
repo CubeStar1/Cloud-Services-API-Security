@@ -9,6 +9,8 @@ PATHS = {
     "csv_folder": DATA_DIR / "logs" / "csv",
     "labelled_folder": DATA_DIR / "labelled",
     "metadata_file": DATA_DIR / "labelled" / "metadata.json",
+    "train_file": DATA_DIR / "labelled" / "train.csv",
+    "test_file": DATA_DIR / "labelled" / "test.csv",
 
     # RFC Python training specific paths
     "rfc_python_train_input": DATA_DIR / "output" / "codebert" / "predictions",

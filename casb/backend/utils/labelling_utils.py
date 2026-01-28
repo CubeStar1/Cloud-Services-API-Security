@@ -4,7 +4,7 @@ import json
 import os
 import time
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, List
 
 import glob
 import pandas as pd
@@ -17,27 +17,16 @@ from .path_config import PATHS
 
 load_dotenv()
 
+from pydantic import BaseModel, Field
+
 CONFIG: Dict[str, Any] = {
     "test_split": 0.2,
-    "groq_model": "llama-3.1-8b-instant",
+    "groq_model": "moonshotai/kimi-k2-instruct-0905",
 }
 
-SERVICES = [
-    "FB Marketplace",
-    "Unknown",
-]
-
-ACTIVITIES = [
-    "Login",
-    "Upload",
-    "Download",
-    "Logout",
-    "Search",
-    "API Call",
-    "Message",
-    "Payment",
-    "Unknown",
-]
+class TrafficClassification(BaseModel):
+    service: str = Field(description="The API service being accessed (e.g., 'Google Drive', 'Slack', 'Unknown')")
+    activity: str = Field(description="The activity performed (e.g., 'Upload', 'Download', 'Login', 'Unknown')")
 
 
 def print_status(msg: str) -> None:  
@@ -79,8 +68,8 @@ def split_and_save(df: pd.DataFrame) -> Tuple[Path, Path]:
     )
     labelled_dir = Path(PATHS["labelled_folder"])
     labelled_dir.mkdir(parents=True, exist_ok=True)
-    train_path = labelled_dir / PATHS["train_file"]
-    test_path = labelled_dir / PATHS["test_file"]
+    train_path = Path(PATHS["train_file"])
+    test_path = Path(PATHS["test_file"])
     train_df.to_csv(train_path, index=False)
     test_df.to_csv(test_path, index=False)
     return train_path, test_path
@@ -96,32 +85,64 @@ def get_groq_classification(client: Groq, prompt: str) -> Tuple[str, str]:
             completion = client.chat.completions.create(
                 model=CONFIG["groq_model"],
                 temperature=0,
-                messages=[{"role": "user", "content": prompt}],
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an API traffic classification expert. Classify the following HTTP request into a specific Service and Activity."
+                    },
+                    {"role": "user", "content": prompt}
+                ],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "traffic_classification",
+                        "schema": TrafficClassification.model_json_schema()
+                    }
+                }
             )
             content = completion.choices[0].message.content.strip()
-            # expected format: "<service> | <activity>"
-            if "|" in content:
-                service, activity = [s.strip() for s in content.split("|", 1)]
-                return service, activity
+            
+            # Use Pydantic to validate
+            classification = TrafficClassification.model_validate(json.loads(content))
+            return classification.service, classification.activity
+
         except Exception as err:  
             print_status(f"[!] Groq error: {err}. Retrying...")
             time.sleep(2)
     return "Unknown", "Unknown"
 
 
-def create_prompt(row: pd.Series) -> str:
+def create_prompt(
+    row: pd.Series, 
+    services: List[str] | None = None, 
+    activities: List[str] | None = None
+) -> str:
+    activity_str = ", ".join(activities) if activities else "Unknown"
+    service_str = ", ".join(services) if services else "Unknown"
+    
+    classification_guide = ""
+    if services and activities:
+        classification_guide = (
+            f"Possible Services: [{service_str}]\n"
+            f"Possible Activities: [{activity_str}]\n"
+        )
+    
     return (
-        "Based on the following HTTP request data, classify the service being accessed "
-        "and the activity being performed.\n\n"
-        f"Host: {row['headers_Host']}\n"
-        f"Method: {row['method']}\n"
-        f"Path: {row['path']}\n"
-        f"Status: {row['status_code']}\n"
-        "Return the answer as '<service> | <activity>'."
+        "Classify the service and activity for this request:\n"
+        f"Host: {row.get('headers_Host', 'N/A')}\n"
+        f"Method: {row.get('method', 'N/A')}\n"
+        f"URL: {row.get('url', 'N/A')}\n\n"
+        f"{classification_guide}"
     )
 
 
-def label_file(csv_path: Path, client: Groq, meta: Dict[str, Any]) -> pd.DataFrame:
+def label_file(
+    csv_path: Path, 
+    client: Groq, 
+    meta: Dict[str, Any],
+    services: List[str] | None = None,
+    activities: List[str] | None = None
+) -> pd.DataFrame:
     name = csv_path.name
     print_status(f"[*] Processing {name}")
 
@@ -132,7 +153,7 @@ def label_file(csv_path: Path, client: Groq, meta: Dict[str, Any]) -> pd.DataFra
     for idx in range(progress, total_rows):
         row = df.iloc[idx]
         if pd.isna(row.get("predicted_service")) or pd.isna(row.get("predicted_activity")):
-            prompt = create_prompt(row)
+            prompt = create_prompt(row, services, activities)
             service, activity = get_groq_classification(client, prompt)
             df.at[idx, "predicted_service"] = service
             df.at[idx, "predicted_activity"] = activity
@@ -148,7 +169,11 @@ def label_file(csv_path: Path, client: Groq, meta: Dict[str, Any]) -> pd.DataFra
 
 
 
-def run_full_labelling(api_key: str | None = None) -> Dict[str, Any]:
+def run_full_labelling(
+    api_key: str | None = None,
+    services: List[str] | None = None,
+    activities: List[str] | None = None
+) -> Dict[str, Any]:
     """Convert raw logs ➜ split ➜ label with Groq and return summary stats."""
 
     api_key = api_key or os.getenv("GROQ_API_KEY")
@@ -162,8 +187,8 @@ def run_full_labelling(api_key: str | None = None) -> Dict[str, Any]:
     meta = load_metadata()
     client = get_groq_client(api_key)
 
-    train_df = label_file(train_path, client, meta)
-    test_df = label_file(test_path, client, meta)
+    train_df = label_file(train_path, client, meta, services, activities)
+    test_df = label_file(test_path, client, meta, services, activities)
 
     save_metadata(meta)
 
