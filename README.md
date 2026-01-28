@@ -1,39 +1,40 @@
 # Cloud Services API Security Analysis
 
-![Frontend Dashboard](./frontend/public/cas-dashboard.png)
-![RFC Generation](./frontend/public/cas-rfc.png)
+![Frontend Dashboard](./casb/frontend/public/cas-dashboard.png)
+![RFC Generation](./casb/frontend/public/cas-rfc.png)
 
 ## Project Structure
+
 ```
 Cloud-Services-API-Security/
-├── data-collection/           # Traffic capture components
-│   ├── agent/                # Automated data collection
-│   └── manual/              # Manual traffic capture
-├── data/                    # Dataset storage
-├── backend/                 # Backend API server
-├── frontend/                # Next.js web application
-│   ├── app/                 # Next.js App Router structure
-│   ├── components/          # Reusable UI components
-│   ├── public/              # Static assets
-│   └── lib/                 # Utility functions and hooks
-│   └── data/                # Dataset storage
-├── labelling/              # Initial labeling using GPT-4/Gemini
-│   ├── labelling.py       # Main labeling script
-├── zsl/                    # Zero-shot learning models
-│   ├── codebert/          # CodeBERT-based classifier
-│   │   ├── train.py       # Training pipeline
-│   │   └── inference.py   # Inference with ZSL
-│   └── deberta/           # DeBERTa-based classifier
-│       └── inference.py   # Multilingual ZSL inference
-└── rfc/                    # Random Forest training
+├── casb/
+│   ├── backend/                 # Backend API server
+│   ├── frontend/                # Next.js web application
+│   │   ├── app/                 # Next.js App Router structure
+│   │   ├── components/          # Reusable UI components
+│   │   ├── public/              # Static assets
+│   │   └── lib/                 # Utility functions and hooks
+│   │   └── data/                # Dataset storage
+│   ├── cli/                     # Command Line Interface tools
+│   │   ├── data-collection/     # Traffic capture components
+│   │   │   ├── agent/           # Automated data collection
+│   │   │   └── manual/          # Manual traffic capture
+│   │   ├── labelling/           # Initial labeling using GPT-4/Gemini
+│   │   │   ├── labelling.py     # Main labeling script
+│   │   ├── zsl/                 # Zero-shot learning models
+│   │   │   ├── codebert/        # CodeBERT-based classifier
+│   │   │   └── deberta/         # DeBERTa-based classifier
+│   │   └── rfc/                 # Random Forest training
+│   └── requirements.txt         # Python dependencies
+
 ```
 
 ## Project Overview
 
 1. **Data Collection**
-2. **Initial Labeling** 
+2. **Initial Labeling**
 3. **Zero-Shot Learning**
-4. **Random Forest Training and C Code Generation**: 
+4. **Random Forest Training and C Code Generation**:
    - Random Forest Classifier on labeled data and C Code Generation
 5. **Frontend Application**:
    - Interactive dashboard
@@ -43,10 +44,11 @@ Cloud-Services-API-Security/
    - API server
    - Model inference
    - C code generation and model training
+
 ## Pre-requisites
 
 1. Python 3.9 or higher
-2. Node.js 22 with npm 
+2. Node.js 22 with npm
 3. AnyProxy
 
 <!-- ## Components
@@ -87,10 +89,10 @@ python labelling.py
 cd zsl/codebert
 
 # Training
-python train.py 
+python train.py
 
 # Inference
-python inference.py 
+python inference.py
 ```
 
 
@@ -98,7 +100,7 @@ python inference.py
 
 ```bash
 cd zsl/deberta
-python inference.py 
+python inference.py
 ```
 ### 4. Random Forest Training (`/rfc`)
 #### Usage
@@ -109,7 +111,7 @@ cd rfc
 pip install -r requirements.txt
 
 # Train model
-python train.py 
+python train.py
 ```
 
 ### 5. Frontend Application (`/frontend`)
@@ -171,13 +173,16 @@ uvicorn backend.main:app --reload
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/CubeStar1/Cloud-Services-API-Security.git
    cd Cloud-Services-API-Security
    ```
 
 2. Set up Python virtual environment and install dependencies:
+
    ```bash
+   cd casb
    # Create a virtual environment
    python -m venv venv
 
@@ -192,16 +197,19 @@ uvicorn backend.main:app --reload
    ```
 
 3. Set up frontend components:
+
    ```bash
-   cd frontend
+   cd casb/frontend
    npm install
-   cd ..
+   cd ../..
    ```
 
 4. Set up backend API server:
 
    From the project root directory, perform the following steps:
+
    ```bash
+   cd casb
    python -m venv venv
 
    # Activate the virtual environment
@@ -218,143 +226,163 @@ uvicorn backend.main:app --reload
    ```
 
 5. Install AnyProxy:
+
    ```bash
    npm install -g anyproxy
    ```
 
-
-6. Unzip the contents of the `backend/data/output/rfc/codegen/codegen.zip` into the `backend/data/output/rfc/codegen` directory.
-> [!IMPORTANT] 
-> Make sure you have the C code files unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
-
-
+6. Unzip the contents of the `casb/backend/data/output/rfc/codegen/codegen.zip` into the `casb/backend/data/output/rfc/codegen` directory.
+   > [!IMPORTANT]
+   > Make sure you have the C code files unzipped into the `casb/backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
 
 ## 1. Web GUI Workflow
 
 ### Starting the GUI
+
 1. Start the frontend and backend servers:
+
    ```bash
    # In one terminal
-   cd frontend
+   cd casb/frontend
    npm run dev
    ```
 
    ```bash
    # In another terminal
-   cd ..  # Go back to the root directory
+   cd casb
    ./venv/Scripts/activate
    uvicorn backend.main:app --reload
    ```
 
 > [!IMPORTANT]
-> Make sure you have the C code file unzipped into the `backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference.
-2. Access the GUI at `http://localhost:3000`
+> Make sure you have the C code file unzipped into the `casb/backend/data/output/rfc/codegen` directory. Without this, the backend will not be able to run the model inference. 2. Access the GUI at `http://localhost:3000`
 
-3. Run inference on a custom csv file by placing a file in `backend/data/output/rfc/test/test_set.csv` and going to `http://localhost:3000/rfc`, choosing the file from the file browser and clicking on the `Inference` tab.
+3. Run inference on a custom csv file by placing a file in `casb/backend/data/output/rfc/test/test_set.csv` and going to `http://localhost:3000/rfc`, choosing the file from the file browser and clicking on the `Inference` tab.
 
 ### Main GUI Routes and Workflow
 
 #### 1. `/anyproxy` - Data Collection
-   - Configure and control the AnyProxy instance
-   - View captured traffic in real-time
-   - Raw data stored in `frontend/data/raw/`
+
+- Configure and control the AnyProxy instance
+- View captured traffic in real-time
+- Raw data stored in `casb/frontend/data/raw/`
 
 #### 2. `/logs` - Log Processing
-   - Convert raw logs to CSV format
-   - Processed logs saved in `frontend/data/logs/csv/`
-   - View and filter processed logs
+
+- Convert raw logs to CSV format
+- Processed logs saved in `casb/frontend/data/logs/csv/`
+- View and filter processed logs
 
 #### 3. `/zsl/deberta` - DeBERTa Zero-Shot Learning
-   - Run inference on processed logs
-   - View and analyze predictions
-   - Outputs to `frontend/data/output/deberta/`
+
+- Run inference on processed logs
+- View and analyze predictions
+- Outputs to `casb/frontend/data/output/deberta/`
 
 #### 4. `/zsl/codebert` - CodeBERT Analysis
-   - Process DeBERTa outputs
-   - Refine predictions
-   - Outputs to `frontend/data/output/codebert/`
+
+- Process DeBERTa outputs
+- Refine predictions
+- Outputs to `casb/frontend/data/output/codebert/`
 
 #### 5. `/rfc` - Random Forest Classifier and C Code Generation
-   - Train and run the RFC model
-   - Ensure you have a clean, labelled output from CodeBERT in `frontend/data/output/codebert/predictions/`
-   - Outputs to `frontend/data/output/rfc/`
-   - C Code generated in `frontend/data/output/rfc/codegen/` for manual C code generation
+
+- Train and run the RFC model
+- Ensure you have a clean, labelled output from CodeBERT in `casb/frontend/data/output/codebert/predictions/`
+- Outputs to `casb/frontend/data/output/rfc/`
+- C Code generated in `casb/frontend/data/output/rfc/codegen/` for manual C code generation
 
 #### 6. `/files` - File Management
-   - Browse all generated files
-   - Download or delete files
-   - Navigate through output directories
+
+- Browse all generated files
+- Download or delete files
+- Navigate through output directories
 
 ### Important Notes
+
 - The GUI and CLI use separate data directories to prevent conflicts
 - To share data between CLI and GUI, manually copy files between `data/` and `frontend/data/`
 - All outputs are timestamped for version control
 - The GUI provides visualizations and progress tracking not available in CLI
-Run both models on unlabeled traffic data:  
+  Run both models on unlabeled traffic data:
 
 ## 2. Command-Line Interface (CLI) Workflow
 
 ### Data Collection
+
 1. Configure proxy rules:
+
    ```bash
    # Edit the proxy configuration
-   nano data-collection/manual/general-json-key.js
+   nano casb/cli/data-collection/manual/general-json-key.js
    ```
+
    - Define traffic capture patterns
    - Set up any required service configurations
 
 2. Start the proxy server:
+
    ```bash
-   cd data-collection/manual
+   cd casb/cli/data-collection/manual
    anyproxy --port 8001 --rule general-json-key.js
    ```
+
    - Captured data is stored in `data/raw/`
 
 ### Data Processing Pipeline
+
 1. **Convert Logs to CSV**
+
    ```bash
    # Process raw logs into CSV format
-   cd data-collection/manual
+   cd casb/cli/data-collection/manual
    python csv-creation-without-tagging.py
    ```
-   - Outputs structured CSV files to `data/logs/csv/`
+
+   - Outputs structured CSV files to `casb/cli/data/logs/csv/`
 
 2. **Run DeBERTa Inference (Zero-Shot Learning)**
+
    ```bash
-   cd zsl/deberta
-   python inference.py 
+   cd casb/cli/zsl/deberta
+   python inference.py
    ```
+
    - Processes CSV files from the logs
-   - Outputs predictions to `data/output/deberta/`
+   - Outputs predictions to `casb/cli/data/output/deberta/`
 
 3. **Run CodeBERT on DeBERTa Output**
 
    ```bash
-   cd zsl/codebert
-   python train.py 
+   cd casb/cli/zsl/codebert
+   python train.py
    ```
+
    ```bash
-   cd zsl/codebert
-   python inference.py 
+   cd casb/cli/zsl/codebert
+   python inference.py
    ```
+
    - Takes DeBERTa predictions as input
-   - Outputs refined predictions to `data/output/codebert/`
+   - Outputs refined predictions to `casb/cli/data/output/codebert/`
 
 4. **Run Random Forest Classifier**
-   ```bash
-   cd rfc
-   python train.py 
-   ```
-   - Processes CodeBERT outputs
-   - Generates final predictions in `data/output/rfc/`
 
+   ```bash
+   cd casb/cli/rfc
+   python train.py
+   ```
+
+   - Processes CodeBERT outputs
+   - Generates final predictions in `casb/cli/data/output/rfc/`
 
 ## Configuration and Workflow
 
 ### File Structure and Paths
+
 - The project uses two main data directories:
-  - Root `data/` folder: Used by command-line scripts
-  - `frontend/data/` folder: Used by the web GUI
+  - Root `casb/cli/data/` folder: Used by command-line scripts
+  - `casb/frontend/data/` folder: Used by the web GUI
 - Script paths (like in `zsl/codebert/inference.py`) point to the root `data/` directory
 - Example path structure in scripts:
   ```python
@@ -431,5 +459,3 @@ When processing an API request like "GET /api/users":
    - Go directly to that shelf
    - Look through at most 10 words
    - If found, mark it in our features -->
-
-

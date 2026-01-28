@@ -1,11 +1,6 @@
 CONTEXT.md
 .env
 venv/
-data/*
-secure-file-sharing/f1.py
-__pycache__
 latex
-codebert
-models
-api_classifier.c
-api_classifier.exe
+node_modules/
+f1.py
