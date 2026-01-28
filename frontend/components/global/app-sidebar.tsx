@@ -10,7 +10,6 @@ import {
 import { NavSection } from "@/components/navigation/nav-section"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { NavProfile } from "@/components/navigation/nav-profile"
 import { LucideProps, LucideIcon } from "lucide-react"
 import Icons from "@/components/global/icons"
 import defaultConfig from "@/lib/config/sidebar"

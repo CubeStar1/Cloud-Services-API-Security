@@ -2,13 +2,24 @@ import { spawn } from "child_process"
 import path from "path"
 import fs from "fs"
 import { NextRequest, NextResponse } from "next/server"
-import { addLog } from './logs/route'
 
 let proxyProcess: any = null
 let currentLogFile: string | null = null
 
+
+
+
 export async function POST(request: NextRequest) {
     const { action, filename } = await request.json()
+    // Function to add a new log
+    function addLog(log: any) {
+        // Store logs in memory
+        let logs: any[] = []
+        logs.unshift(log) // Add to beginning of array
+        if (logs.length > 1000) { // Keep only last 1000 logs
+            logs = logs.slice(0, 1000)
+        }
+    }
 
     if (action === 'start') {
         if (proxyProcess) {

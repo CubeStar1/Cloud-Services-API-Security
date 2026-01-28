@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
                 error 
             }, { status: 500 })
         }
-    } catch (error) {
+    } catch (error:any) {
         console.error('Error running labelling script:', error)
         return NextResponse.json({ 
             success: false, 

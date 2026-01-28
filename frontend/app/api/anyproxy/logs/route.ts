@@ -2,16 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
-// Store logs in memory
-let logs: any[] = []
 
-// Function to add a new log
-export function addLog(log: any) {
-    logs.unshift(log) // Add to beginning of array
-    if (logs.length > 1000) { // Keep only last 1000 logs
-        logs = logs.slice(0, 1000)
-    }
-}
+
+
 
 // Get all log files from the directory
 function getLogFiles() {

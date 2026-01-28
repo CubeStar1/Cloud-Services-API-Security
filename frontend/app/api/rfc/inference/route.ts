@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       const { data } = await axios.post(
         `${BACKEND}/rfc/inference/${endpoint}`,
         {},
-        { params: { file: json.file }, timeout: 60_000 }
+        { params: { file: json.file }, timeout: 600_000 }
       );
       return NextResponse.json(data);
     }

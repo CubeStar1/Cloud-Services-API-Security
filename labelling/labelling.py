@@ -19,8 +19,8 @@ PATHS = {
     'logs_folder': os.path.join(BASE_PATH, "data", "logs", "csv-new"),  # Source CSV files
     'labelled_folder': os.path.join(BASE_PATH, "data", "labelled"),  # Output directory
     'metadata_file': os.path.join(BASE_PATH, "data", "labelled", "metadata.json"),
-    'train_file': "train_set.xlsx",  # Changed to xlsx as per screenshot
-    'test_file': "test_set.xlsx",    # Changed to xlsx as per screenshot
+    'train_file': "train_set_jun.xlsx",  # Changed to xlsx as per screenshot
+    'test_file': "train_set_jun.xlsx",    # Changed to xlsx as per screenshot
     'rows_per_file': 400
 }
 
@@ -84,7 +84,7 @@ def find_csv_files(data_folder: str, recursive: bool = True) -> List[str]:
         data_folder: Root folder to search
         recursive: Whether to search subdirectories
     """
-    return glob.glob(os.path.join(PATHS['logs_folder'], "*.csv"))
+    return glob.glob(os.path.join(PATHS['logs_folder'], "*.xlsx"))
 
 def create_prompt(row: pd.Series) -> str:
     """Create a prompt for the LLM based on the row data."""
