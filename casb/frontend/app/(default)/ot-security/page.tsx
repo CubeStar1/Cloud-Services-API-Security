@@ -1,6 +1,6 @@
 "use client";
-
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import axios from "axios";
 // --- UI Imports ---
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,13 +13,56 @@ import { AnomalyDetection } from "./components/AnomalyDetection";
 import { Summary } from "./components/Summary";
 
 // --- Data Structure Definitions ---
-import { ScanResult } from "./types";
+interface ScanResult {
+    ip: string;
+    mac: string;
+    vendor: string;
+    open_ports: number[];
+    ot_services: [number, string][];
+    it_services: [number, string][];
+    risk: string;
+    port_count: number;
+}
 
-function OTSecurityPage() {
+interface AnomalyStats {
+  totalDevices: number;
+  anomaliesDetected: number;
+  lastCheckTime: string;
+}
+
+function Index() {
   const [isScanning, setIsScanning] = useState(false);
   const [devices, setDevices] = useState<ScanResult[]>([]);
   const [lastScanTime, setLastScanTime] = useState<string>("");
   const [scanStatus, setScanStatus] = useState<string>("Ready to start network scan.");
+  const [anomalyStats, setAnomalyStats] = useState<AnomalyStats>({
+    totalDevices: 0,
+    anomaliesDetected: 0,
+    lastCheckTime: ""
+  });
+
+  // Fetch anomaly stats periodically
+  useEffect(() => {
+    const fetchAnomalyStats = async () => {
+      try {
+        const response = await axios.post('/api/anomaly/analyze', {});
+        setAnomalyStats({
+          totalDevices: response.data.total_devices,
+          anomaliesDetected: response.data.anomalies_detected,
+          lastCheckTime: new Date().toISOString()
+        });
+      } catch (error) {
+        console.error("Failed to fetch anomaly stats:", error);
+      }
+    };
+
+    // Fetch on mount
+    fetchAnomalyStats();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchAnomalyStats, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleScanStart = useCallback(() => {
     setIsScanning(true);
@@ -146,10 +189,10 @@ function OTSecurityPage() {
 
           <TabsContent value="summary" className="space-y-4">
             <Summary
-              totalDevices={devices.length}
-              anomaliesDetected={anomaliesCount}
+              totalDevices={devices.length > 0 ? devices.length : anomalyStats.totalDevices}
+              anomaliesDetected={anomalyStats.anomaliesDetected}
               protocolsUsed={uniqueProtocols}
-              lastScanTime={lastScanTime}
+              lastScanTime={lastScanTime || anomalyStats.lastCheckTime}
             />
           </TabsContent>
         </Tabs>
@@ -158,4 +201,4 @@ function OTSecurityPage() {
   );
 }
 
-export default OTSecurityPage;
+export default Index;

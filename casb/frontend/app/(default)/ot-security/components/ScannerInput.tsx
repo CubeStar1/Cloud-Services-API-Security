@@ -9,7 +9,16 @@ import { useToast } from "@/hooks/use-toast";
 const API_BASE_URL = '/api/scan';
 
 // Define a type for the data structure coming back from FastAPI
-import { ScanResult } from "../types";
+interface ScanResult {
+    ip: string;
+    mac: string;
+    vendor: string;
+    open_ports: number[];
+    risk: string;
+    port_count: number;
+    ot_services: [number, string][]; // e.g., [[502, "modbus"], [80, "http"]]
+    it_services: [number, string][];
+}
 
 interface ScannerInputProps {
     isScanning: boolean;
@@ -21,7 +30,7 @@ interface ScannerInputProps {
 
 // ⚠️ We use a named export as per your original file structure
 export const ScannerInput = ({ isScanning, onScanStart, onScanComplete, onStatusUpdate }: ScannerInputProps) => {
-    const [subnet, setSubnet] = useState("192.168.1.0/24"); // Use subnet for scan
+    const [subnet, setSubnet] = useState("172.20.0.0/24"); // Docker OT network
     const [taskId, setTaskId] = useState<string | null>(null);
     const [pollIntervalId, setPollIntervalId] = useState<NodeJS.Timeout | null>(null);
     const { toast } = useToast();

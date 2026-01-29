@@ -11,7 +11,7 @@ import { motion, useAnimationControls, LayoutGroup } from "framer-motion"
 
 const navigationLinks = [
   { href: "/", label: "Home" },
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard2", label: "Dashboard" },
   { href: "/anyproxy", label: "Data Collection" },
   { href: "/zsl/deberta", label: "DeBERTa" },
   { href: "/codebert", label: "CodeBERT" },
